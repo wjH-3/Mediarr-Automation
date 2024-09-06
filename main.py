@@ -36,14 +36,14 @@ def get_tv_id():
         else:
             print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
 
-def get_url(media_type, imdb_id):
+def get_url(media_type, imdb_id, tv_query=None):
     base_movie_url = "https://debridmediamanager.com/movie/tt"
     base_tv_url = "https://debridmediamanager.com/show/tt"
     
     if media_type == 'M':
         return f"{base_movie_url}{imdb_id}"
     else:
-        return f"{base_tv_url}{imdb_id}"
+        return f"{base_tv_url}{imdb_id}/{tv_query}"
 
 # Web automation for scraping and interacting with search results
 def automate_webpage(url, search_text, media__type):
@@ -144,28 +144,36 @@ def main():
     
     if media_type == 'M':
         imdb_id = get_movie_id()
+        tv_query = None
 
         while True:
-            query = input("Is it a recently released (within this month) movie? [Y/N]: ").strip().upper()
-            if query == 'Y':
+            movie_query = input("Is it a recently released (within this month) movie? [Y/N]: ").strip().upper()
+            if movie_query == 'Y':
                 search_text = "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:2160p).*$" # (can be modified)
                 break  # Exit the loop on valid input
-            elif query == 'N':
+            elif movie_query == 'N':
                 search_text = "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p).*$" # (can be modified)
                 break  # Exit the loop on valid input
             else:
                 print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
 
-    else:
+    elif media_type =='T':
         imdb_id = get_tv_id()
-        search_text = "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$" # (can be modified)
+
+        while True:
+            tv_query = input("What season of the show are you looking for? Enter the season number - ").strip().upper()
+            if tv_query.isdigit():
+                search_text = "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$" # (can be modified)
+                break
+            else:
+                print("Invalid input. Please enter a digit")
     
     print(f"Wait for around 2 minutes...")
 
     time.sleep(3)
 
     if imdb_id:
-        url = get_url(media_type, imdb_id)
+        url = get_url(media_type, imdb_id, tv_query)
 
         # Automate the web page interaction
         automate_webpage(url, search_text, media_type)
