@@ -23,7 +23,7 @@
 
 ## Usage Guide:
 1. Download `main.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
-2. Go to [Link] (chrome://version/) (or similar for other browsers) and locate `Profile Path`
+2. Go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
 3. Open `main.py` in an IDE or Notepad
 4. Change `user` in `chrome_profile_path` to the correct user name with reference to `Profile Path`
 5. Change `Default` in `profile-directory` to the correct profile name with reference to `Profile Path`
