@@ -14,7 +14,7 @@ def get_movie_id():
     ia = IMDb()
 
     while True:
-        keywords = input("Enter title + year (e.g Inception 2010 or Stranger Things 2016): ")
+        keywords = input("Enter title + year (e.g Inception 2010): ")
         search_results = ia.search_movie(keywords)
     
         if search_results:
@@ -28,7 +28,7 @@ def get_tv_id():
     ia = IMDb()
 
     while True:
-        keywords = input("Enter title + year (e.g Inception 2010 or Stranger Things 2016): ")
+        keywords = input("Enter title + year (e.g Stranger Things 2016): ")
         search_results = ia.search_movie(keywords)  # Note: This also works for TV series
     
         if search_results:
