@@ -100,11 +100,20 @@ def automate_webpage(url, search_text, media__type):
         for idx, file_name in enumerate(file_names, start=1):
             print(f"{idx}. {file_name}")
 
-        # Get user to input a number to choose the corresponding file
-        selected_num = int(input("Type in the NUMBER corresponding to the file you want: "))
-        selected_file_element = file_name_elements[selected_num - 1]
-
-        print(f"Getting file, please wait...")
+        while True:
+            try:
+                # Get user to input a number to choose the corresponding file
+                selected_num = int(input("Type in the NUMBER corresponding to the file you want: "))
+                
+                if 1 <= selected_num <= len(file_name_elements):  # Ensure the number is within the valid range
+                    selected_file_element = file_name_elements[selected_num - 1]
+                    break  # Exit the loop if the input is valid
+                else:
+                    print(f"Please enter a number between 1 and {len(file_name_elements)}.")
+            
+            except ValueError:
+                # Handle the case where the input is not an integer
+                print("Invalid input. Please enter a number only.")
 
         # Now locate the corresponding button for the selected file (within the same section)
         # We can navigate to the button using the parent div structure
