@@ -1,4 +1,4 @@
-from imdb import Cinemagoer
+from imdb import IMDb
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -10,7 +10,7 @@ import time
 
 # IMDb search functions
 def get_movie_id():
-    ia = Cinemagoer()
+    ia = IMDb()
 
     while True:
         keywords = input("Enter title + year (e.g Inception 2010 or Stranger Things 2016): ")
@@ -23,7 +23,7 @@ def get_movie_id():
             print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
 
 def get_tv_id():
-    ia = Cinemagoer()
+    ia = IMDb()
 
     while True:
         keywords = input("Enter title + year (e.g Inception 2010 or Stranger Things 2016): ")
@@ -31,7 +31,7 @@ def get_tv_id():
     
         if search_results:
             for result in search_results:
-                if result.get('kind') in ['tv series', 'tv miniseries']:
+                if result.get('kind') in ['tv series', 'tv mini series']:
                     return result.getID()
         else:
             print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
