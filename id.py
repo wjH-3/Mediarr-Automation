@@ -35,7 +35,7 @@ def main():
         result = get_tv_id(keywords)
 
     if result:
-        print(f"\nIMDb ID for '{keywords}': {result}")
+        print(f"\nIMDb ID for '{keywords}': tt{result}")
     else:
         print(f"\nNo IMDb ID found for '{keywords}'.")
 
