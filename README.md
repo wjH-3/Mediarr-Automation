@@ -7,7 +7,7 @@
 
 ## Prerequisites: 
 * Real-Debrid premium account 
-* Browser driver (e.g chrome driver) corresponding to browser version
+* Web browser driver (e.g Chrome driver) corresponding to browser version (no manual installation required if using WebDriver Manager)
 * Python 3.11 or later (enable *add Python to PATH* during installation)
 * Relevant python modules (which require installation): Selenium (`pip install selenium`), IMDB (`pip install imdbpy`), WebDriver Manager (`pip install webdriver-manager`)
 
@@ -19,7 +19,7 @@
 * Driver path (not needed if using webdriver manager -- automated)
 * User profile path (default user name is `user`)
 * User profile directory name (if default, then `Default`)
-* Regex for movies/tv based on output device's codec and format compatibilities (*Advanced*)
+* Regex for movies/tv based on output device's media codec and format compatibilities (*Advanced*)
 
 ## Usage Guide:
 1. Download `main.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
