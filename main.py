@@ -9,6 +9,7 @@ import sys
 import time
 
 # IMDb search functions
+# IMDb ID for movies
 def get_movie_id():
     ia = IMDb()
 
@@ -22,6 +23,7 @@ def get_movie_id():
         else:
             print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
 
+# IMDb ID for TV
 def get_tv_id():
     ia = IMDb()
 
@@ -36,6 +38,7 @@ def get_tv_id():
         else:
             print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
 
+# Return DMM url using IMDb ID found
 def get_url(media_type, imdb_id, tv_query=None):
     base_movie_url = "https://debridmediamanager.com/movie/tt"
     base_tv_url = "https://debridmediamanager.com/show/tt"
@@ -49,7 +52,7 @@ def get_url(media_type, imdb_id, tv_query=None):
 def automate_webpage(url, search_text, media__type):
     # Set up WebDriver (assuming Chrome)
     
-    # Path to your Chrome user profile (can be modified)
+    # Path to your Chrome user profile (can be modified) (change 'user' to your own user name)
     chrome_profile_path = "C:/Users/user/AppData/Local/Google/Chrome/User Data"
 
     # Set Chrome options to use the existing profile
@@ -73,7 +76,7 @@ def automate_webpage(url, search_text, media__type):
         # Wait for the page to load
         time.sleep(5)
 
-        # Locate the search filter (update the class/ID as per the actual webpage)
+        # Locate the search filter
         search_filter = driver.find_element(By.CSS_SELECTOR, "#query")
 
         # Click on the filter and enter the search text
@@ -84,7 +87,7 @@ def automate_webpage(url, search_text, media__type):
         # Wait for the results to filter (120 seconds)
         time.sleep(120)
 
-        # Scrape all file names (Generalized selector)
+        # Scrape all file names (generalized selector)
         file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
 
         # Check if there are any files found
@@ -112,11 +115,10 @@ def automate_webpage(url, search_text, media__type):
                     print(f"Please enter a number between 1 and {len(file_name_elements)}.")
             
             except ValueError:
-                # Handle the case where the input is not an integer
+                # Handle case where the input is not an integer
                 print("Invalid input. Please enter a number only.")
 
-        # Now locate the corresponding button for the selected file (within the same section)
-        # We can navigate to the button using the parent div structure
+        # Locate the corresponding button for the selected file (within the same section)
         button = selected_file_element.find_element(By.XPATH, "./following-sibling::div[contains(@class, 'space-x-2')]/button")
 
         # Click the button corresponding to the selected file
@@ -175,19 +177,17 @@ def main():
                 search_text = "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$" # (can be modified)
                 break
             else:
-                print("Invalid input. Please enter a digit")
+                print("Invalid input. Please enter a digit.")
     
-    print(f"Wait for around 2 minutes...")
+    print("Please wait for around 2 minutes...")
 
     time.sleep(3)
 
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
-
-        # Automate the web page interaction
         automate_webpage(url, search_text, media_type)
     else:
-        print(f"\nNo active URL found.")
+        print(f"\nError. No active URL found.")
 
 if __name__ == "__main__":
     main()
