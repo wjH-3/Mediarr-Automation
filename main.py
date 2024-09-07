@@ -92,7 +92,7 @@ def automate_webpage(url, search_text, media__type):
 
         # Check if there are any files found
         if not file_name_elements:
-            print("No matching files found. The script will now terminate...")
+            print(f"No matching files found from '{url}'. The script will now terminate...")
             sys.exit(1)
 
         # Get the text from each file name element
@@ -189,7 +189,7 @@ def main():
         url = get_url(media_type, imdb_id, tv_query)
         automate_webpage(url, search_text, media_type)
     else:
-        print(f"\nError. No active URL found.")
+        print(f"\nError. '{url}' is not a valid url.")
 
 if __name__ == "__main__":
     main()
