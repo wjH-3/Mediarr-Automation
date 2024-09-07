@@ -117,6 +117,8 @@ def automate_webpage(url, search_text, media__type):
             except ValueError:
                 # Handle case where the input is not an integer
                 print("Invalid input. Please enter a number only.")
+        
+        print("Getting file, please wait...")
 
         # Locate the corresponding button for the selected file (within the same section)
         button = selected_file_element.find_element(By.XPATH, "./following-sibling::div[contains(@class, 'space-x-2')]/button")
