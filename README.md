@@ -1,7 +1,7 @@
 # Semi-Automated Python Script for Real-Debrid
 
 * This is a simple script for users to easily and instantly add the specific file (with the condition that it must be cached by Real-Debrid) of a movie or TV show that they want into their DMM Library by scraping results from Debrid Media Manager's search query.
-* Users enter the movie/TV title along with its year and the script will output a list of available files for you to select.
+* Users enter the movie/TV show title along with its year (as well as specify the season for the TV show) and the script will output a list of available files (along with their respective file sizes) for you to select.
 * After selecting, it will automatically add the file into DMM Library and then open the Library page.
 * Note that the script is focused on Google Chrome for Windows, but it is not hard to tweak a few lines to make it compatible with other browsers (as long as the browser has support for WebDriver).
 
