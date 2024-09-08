@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
 import sys
 import time
 
@@ -21,7 +22,7 @@ def get_movie_id():
             movie = search_results[0]
             return movie.getID()
         else:
-            print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
+            print(f"Error: Unable to find the movie '{keywords}'. Make sure both the title and year are correct.")
 
 # IMDb ID for TV
 def get_tv_id():
@@ -36,7 +37,7 @@ def get_tv_id():
                 if result.get('kind') in ['tv series', 'tv mini series']:
                     return result.getID()
         else:
-            print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
+            print(f"Error: Unable to find the show '{keywords}'. Make sure both the title and year are correct.")
 
 # Return DMM url using IMDb ID found
 def get_url(media_type, imdb_id, tv_query=None):
@@ -49,7 +50,7 @@ def get_url(media_type, imdb_id, tv_query=None):
         return f"{base_tv_url}{imdb_id}/{tv_query}"
 
 # Web automation for scraping and interacting with search results
-def automate_webpage(url, search_text, media__type):
+def automate_webpage(url, search_text, media_type):
     # Set up WebDriver (assuming Chrome)
     
     # Path to your Chrome user profile (can be modified) (change 'user' to your own user name)
@@ -77,13 +78,19 @@ def automate_webpage(url, search_text, media__type):
         time.sleep(5)
 
         # Locate the search filter
-        search_filter = driver.find_element(By.CSS_SELECTOR, "#query")
+        try:
+            search_filter = driver.find_element(By.CSS_SELECTOR, "#query")
 
-        # Click on the filter and enter the search text
-        search_filter.click()
-        search_filter.send_keys(search_text)
-        search_filter.send_keys(Keys.RETURN)
+            # Click on the filter and enter the search text
+            search_filter.click()
+            search_filter.send_keys(search_text)
+            search_filter.send_keys(Keys.RETURN)
 
+        except NoSuchElementException:
+            # If search filter is not found, print an error message
+            print(f"\nError: '{url}' is not a valid URL. The script will now terminate...")
+            sys.exit(1)
+    
         # Wait for the results to filter (120 seconds)
         time.sleep(120)
 
@@ -141,8 +148,9 @@ def automate_webpage(url, search_text, media__type):
 
         input("\nPress Enter to terminate the script and browser window...")
 
-    except Exception as e:
-        print(f"Error occurred: {e}")
+    except WebDriverException:
+        print(f"\nError: '{url}' could not be reached. The script will now terminate...")
+        sys.exit(1)
 
 def main():
     input("Reminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
@@ -174,7 +182,7 @@ def main():
         imdb_id = get_tv_id()
 
         while True:
-            tv_query = input("What season of the show are you looking for? Enter the season number - ").strip().upper()
+            tv_query = input("What season of the show are you looking for? Enter the season number - ")
             if tv_query.isdigit():
                 search_text = "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$" # (can be modified)
                 break
@@ -188,8 +196,6 @@ def main():
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
         automate_webpage(url, search_text, media_type)
-    else:
-        print(f"\nError. '{url}' is not a valid url.")
 
 if __name__ == "__main__":
     main()
