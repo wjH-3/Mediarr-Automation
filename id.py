@@ -1,7 +1,7 @@
-from imdb import IMDb
+from imdb import Cinemagoer
 
 def get_movie_id(keywords):
-    ia = IMDb()
+    ia = Cinemagoer()
     search_results = ia.search_movie(keywords)
     
     if search_results:
@@ -11,7 +11,7 @@ def get_movie_id(keywords):
         return None
 
 def get_tv_id(keywords):
-    ia = IMDb()
+    ia = Cinemagoer()
     search_results = ia.search_movie(keywords)  # Note: This also works for TV series
     
     if search_results:
