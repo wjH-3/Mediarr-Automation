@@ -159,12 +159,11 @@ def automate_webpage(url, search_text, media_type):
 
         input("\nPress Enter to terminate the script and browser window...")
 
-    except WebDriverException as e:
-        print(f"\nError: WebDriverException occurred. Details: {str(e)}")
-        print(f"URL: '{url}' could not be reached. The script will now terminate...")
+    except WebDriverException:
+        print(f"\nError: '{url}' could not be reached. The script will now terminate...")
         sys.exit(1)
     except Exception as e:
-        print(f"\nAn unexpected error occurred. Details: {str(e)}")
+        print(f"\nAn unexpected error occurred. Details:\n{str(e)}")
         sys.exit(1)
 
 def main():
