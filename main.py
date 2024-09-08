@@ -51,8 +51,10 @@ def get_url(media_type, imdb_id, tv_query=None):
 
 # Web automation for scraping and interacting with search results
 def automate_webpage(url, search_text, media_type):
+    # URL info
+    print(f"Scraping from -> '{url}'...")
+
     # Set up WebDriver (assuming Chrome)
-    
     # Path to your Chrome user profile (can be modified) (change 'user' to your own user name)
     chrome_profile_path = "C:/Users/user/AppData/Local/Google/Chrome/User Data"
 
@@ -67,10 +69,7 @@ def automate_webpage(url, search_text, media_type):
     # Start ChromeDriver using the profile and service
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    try:
-        # URL info
-        print(f"Scraping from -> '{url}'...")
-
+    try:        
         # Minimize window
         driver.minimize_window()
 
