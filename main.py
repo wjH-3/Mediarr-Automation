@@ -41,7 +41,7 @@ def get_tv_id():
 
 # Return DMM url using IMDb ID found
 def get_url(media_type, imdb_id, tv_query=None):
-    base_movie_url = "https://debridmediamanager.my/movie/tt"
+    base_movie_url = "https://debridmediamanager.com/movie/tt"
     base_tv_url = "https://debridmediamanager.com/show/tt"
     
     if media_type == 'M':
@@ -149,8 +149,8 @@ def automate_webpage(url, search_text, media__type):
         input("\nPress Enter to terminate the script and browser window...")
 
     except WebDriverException:
-            print(f"\nError. '{url}' could not be reached. The script will now terminate...")
-            sys.exit(1)
+        print(f"\nError: '{url}' could not be reached. The script will now terminate...")
+        sys.exit(1)
 
 def main():
     input("Reminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
