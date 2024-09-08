@@ -96,7 +96,7 @@ def automate_webpage(url, search_text, media_type):
 
         # Scrape all file names (generalized selector)
         file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
-        file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]/text()[2]")
+        file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
 
         # Check if there are any files found
         if not file_name_elements:
@@ -106,11 +106,20 @@ def automate_webpage(url, search_text, media_type):
         # Get the text from each file name element
         print("\nMatching files found:")
         file_names = [element.text for element in file_name_elements]
-        file_sizes = [element.text for element in file_size_elements]
+
+        # Extract only the total file size from each element
+        file_sizes = []
+        for element in file_size_elements:
+            size_text = element.text
+            # Extract the first part before the semicolon, which should be the total size
+            total_size = size_text.split(';')[0].strip()
+            # Extract just the size value (e.g., "57.89 GB")
+            size_value = ' '.join(total_size.split()[1:])
+            file_sizes.append(size_value)
 
         # Print file names to the terminal for the user to select
         for idx, (file_name, file_size) in enumerate(zip(file_names, file_sizes), start=1):
-            print(f"{idx}. {file_name} - {file_size}GB")
+            print(f"{idx}. {file_name} - {file_size}")
 
         while True:
             try:
