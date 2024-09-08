@@ -40,7 +40,7 @@ def get_tv_id():
 
 # Return DMM url using IMDb ID found
 def get_url(media_type, imdb_id, tv_query=None):
-    base_movie_url = "https://debridmediamanager.com/movie/tt"
+    base_movie_url = "https://debridmediamanager.com/movie/ttt"
     base_tv_url = "https://debridmediamanager.com/show/tt"
     
     if media_type == 'M':
@@ -189,7 +189,8 @@ def main():
         url = get_url(media_type, imdb_id, tv_query)
         automate_webpage(url, search_text, media_type)
     else:
-        print(f"\nError. '{url}' is not a valid url.")
+        print(f"\nError. '{url}' is not a valid url. The script will now terminate...")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
