@@ -109,7 +109,7 @@ def automate_webpage(url, search_text, media_type):
         file_sizes = [element.text for element in file_size_elements]
 
         # Print file names to the terminal for the user to select
-        for idx, file_name, file_size in enumerate(file_names, file_sizes, start=1):
+        for idx, file_name, file_size in enumerate(zip(file_names, file_sizes), start=1):
             print(f"{idx}. {file_name} - {file_size}GB")
 
         while True:
