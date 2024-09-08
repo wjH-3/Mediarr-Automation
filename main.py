@@ -68,6 +68,9 @@ def automate_webpage(url, search_text, media_type):
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     try:
+        # URL info
+        print(f"Scraping from -> '{url}'...")
+
         # Minimize window
         driver.minimize_window()
 
