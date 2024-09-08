@@ -5,6 +5,7 @@ from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
 import sys
 import time
 
@@ -77,13 +78,23 @@ def automate_webpage(url, search_text, media__type):
         time.sleep(5)
 
         # Locate the search filter
-        search_filter = driver.find_element(By.CSS_SELECTOR, "#query")
+        try:
+            search_filter = driver.find_element(By.CSS_SELECTOR, "#query")
 
-        # Click on the filter and enter the search text
-        search_filter.click()
-        search_filter.send_keys(search_text)
-        search_filter.send_keys(Keys.RETURN)
+            # Click on the filter and enter the search text
+            search_filter.click()
+            search_filter.send_keys(search_text)
+            search_filter.send_keys(Keys.RETURN)
 
+        except NoSuchElementException:
+            # If search filter is not found, print an error message
+            print(f"\nError. '{url}' is not a valid URL. The script will now terminate...")
+            sys.exit(1)
+    
+        except WebDriverException:
+            print(f"\nError. '{url}' could not be reached. The script will now terminate...")
+            sys.exit(1)
+    
         # Wait for the results to filter (120 seconds)
         time.sleep(120)
 
@@ -185,12 +196,6 @@ def main():
 
     time.sleep(3)
 
-    if imdb_id:
-        url = get_url(media_type, imdb_id, tv_query)
-        automate_webpage(url, search_text, media_type)
-    else:
-        print(f"\nError. '{url}' is not a valid url. The script will now terminate...")
-        sys.exit(1)
 
 if __name__ == "__main__":
     main()
