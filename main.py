@@ -22,7 +22,7 @@ def get_movie_id():
             movie = search_results[0]
             return movie.getID()
         else:
-            print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
+            print(f"Error: Unable to find the movie '{keywords}'. Make sure both the title and year are correct.")
 
 # IMDb ID for TV
 def get_tv_id():
@@ -37,7 +37,7 @@ def get_tv_id():
                 if result.get('kind') in ['tv series', 'tv mini series']:
                     return result.getID()
         else:
-            print(f"Error. Unable to find '{keywords}'. Make sure both the title and year are correct.")
+            print(f"Error: Unable to find the show '{keywords}'. Make sure both the title and year are correct.")
 
 # Return DMM url using IMDb ID found
 def get_url(media_type, imdb_id, tv_query=None):
@@ -50,7 +50,7 @@ def get_url(media_type, imdb_id, tv_query=None):
         return f"{base_tv_url}{imdb_id}/{tv_query}"
 
 # Web automation for scraping and interacting with search results
-def automate_webpage(url, search_text, media__type):
+def automate_webpage(url, search_text, media_type):
     # Set up WebDriver (assuming Chrome)
     
     # Path to your Chrome user profile (can be modified) (change 'user' to your own user name)
@@ -88,7 +88,7 @@ def automate_webpage(url, search_text, media__type):
 
         except NoSuchElementException:
             # If search filter is not found, print an error message
-            print(f"\nError. '{url}' is not a valid URL. The script will now terminate...")
+            print(f"\nError: '{url}' is not a valid URL. The script will now terminate...")
             sys.exit(1)
     
         # Wait for the results to filter (120 seconds)
@@ -182,7 +182,7 @@ def main():
         imdb_id = get_tv_id()
 
         while True:
-            tv_query = input("What season of the show are you looking for? Enter the season number - ").strip().upper()
+            tv_query = input("What season of the show are you looking for? Enter the season number - ")
             if tv_query.isdigit():
                 search_text = "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$" # (can be modified)
                 break
