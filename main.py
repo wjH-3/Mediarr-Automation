@@ -91,10 +91,6 @@ def automate_webpage(url, search_text, media__type):
             print(f"\nError. '{url}' is not a valid URL. The script will now terminate...")
             sys.exit(1)
     
-        except WebDriverException:
-            print(f"\nError. '{url}' could not be reached. The script will now terminate...")
-            sys.exit(1)
-    
         # Wait for the results to filter (120 seconds)
         time.sleep(120)
 
@@ -152,8 +148,9 @@ def automate_webpage(url, search_text, media__type):
 
         input("\nPress Enter to terminate the script and browser window...")
 
-    except Exception as e:
-        print(f"Error occurred: {e}")
+    except WebDriverException:
+            print(f"\nError. '{url}' could not be reached. The script will now terminate...")
+            sys.exit(1)
 
 def main():
     input("Reminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
