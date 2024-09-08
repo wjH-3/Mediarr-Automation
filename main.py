@@ -196,6 +196,9 @@ def main():
 
     time.sleep(3)
 
+    if imdb_id:
+        url = get_url(media_type, imdb_id, tv_query)
+        automate_webpage(url, search_text, media_type)
 
 if __name__ == "__main__":
     main()
