@@ -7,6 +7,10 @@ import sys
 # MAL - pip install mal-api --> from mal import AnimeSearch
 # AniList - pip install anilistpython --> https://github.com/ReZeroE/AnilistPython
 
+# Other resources for reference:
+# nyaascraper: https://github.com/zaini/nyaascraper
+# miru: https://github.com/ThaUnknown/miru
+
 
 def get_anime_info(anime_name):
     anilist = Anilist()
