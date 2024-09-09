@@ -14,49 +14,73 @@ import sys
 # nyaadownloader: https://github.com/marcpinet/nyaadownloader
 
 
-def get_anime_info(anime_name):
-    anilist = Anilist()
+import requests
 
-    try:
-        # Get the anime ID directly
-        anime_id = anilist.get_anime_id(anime_name)
-        
-        if anime_id:
-            # Get detailed anime information
-            anime_info = anilist.get_anime(anime_name)
-            return anime_id, anime_info.get('name_english'), anime_info.get('name_romaji')
-        else:
-            return None, None, None
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return None, None, None
-
-def seadex_url(anime_id):
-    base_url = "https://releases.moe/"
-
-    if anime_id:
-        return f"{base_url}{anime_id}"
-
-def subsplease_url(name_romaji):
-    base_url = "https://subsplease.org/shows/"
-
-    if name_romaji:
-        # (WIP) find results corresponding to search query (romaji anime title) and output their links (using Find in Page)
-        return
+def search_anilist(anime_title):
+    # GraphQL query with pagination (Page)
+    query = '''
+    query ($search: String) {
+        Page {
+            media (search: $search, type: ANIME) {
+                id
+                title {
+                    romaji
+                    english
+                }
+            }
+        }
+    }
+    '''
     
-def main():
+    # Variables for the GraphQL query
+    variables = {
+        'search': anime_title
+    }
+    
+    # Make the HTTP API request
+    response = requests.post('https://graphql.anilist.co', json={'query': query, 'variables': variables})
+    
+    if response.status_code == 200:
+        data = response.json()
+        if data['data']['Page']['media']:
+            animes = data['data']['Page']['media']
+            results = []
+            for anime in animes:
+                results.append({
+                    'id': anime['id'],
+                    'title_romaji': anime['title']['romaji'],
+                    'title_english': anime['title']['english']
+                })
+            return results
+    return None
+
+# Usage
+anime_title = input("Enter title: ")
+results = search_anilist(anime_title)
+
+
+if results:
+    # Display results in a numbered list
+    print("\nSearch results:")
+    for i, result in enumerate(results, start=1):
+        print(f"{i}. AniList ID: {result['id']}")
+        print(f"   Title (Romaji): {result['title_romaji']}")
+        print(f"   Title (English): {result['title_english']}")
+        print("---")
+    
     while True:
-        anime_name = input("Enter anime title (Eng or Romaji): ")
-        anime_id, name_english, name_romaji = get_anime_info(anime_name)
-
-        if anime_id is not None:
-            print(f"Anilist ID: {anime_id}")
-            print(f"Full English Title: '{name_english or 'Not available'}'")
-            print(f"Full Romaji Title: '{name_romaji or 'Not available'}'")
-            break
-        else:
-            print("Could not find the anime. Please try again.")
-
-if __name__ == "__main__":
-    main()
-
+        try:
+            # Prompt user to select a result
+            selection = int(input("Enter the number of the anime you want to select: ")) - 1
+            
+            if 0 <= selection < len(results) and selection.isdigit():
+                selected_anime = results[selection]
+                print(f"You selected: '{selected_anime['title_romaji']}' (AniList ID: {selected_anime['id']})")
+                break
+                # You can perform further actions on the selected anime here
+            else:
+                print("Invalid selection.")
+        except ValueError:
+            print("Invalid selection. Please enter a number.")
+else:
+    print("No results found")
