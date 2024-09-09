@@ -98,6 +98,25 @@ status_map = {
     'HIATUS': 'On Hiatus'
 }
 
+def get_url(anime_id, anime_status, title_romaji):
+    subsplease_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1" # Maybe add feature to scour all pages with results(?)
+    sneedex_base_url = "https://releases.moe/"
+    subsplease_batch_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p+batch&o=desc&p=1"
+
+    
+    if anime_status == 'FINISHED':
+        return f"{sneedex_base_url}{anime_id}"
+    #if Exception:
+        #return (f"{subsplease_batch_base_url}", {}=={title_romaji})
+    if anime_status == 'RELEASING':
+        return (f"{subsplease_base_url}", {}=={title_romaji})
+    if anime_status == 'NOT_YET_RELEASED':
+        print(f"The show '{title_romaji}' has not been released yet.")
+ 
+        
+    
+    
+
 def main():
     # Usage
     anime_title = input("Enter title: ")
