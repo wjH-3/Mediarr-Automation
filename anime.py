@@ -10,6 +10,8 @@ import sys
 # Other resources for reference:
 # nyaascraper: https://github.com/zaini/nyaascraper
 # miru: https://github.com/ThaUnknown/miru
+# nyaapy: https://github.com/JuanjoSalvador/NyaaPy
+# nyaadownloader: https://github.com/marcpinet/nyaadownloader
 
 
 def get_anime_info(anime_name):
