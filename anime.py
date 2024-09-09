@@ -1,44 +1,56 @@
 # using SeaDex (releases.moe) for Finished Airing shows
 # using SubsPlease (subsplease.org) for Airing shows
 from AnilistPython import Anilist
+import sys
 
 # APIs that can be used: 
 # MAL - pip install mal-api --> from mal import AnimeSearch
 # AniList - pip install anilistpython --> https://github.com/ReZeroE/AnilistPython
 
-def get_anilist_id():
+
+def get_anime_info(anime_name):
     anilist = Anilist()
 
-    while True:
-        anime_title = input("Enter title (Eng or Romaji): ")
+    try:
+        # Get the anime ID directly
+        anime_id = anilist.get_anime_id(anime_name)
+        
+        if anime_id:
+            # Get detailed anime information
+            anime_info = anilist.get_anime(anime_name)
+            return anime_id, anime_info.get('name_english'), anime_info.get('name_romaji')
+        else:
+            return None, None, None
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None, None, None
 
-        # Search for the anime
-        try:
-            anime_dict = anilist.get_anime(anime_title)
-            if anime_dict:
-                anime_id = anime_dict['id']
-                eng_title = anime_dict.get('name_english', 'N/A')
-                romaji_title = anime_dict.get('name_romaji', 'N/A')
-                
-                print(f"Anime found!")
-                print(f"Eng Title: {eng_title}")
-                print(f"Romaji Title: {romaji_title}")
-                print(f"ID: {anime_id}")
-                
-                return anime_id
-            else:
-                print(f"Error: Unable to find '{anime_title}'. Make sure the title is correct.")
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            print("Please try again with a different title.")
-
-
-def main():
-    media_type = input("Movie or TV? [M/T]: ").strip().upper()
-
-
-    # Seadex:
+def seadex_url(anime_id):
     base_url = "https://releases.moe/"
 
+    if anime_id:
+        return f"{base_url}{anime_id}"
 
+def subsplease_url(name_romaji):
+    base_url = "https://subsplease.org/shows/"
+
+    if name_romaji:
+        # (WIP) find results corresponding to search query (romaji anime title) and output their links (using Find in Page)
+        return
+    
+def main():
+    while True:
+        anime_name = input("Enter anime title (Eng or Romaji): ")
+        anime_id, name_english, name_romaji = get_anime_info(anime_name)
+
+        if anime_id is not None:
+            print(f"Anilist ID: {anime_id}")
+            print(f"Full English Title: '{name_english or 'Not available'}'")
+            print(f"Full Romaji Title: '{name_romaji or 'Not available'}'")
+            break
+        else:
+            print("Could not find the anime. Please try again.")
+
+if __name__ == "__main__":
+    main()
 
