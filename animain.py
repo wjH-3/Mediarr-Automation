@@ -1,7 +1,5 @@
 # using SeaDex (releases.moe) for Finished Airing shows
 # using SubsPlease (subsplease.org) for Airing shows
-from AnilistPython import Anilist
-import sys
 
 # APIs that can be used: 
 # MAL - pip install mal-api --> from mal import AnimeSearch
@@ -14,7 +12,9 @@ import sys
 # nyaadownloader: https://github.com/marcpinet/nyaadownloader
 
 
-import requests
+import requests # pip install requests
+from bs4 import BeautifulSoup # pip install beautifulsoup
+import pyperclip # pip install pyperclip
 
 def search_anilist(anime_title):
     # GraphQL query with pagination (Page)
@@ -114,12 +114,12 @@ def get_url(anime_id, anime_status, title_romaji):
         # Check SeaDex API for entry
         api_response = requests.get(seadex_api_url.format(anime_id))
         if api_response.status_code == 200:
-            print(f"{seadex_base_url}{anime_id}")
             data = api_response.json()
             if data['totalItems'] > 0:
                 # SeaDex entry exists
                 notes = data['items'][0]['notes']
                 print("Here are the Seadex best releases:\n")
+                print(f"(Source: {seadex_base_url}{anime_id})")
                 print (f"{notes}\n")
                 # Collect unique release groups with "Nyaa" tracker
                 release_groups = set()
@@ -129,7 +129,7 @@ def get_url(anime_id, anime_status, title_romaji):
                             release_groups.add(tr['releaseGroup'])
 
                 # Print release groups in a numbered list
-                print("Available release groups:")
+                print("Release Groups:")
                 for i, release_group in enumerate(release_groups, 1):
                     print(f"{i}. {release_group}")
 
@@ -161,10 +161,82 @@ def get_url(anime_id, anime_status, title_romaji):
         print(f"Unknown anime status: {anime_status}")
         return None
     
-def get_magnet():
+def get_magnet(url):
+    # Determine the type of URL
+    if "/view/" in url:
+        return scrape_specific_file(url)
+    else:
+        return scrape_file_list(url)
+    
+def scrape_specific_file(url):
+    # Fetch the webpage
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-    return 
- 
+    # Find the magnet link
+    magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
+    
+    if magnet_link:
+        print(f"Magnet Link found: {magnet_link['href']}")
+        return magnet_link['href']
+    else:
+        print("No magnet link found on this page.")
+        return None
+
+def scrape_file_list(url):
+    # Fetch the webpage
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    # Find the table (you may need to adjust this selector)
+    table = soup.find('table')
+
+    if not table:
+        print("Table not found on the webpage.")
+        return None
+
+    # Find all rows in the table
+    rows = table.find_all('tr')
+
+    # Extract file names and magnet links
+    files = []
+    for row in rows[1:]:  # Skip header row
+        name_column = row.find('td', colspan="2")
+        if name_column:
+            # Find the filename link (excluding the comments link)
+            filename_link = name_column.find('a', class_=lambda x: x != 'comments')
+            if filename_link:
+                name = filename_link.text.strip()
+                
+                # Find the magnet link in the same row
+                magnet_icon = row.find('i', class_='fa-magnet')
+                if magnet_icon and magnet_icon.parent.name == 'a':
+                    link = magnet_icon.parent['href']
+                    files.append((name, link))
+
+    if not files:
+        print("No files with magnet links found.")
+        return None
+
+    # Display file names to user
+    print("Available files:")
+    for i, (name, _) in enumerate(files, 1):
+        print(f"{i}. {name}")
+
+    # Prompt user for selection
+    while True:
+        try:
+            choice = int(input("\nEnter the number of the file you want to select: "))
+            if 1 <= choice <= len(files):
+                selected_file, selected_link = files[choice - 1]
+                print(f"\nYou selected: {selected_file}")
+                print(f"\nMagnet Link: {selected_link}")
+                return selected_link
+            else:
+                print("Invalid number. Please try again.")
+        except ValueError:
+            print("Please enter a valid number.")
+
 def main():
     # Usage
     anime_title = input("Enter title: ")
@@ -198,7 +270,19 @@ def main():
                         url = get_url(selected_anime['id'], anime_status['status'], selected_anime['title_romaji'])
                         if url:
                             print(f"URL generated: {url}")
-                            # !!! continue with function to get magnet link HERE !!!
+                            magnet_link = get_magnet(url)
+                            if magnet_link:
+                                while True:
+                                    copy_input = input("Do you want to copy the magnet link? [Y/N]: ").strip().upper()
+                                    if copy_input == 'Y':
+                                        pyperclip.copy(magnet_link)
+                                        print("Magnet link successfully copied to clipboard.")
+                                        input("\nPress Enter to terminate the script...")
+                                        break
+                                    if copy_input == 'N':
+                                        input("Press Enter to terminate the script...")
+                                    else:
+                                        print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
                         else:
                             print("Could not generate a URL for this anime.")
                     else:
