@@ -1,5 +1,5 @@
-# using SeaDex (releases.moe) for Finished Airing shows
-# using SubsPlease (subsplease.org) for Airing shows
+# Using SeaDex (releases.moe) for Finished Airing shows
+# Using SubsPlease / Erai-raws for Airing shows
 
 # APIs that can be used: 
 # MAL - pip install mal-api --> from mal import AnimeSearch
@@ -10,6 +10,7 @@
 # miru: https://github.com/ThaUnknown/miru
 # nyaapy: https://github.com/JuanjoSalvador/NyaaPy
 # nyaadownloader: https://github.com/marcpinet/nyaadownloader
+# subsplease api: https://github.com/humzaa-omar/subsplease-iapi
 
 
 import requests # pip install requests
@@ -98,12 +99,12 @@ status_map = {
     'HIATUS': 'On Hiatus'
 }
 
-# example api calls:
+# Example api calls:
 # https://releases.moe/api/collections/entries/records?expand=trs&filter=alID=166216
 # https://releases.moe/api/collections/entries/records?filter=alID=166216
 # https://releases.moe/api/collections/torrents/records/wehqjgww9ch7odq
 def get_url(anime_id, anime_status, title_romaji):
-    # change 'subsplease' to 'erai-raws' if returning errors, or any other release group of choice
+    # Change 'subsplease' to 'erai-raws' if returning errors, or any other release group of choice
     subsplease_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1"
     seadex_base_url = "https://releases.moe/"
     subsplease_batch_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p+batch&o=desc&p=1"
@@ -186,58 +187,70 @@ def scrape_specific_file(url):
         return None
 
 def scrape_file_list(url):
-    # Fetch the webpage
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    def fetch_and_parse(url):
+        response = requests.get(url)
+        return BeautifulSoup(response.text, 'html.parser')
 
-    # Find the table (you may need to adjust this selector)
-    table = soup.find('table')
+    def extract_files(soup):
+        table = soup.find('table')
+        if not table:
+            return None
 
-    if not table:
-        print("Table not found on the webpage.")
-        return None
+        files = []
+        rows = table.find_all('tr')
+        for row in rows[1:]:  # Skip header row
+            name_column = row.find('td', colspan="2")
+            if name_column:
+                filename_link = name_column.find('a', class_=lambda x: x != 'comments')
+                if filename_link:
+                    name = filename_link.text.strip()
+                    magnet_icon = row.find('i', class_='fa-magnet')
+                    if magnet_icon and magnet_icon.parent.name == 'a':
+                        link = magnet_icon.parent['href']
+                        files.append((name, link))
+        return files
 
-    # Find all rows in the table
-    rows = table.find_all('tr')
+    def display_and_select(files):
+        if not files:
+            print("No files with magnet links found.")
+            return None
 
-    # Extract file names and magnet links
-    files = []
-    for row in rows[1:]:  # Skip header row
-        name_column = row.find('td', colspan="2")
-        if name_column:
-            # Find the filename link (excluding the comments link)
-            filename_link = name_column.find('a', class_=lambda x: x != 'comments')
-            if filename_link:
-                name = filename_link.text.strip()
-                
-                # Find the magnet link in the same row
-                magnet_icon = row.find('i', class_='fa-magnet')
-                if magnet_icon and magnet_icon.parent.name == 'a':
-                    link = magnet_icon.parent['href']
-                    files.append((name, link))
+        print("Available files:")
+        for i, (name, _) in enumerate(files, 1):
+            print(f"{i}. {name}")
 
-    if not files:
-        print("No files with magnet links found.")
-        return None
+        while True:
+            choice = input("\nEnter the number of the file you want to select, or 'c' to check other sources: ")
+            if choice.lower() == 'c':
+                return 'check_others'
+            try:
+                choice = int(choice)
+                if 1 <= choice <= len(files):
+                    selected_file, selected_link = files[choice - 1]
+                    print(f"\nYou selected: {selected_file}")
+                    print(f"Magnet Link: {selected_link}")
+                    return selected_link
+                else:
+                    print("Invalid number. Please try again.")
+            except ValueError:
+                print("Invalid input. Please enter a number or 'c'.")
 
-    # Display file names to user
-    print("Available files:")
-    for i, (name, _) in enumerate(files, 1):
-        print(f"{i}. {name}")
+    # Try with the original URL (subsplease)
+    soup = fetch_and_parse(url)
+    subsplease_files = extract_files(soup)
 
-    # Prompt user for selection
-    while True:
-        try:
-            choice = int(input("\nEnter the number of the file you want to select: "))
-            if 1 <= choice <= len(files):
-                selected_file, selected_link = files[choice - 1]
-                print(f"\nYou selected: {selected_file}")
-                print(f"\nMagnet Link: {selected_link}")
-                return selected_link
-            else:
-                print("Invalid number. Please try again.")
-        except ValueError:
-            print("Please enter a valid number.")
+    if subsplease_files:
+        result = display_and_select(subsplease_files)
+        if result != 'check_others':
+            return result
+
+    # If no results from subsplease or user wants to check others
+    print("\nChecking alternative source (erai-raws)...")
+    alternative_url = url.replace('subsplease', 'erai-raws')
+    soup = fetch_and_parse(alternative_url)
+    erai_raws_files = extract_files(soup)
+
+    return display_and_select(erai_raws_files)
 
 def main():
     # Usage
