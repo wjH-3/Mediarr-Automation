@@ -98,10 +98,12 @@ status_map = {
     'HIATUS': 'On Hiatus'
 }
 
+# example api calls:
 # https://releases.moe/api/collections/entries/records?expand=trs&filter=alID=166216
 # https://releases.moe/api/collections/entries/records?filter=alID=166216
 # https://releases.moe/api/collections/torrents/records/wehqjgww9ch7odq
 def get_url(anime_id, anime_status, title_romaji):
+    # change 'subsplease' to 'erai-raws' if returning errors, or any other release group of choice
     subsplease_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1"
     seadex_base_url = "https://releases.moe/"
     subsplease_batch_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p+batch&o=desc&p=1"
@@ -118,7 +120,7 @@ def get_url(anime_id, anime_status, title_romaji):
             if data['totalItems'] > 0:
                 # SeaDex entry exists
                 notes = data['items'][0]['notes']
-                print("Here are the Seadex best releases:\n")
+                print("\nHere are the Seadex best releases:\n")
                 print(f"(Source: {seadex_base_url}{anime_id})")
                 print (f"{notes}\n")
                 # Collect unique release groups with "Nyaa" tracker
@@ -177,7 +179,7 @@ def scrape_specific_file(url):
     magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
     
     if magnet_link:
-        print(f"Magnet Link found: {magnet_link['href']}")
+        print(f"Magnet Link: {magnet_link['href']}")
         return magnet_link['href']
     else:
         print("No magnet link found on this page.")
@@ -239,17 +241,17 @@ def scrape_file_list(url):
 
 def main():
     # Usage
-    anime_title = input("Enter title: ")
+    anime_title = input("Enter Anime: ")
     results = search_anilist(anime_title)
 
     if results:
         # Display results in a numbered list
-        print("\nSearch results:")
+        print("\nSearch results:\n")
         for i, result in enumerate(results, start=1):
             print(f"{i}. AniList ID: {result['id']}")
             print(f"   Title (Romaji): {result['title_romaji']}")
             print(f"   Title (English): {result['title_english']}")
-            print("---")
+            print("\n---\n")
         
         while True:
             try:
@@ -269,7 +271,7 @@ def main():
                         # Get the URL based on the anime status
                         url = get_url(selected_anime['id'], anime_status['status'], selected_anime['title_romaji'])
                         if url:
-                            print(f"URL generated: {url}")
+                            print(f"Nyaa URL: {url}")
                             magnet_link = get_magnet(url)
                             if magnet_link:
                                 while True:
@@ -281,6 +283,7 @@ def main():
                                         break
                                     if copy_input == 'N':
                                         input("Press Enter to terminate the script...")
+                                        break
                                     else:
                                         print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
                         else:
