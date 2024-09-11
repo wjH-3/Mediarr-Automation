@@ -1,7 +1,5 @@
 # using SeaDex (releases.moe) for Finished Airing shows
 # using SubsPlease (subsplease.org) for Airing shows
-from AnilistPython import Anilist
-import sys
 
 # APIs that can be used: 
 # MAL - pip install mal-api --> from mal import AnimeSearch
@@ -131,10 +129,6 @@ def get_url(anime_id, anime_status, title_romaji):
     else:
         print(f"Unknown anime status: {anime_status}")
         return None
- 
-        
-    
-    
 
 def main():
     # Usage
