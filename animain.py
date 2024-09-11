@@ -246,7 +246,7 @@ def scrape_file_list(url):
 
     # If no results from subsplease or user wants to check others
     print("\nChecking alternative source (erai-raws)...")
-    alternative_url = url.replace('subsplease', 'erai-raws')
+    alternative_url = url.replace('subsplease', 'erai-raws').replace('+batch', '')
     soup = fetch_and_parse(alternative_url)
     erai_raws_files = extract_files(soup)
 
