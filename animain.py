@@ -98,6 +98,9 @@ status_map = {
     'HIATUS': 'On Hiatus'
 }
 
+# https://releases.moe/api/collections/entries/records?expand=trs&filter=alID=166216
+# https://releases.moe/api/collections/entries/records?filter=alID=166216
+# https://releases.moe/api/collections/torrents/records/wehqjgww9ch7odq
 def get_url(anime_id, anime_status, title_romaji):
     subsplease_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1"
     seadex_base_url = "https://releases.moe/"
@@ -137,7 +140,9 @@ def get_url(anime_id, anime_status, title_romaji):
                 for item in data['items'][0]['trs']:
                     for tr in data['items'][0]['expand']['trs']:
                         if tr['id'] == item and tr['tracker'] == "Nyaa" and tr['releaseGroup'] == list(release_groups)[choice - 1]:
-                            return f"{tr['url']}"
+                            original_url = tr['url']
+                            new_url = original_url.replace(".si/", ".land/")
+                            return f"{new_url}"
                 
         
         # If no SeaDex entry or API call failed, fall back to SubsPlease batch
@@ -155,6 +160,10 @@ def get_url(anime_id, anime_status, title_romaji):
     else:
         print(f"Unknown anime status: {anime_status}")
         return None
+    
+def get_magnet():
+
+    return 
  
 def main():
     # Usage
