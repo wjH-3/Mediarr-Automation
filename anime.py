@@ -99,19 +99,38 @@ status_map = {
 }
 
 def get_url(anime_id, anime_status, title_romaji):
-    subsplease_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1" # Maybe add feature to scour all pages with results(?)
-    sneedex_base_url = "https://releases.moe/"
+    subsplease_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1"
+    seadex_base_url = "https://releases.moe/"
     subsplease_batch_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p+batch&o=desc&p=1"
+    seadex_api_url = "https://releases.moe/api/collections/entries/records?filter=alID={}"
 
-    
+    def custom_quote(s):
+        return s.replace(" ", "+")
+
     if anime_status == 'FINISHED':
-        return f"{sneedex_base_url}{anime_id}"
-    #if Exception:
-        #return (f"{subsplease_batch_base_url}", {}=={title_romaji})
-    if anime_status == 'RELEASING':
-        return (f"{subsplease_base_url}", {}=={title_romaji})
-    if anime_status == 'NOT_YET_RELEASED':
+        # Check SeaDex API for entry
+        api_response = requests.get(seadex_api_url.format(anime_id))
+        if api_response.status_code == 200:
+            data = api_response.json()
+            if data['totalItems'] > 0:
+                # SeaDex entry exists
+                return f"{seadex_base_url}{anime_id}"
+        
+        # If no SeaDex entry or API call failed, fall back to SubsPlease batch
+        formatted_title = custom_quote(title_romaji)
+        return subsplease_batch_base_url.format(formatted_title)
+
+    elif anime_status == 'RELEASING':
+        formatted_title = custom_quote(title_romaji)
+        return subsplease_base_url.format(formatted_title)
+
+    elif anime_status == 'NOT_YET_RELEASED':
         print(f"The show '{title_romaji}' has not been released yet.")
+        return None
+
+    else:
+        print(f"Unknown anime status: {anime_status}")
+        return None
  
         
     
@@ -121,7 +140,6 @@ def main():
     # Usage
     anime_title = input("Enter title: ")
     results = search_anilist(anime_title)
-
 
     if results:
         # Display results in a numbered list
@@ -141,15 +159,22 @@ def main():
                     selected_anime = results[selection]
                     print(f"You selected: '{selected_anime['title_romaji']}' (AniList ID: {selected_anime['id']})")
 
-                     # Fetch status of the selected anime
+                    # Fetch status of the selected anime
                     anime_status = get_anime_status(selected_anime['id'])
                     if anime_status:
                         status_description = status_map.get(anime_status['status'], "Unknown status")
                         print(f"'{anime_status['title_romaji']}' status: {status_description}.")
+                        
+                        # Get the URL based on the anime status
+                        url = get_url(selected_anime['id'], anime_status['status'], selected_anime['title_romaji'])
+                        if url:
+                            print(f"URL generated: {url}")
+                            # !!! continue with function to get magnet link HERE !!!
+                        else:
+                            print("Could not generate a URL for this anime.")
                     else:
                         print("Could not retrieve the anime's status.")
                     break
-                    # You can perform further actions on the selected anime here
                 else:
                     print("Invalid selection.")
             except ValueError:
