@@ -152,7 +152,7 @@ def get_url(anime_id, anime_status, title_romaji):
                             print(f"Please enter a number between 1 and {len(release_groups)}.")
                     except ValueError:
                         # Handle case of when input is not integer
-                        print("Invalid input. Please enter a nunber only")
+                        print("Invalid input. Please enter a number only")
 
                 # Find and print the corresponding URL
                 for item in data['items'][0]['trs']:
@@ -196,7 +196,7 @@ def scrape_specific_file(url):
     magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
     
     if magnet_link:
-        print(f"Magnet Link: {magnet_link['href']}")
+        print(f"\nMagnet Link: {magnet_link['href']}")
         return magnet_link['href']
     else:
         print("No magnet link found on this page.")
