@@ -104,7 +104,8 @@ status_map = {
 # https://releases.moe/api/collections/entries/records?filter=alID=166216
 # https://releases.moe/api/collections/torrents/records/wehqjgww9ch7odq
 def get_url(anime_id, anime_status, title_romaji):
-    # Change 'subsplease' to 'erai-raws' if returning errors, or any other release group of choice
+    # Alternative source for 'subsplease' is currently 'erai-raws'.
+    # If returning further errors, change to any other release group of choice
     subsplease_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1"
     seadex_base_url = "https://releases.moe/"
     subsplease_batch_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p+batch&o=desc&p=1"
@@ -163,6 +164,7 @@ def get_url(anime_id, anime_status, title_romaji):
                 
         
         # If no SeaDex entry or API call failed, fall back to SubsPlease batch
+        print("No SeaDex entry, checking for SubsPlease releases...")
         formatted_title = custom_quote(title_romaji)
         return subsplease_batch_base_url.format(formatted_title)
 
@@ -224,19 +226,23 @@ def scrape_file_list(url):
                         files.append((name, link))
         return files
 
-    def display_and_select(files):
+    def display_and_select(files, source):
         if not files:
-            print("No files with magnet links found.")
+            print(f"No files with magnet links found for {source}.")
             return None
 
-        print("Matching files:")
+        print(f"\nMatching files from {source}:")
         for i, (name, _) in enumerate(files, 1):
             print(f"{i}. {name}")
 
         while True:
-            choice = input("\nEnter the number of the file you want to select, or 'c' to check other sources: ")
-            if choice.lower() == 'c':
-                return 'check_others'
+            if source == 'SubsPlease':
+                choice = input("\nEnter the number of the file you want to select, or 'c' to check alternate source: ")
+                if choice.lower() == 'c':
+                    return 'check_others'
+            else:
+                choice = input("\nEnter the number of the file you want to select: ")
+            
             try:
                 choice = int(choice)
                 if 1 <= choice <= len(files):
@@ -245,26 +251,33 @@ def scrape_file_list(url):
                     print(f"Magnet Link: {selected_link}")
                     return selected_link
                 else:
-                    print("Invalid number. Please try again.")
+                    print(f"Invalid number. Please enter a number between 1 and {len(files)}.")
             except ValueError:
-                print("Invalid input. Please enter a number or 'c'.")
+                print("Invalid input. Please enter a number.")
 
     # Try with the original URL (subsplease)
     soup = fetch_and_parse(url)
     subsplease_files = extract_files(soup)
 
-    if subsplease_files:
-        result = display_and_select(subsplease_files)
-        if result != 'check_others':
-            return result
+    # If no results from SubsPlease
+    if not subsplease_files:
+        print(f"No files with magnet links found for SubsPlease.")
+        result = 'check_others'  # Simulate checking others as no files found
 
-    # If no results from subsplease or user wants to check others
-    print("\nChecking alternative source (erai-raws)...")
-    alternative_url = url.replace('subsplease', 'erai-raws').replace('+batch', '')
-    soup = fetch_and_parse(alternative_url)
-    erai_raws_files = extract_files(soup)
+    # If files found from SubsPlease
+    else:
+        result = display_and_select(subsplease_files, 'SubsPlease')
 
-    return display_and_select(erai_raws_files)
+    # If result is 'check_others' or no files found from SubsPlease
+    if result == 'check_others':
+        print("\nChecking alternative source...")
+        alternative_url = url.replace('subsplease', 'erai-raws').replace('+batch', '')  # Change alt. source here
+        soup = fetch_and_parse(alternative_url)
+        erai_raws_files = extract_files(soup)
+
+        return display_and_select(erai_raws_files, 'Erai-raws')  # Change alt. source here
+    else:
+        return result  # Return the magnet link if selected from SubsPlease
 
 def main():
     # Usage
