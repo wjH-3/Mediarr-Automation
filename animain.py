@@ -14,7 +14,7 @@
 
 
 import requests # pip install requests
-from bs4 import BeautifulSoup # pip install beautifulsoup
+from bs4 import BeautifulSoup # pip install beautifulsoup4
 import pyperclip # pip install pyperclip
 
 def search_anilist(anime_title):
@@ -123,21 +123,35 @@ def get_url(anime_id, anime_status, title_romaji):
                 notes = data['items'][0]['notes']
                 print("\nHere are the Seadex best releases:\n")
                 print(f"(Source: {seadex_base_url}{anime_id})")
-                print (f"{notes}\n")
+                if notes == "":
+                    print ("Notes:\nN/A\n")
+                else:
+                    print (f"Notes:\n{notes}\n")
                 # Collect unique release groups with "Nyaa" tracker
-                release_groups = set()
+                release_groups = []
                 for item in data['items'][0]['trs']:
                     for tr in data['items'][0]['expand']['trs']:
                         if tr['id'] == item and tr['tracker'] == "Nyaa":
-                            release_groups.add(tr['releaseGroup'])
+                            release_groups.append(tr['releaseGroup'])
 
                 # Print release groups in a numbered list
                 print("Release Groups:")
                 for i, release_group in enumerate(release_groups, 1):
                     print(f"{i}. {release_group}")
 
-                # Prompt user for input
-                choice = int(input("Enter the number of the desired release group: "))
+                while True:
+                    try:
+                        # Prompt user for input
+                        choice = int(input("Enter the number of the desired release group: "))
+
+                        if 1 <= choice <= len(release_groups):
+                            release_group = release_groups[choice - 1]
+                            break
+                        else:
+                            print(f"Please enter a number between 1 and {len(release_groups)}.")
+                    except ValueError:
+                        # Handle case of when input is not integer
+                        print("Invalid input. Please enter a nunber only")
 
                 # Find and print the corresponding URL
                 for item in data['items'][0]['trs']:
@@ -215,7 +229,7 @@ def scrape_file_list(url):
             print("No files with magnet links found.")
             return None
 
-        print("Available files:")
+        print("Matching files:")
         for i, (name, _) in enumerate(files, 1):
             print(f"{i}. {name}")
 
