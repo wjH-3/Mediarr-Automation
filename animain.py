@@ -135,6 +135,11 @@ def get_url(anime_id, anime_status, title_romaji):
                         if tr['id'] == item and tr['tracker'] == "Nyaa":
                             release_groups.append(tr['releaseGroup'])
 
+                if not release_groups:
+                    print("Error: No Nyaa source found for the release(s). Checking for SubsPlease releases...")
+                    formatted_title = custom_quote(title_romaji)
+                    return subsplease_batch_base_url.format(formatted_title)
+
                 # Print release groups in a numbered list
                 print("Release Groups:")
                 for i, release_group in enumerate(release_groups, 1):
