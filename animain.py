@@ -152,7 +152,7 @@ def get_url(anime_id, anime_status, title_romaji):
                             print(f"Please enter a number between 1 and {len(release_groups)}.")
                     except ValueError:
                         # Handle case of when input is not integer
-                        print("Invalid input. Please enter a number only")
+                        print("Invalid input. Please enter a number only.")
 
                 # Find and print the corresponding URL
                 for item in data['items'][0]['trs']:
@@ -322,7 +322,7 @@ def main():
                                         input("\nPress Enter to terminate the script...")
                                         break
                                     if copy_input == 'N':
-                                        input("Press Enter to terminate the script...")
+                                        input("\nPress Enter to terminate the script...")
                                         break
                                     else:
                                         print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
