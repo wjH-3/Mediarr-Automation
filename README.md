@@ -53,6 +53,7 @@
 ## Optional parameters to modify in source code (animain.py):
 * Alternative Source to `Subsplease`, currently using `Erai-raws`
 * Input key to check alternative source, currently set to `C`
+* Default Quality is set to `1080p` for the Nyaa queries, change it in `base_url`. Other options are `720p` and `480p` (may yield less results).
 
 ## Usage guide
 1. Download `animain.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
