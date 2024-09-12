@@ -317,7 +317,7 @@ def main():
                         # Get the URL based on the anime status
                         url = get_url(selected_anime['id'], anime_status['status'], selected_anime['title_romaji'])
                         if url:
-                            print(f"Nyaa URL: {url}")
+                            # print(f"Nyaa URL: {url}")
                             magnet_link = get_magnet(url)
                             if magnet_link:
                                 while True:
