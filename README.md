@@ -2,7 +2,7 @@
 *...through sailing the High Seas...*
 
 
-# **Non-Anime**: Python Script for Real-Debrid
+# *Non-Anime*: Python Script for Real-Debrid
 
 * This is a simple script for users to easily and instantly add the specific file (with the condition that it must be cached by Real-Debrid) of a movie or TV show that they want into their DMM Library by scraping results from Debrid Media Manager's search query.
 * Users enter the movie/TV show title along with its year (as well as specify the season for the TV show) and the script will output a list of available files (along with their respective file sizes) for you to select.
@@ -38,7 +38,7 @@
 
 ---
 
-# **Anime**: Python Script to Get a Best Release's Magnet Link
+# *Anime*: Python Script to Get a Best Release's Magnet Link
 
 * A light and fast script for users to get the magnet link of the best possible current release of an anime through SeaDex or SubsPlease/Erai-raws.
 * Users enter an anime title and it will output a list of matching titles from the Anilist API for users to select (e.g a specific season for it)
