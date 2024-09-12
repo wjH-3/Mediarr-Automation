@@ -1,7 +1,6 @@
-# **Media Automation using Python (Anime & Non-Anime)**
+# **Media Automation with Python**
 *...through sailing the High Seas...*
 
----
 
 # **Non-Anime**: Python Script for Real-Debrid
 
