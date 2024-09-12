@@ -164,20 +164,21 @@ def get_url(anime_id, anime_status, title_romaji):
                 
         
         # If no SeaDex entry or API call failed, fall back to SubsPlease batch
-        print("No SeaDex entry, checking for SubsPlease releases...")
+        print("\nNo SeaDex entry, checking for SubsPlease releases...")
         formatted_title = custom_quote(title_romaji)
         return subsplease_batch_base_url.format(formatted_title)
 
     elif anime_status == 'RELEASING':
+        print("\nChecking for SubsPlease releases...")
         formatted_title = custom_quote(title_romaji)
         return subsplease_base_url.format(formatted_title)
 
     elif anime_status == 'NOT_YET_RELEASED':
-        print(f"The show '{title_romaji}' has not been released yet, no files can be found.")
+        print(f"\nThe show '{title_romaji}' has not been released yet, no files can be found.")
         return None
 
     else:
-        print(f"Unknown anime status: {anime_status}")
+        print(f"\nUnknown anime status: {anime_status}")
         return None
     
 def get_magnet(url):
@@ -199,7 +200,7 @@ def scrape_specific_file(url):
         print(f"\nMagnet Link: {magnet_link['href']}")
         return magnet_link['href']
     else:
-        print("No magnet link found on this page.")
+        print("\nNo magnet link found on this page.")
         return None
 
 def scrape_file_list(url):
@@ -228,7 +229,7 @@ def scrape_file_list(url):
 
     def display_and_select(files, source):
         if not files:
-            print(f"No files with magnet links found for {source}.")
+            print(f"\nNo files with magnet links found for {source}.")
             return None
 
         print(f"\nMatching files from {source}:")
@@ -261,7 +262,7 @@ def scrape_file_list(url):
 
     # If no results from SubsPlease
     if not subsplease_files:
-        print(f"No files with magnet links found for SubsPlease.")
+        print(f"\nNo files with magnet links found for SubsPlease.")
         result = 'check_others'  # Simulate checking others as no files found
 
     # If files found from SubsPlease
