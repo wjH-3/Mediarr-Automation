@@ -248,12 +248,12 @@ def scrape_file_list(url):
                 if 1 <= choice <= len(files):
                     selected_file, selected_link = files[choice - 1]
                     print(f"\nYou selected: {selected_file}")
-                    print(f"Magnet Link: {selected_link}")
+                    print(f"\nMagnet Link: {selected_link}")
                     return selected_link
                 else:
                     print(f"Invalid number. Please enter a number between 1 and {len(files)}.")
             except ValueError:
-                print("Invalid input. Please enter a number.")
+                print("Invalid input. Please enter a number only.")
 
     # Try with the original URL (subsplease)
     soup = fetch_and_parse(url)
