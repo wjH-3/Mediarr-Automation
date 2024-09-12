@@ -112,7 +112,7 @@ def get_url(anime_id, anime_status, title_romaji):
     seadex_api_url = "https://releases.moe/api/collections/entries/records?expand=trs&filter=alID={}"
 
     def custom_quote(s):
-        return s.replace(" ", "+")
+        return s.replace(" ", "+").replace("!", "")
 
     if anime_status == 'FINISHED':
         # Check SeaDex API for entry
@@ -173,7 +173,7 @@ def get_url(anime_id, anime_status, title_romaji):
         return subsplease_base_url.format(formatted_title)
 
     elif anime_status == 'NOT_YET_RELEASED':
-        print(f"The show '{title_romaji}' has not been released yet.")
+        print(f"The show '{title_romaji}' has not been released yet, no files can be found.")
         return None
 
     else:
