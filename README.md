@@ -33,7 +33,7 @@
 5. Change `Default` in `profile-directory` to the correct profile name with reference to `Profile Path`
 6. Save changes to `main.py` and close
 7. In the directory of where the files are, *right click* > *open in Terminal*
-8. In the Terminal, `python main.py`
+8. In the Terminal, ```python main.py```
 9. Follow each of the prompts shown
 
 ---
@@ -59,5 +59,5 @@
 ## Usage guide
 1. Download `animain.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
 2. In the directory of where the files are, *right click* > *open in Terminal*
-3. In the Terminal, `python animain.py`
+3. In the Terminal, ```python animain.py```
 4. Follow each of the prompts shown
