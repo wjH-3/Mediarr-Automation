@@ -43,7 +43,7 @@
 * A light and fast script for users to get the magnet link of the best possible current release of an anime through SeaDex or SubsPlease/Erai-raws.
 * Users enter an anime title and it will output a list of matching titles from the Anilist API for users to select (e.g a specific season for it)
 * Depending on the status of the show, the script will then search in Seadex (Finished shows) for the Best Releases or in Nyaa for SubsPlease/Erai-raws releases (Airing shows)
-* Users select their preferred file and a Magnet Link will be output, which users can choose to copy into their clipboard with a click of a key if they want to (using `Pyperclip`)
+* Users select their preferred file and a Magnet Link will be output, which users can choose to copy into their clipboard with a click of a key (using `Pyperclip`)
 * **NO** Real-Debrid account is required (users are only getting a Magnet Link)
 
 ## Prerequisites:
@@ -54,6 +54,7 @@
 * Alternative Source to `Subsplease`, currently using `Erai-raws`
 * Input key to check alternative source, currently set to `C`
 * Default Quality is set to `1080p` for the Nyaa queries, change it in `base_url`. Other options are `720p` and `480p` (may yield less results).
+* Nyaa domain extension currently set to `nyaa.land`, can be changed to `nyaa.si` or others. For a list of working Nyaa proxies, visit [Nyaa Torrents](https://nyaatorrents.info/)
 
 ## Usage guide
 1. Download `animain.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
