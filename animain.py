@@ -294,7 +294,7 @@ def main():
         # Display results in a numbered list
         print("\nSearch results:\n")
         for i, result in enumerate(results, start=1):
-            print(f"{i}. AniList ID: {result['id']}")
+            print(f"{i}. AniList URL: https://anilist.co/anime/{result['id']}")
             print(f"   Title (Romaji): {result['title_romaji']}")
             print(f"   Title (English): {result['title_english']}")
             print("\n---\n")
