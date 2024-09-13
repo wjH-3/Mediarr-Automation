@@ -1,17 +1,6 @@
+# Using Anilist API for anime queries by title
 # Using SeaDex (releases.moe) for Finished Airing shows
 # Using SubsPlease / Erai-raws for Airing shows
-
-# APIs that can be used: 
-# MAL - pip install mal-api --> from mal import AnimeSearch
-# AniList - pip install anilistpython --> https://github.com/ReZeroE/AnilistPython
-
-# Other resources for reference:
-# nyaascraper: https://github.com/zaini/nyaascraper
-# miru: https://github.com/ThaUnknown/miru
-# nyaapy: https://github.com/JuanjoSalvador/NyaaPy
-# nyaadownloader: https://github.com/marcpinet/nyaadownloader
-# subsplease api: https://github.com/humzaa-omar/subsplease-iapi
-
 
 import requests # pip install requests
 from bs4 import BeautifulSoup # pip install beautifulsoup4
@@ -167,7 +156,6 @@ def get_url(anime_id, anime_status, title_romaji):
                             new_url = original_url.replace(".si/", ".land/")
                             return f"{new_url}"
                 
-        
         # If no SeaDex entry or API call failed, fall back to SubsPlease batch
         print("\nNo SeaDex entry, checking for SubsPlease releases...")
         formatted_title = custom_quote(title_romaji)
@@ -317,6 +305,7 @@ def main():
                         # Get the URL based on the anime status
                         url = get_url(selected_anime['id'], anime_status['status'], selected_anime['title_romaji'])
                         if url:
+                            # Not printing out Nyaa url
                             # print(f"Nyaa URL: {url}")
                             magnet_link = get_magnet(url)
                             if magnet_link:
