@@ -141,7 +141,7 @@ def get_url(anime_id, anime_status, title_romaji):
                     return subsplease_batch_base_url.format(formatted_title)
 
                 # Print release groups in a numbered list
-                print("Release Groups:")
+                print("Release Groups (w/ Nyaa source):")
                 for i, release_group in enumerate(release_groups, 1):
                     print(f"{i}. {release_group}")
 
