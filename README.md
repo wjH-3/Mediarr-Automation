@@ -1,4 +1,4 @@
-# **Media Automation with Python**
+# **Mediarr Automation**
 *...through sailing the High Seas...*
 
 
@@ -46,7 +46,7 @@ python main.py
 # *Anime*: Python Script to get Magnet Link
 
 * A light and fast script for users to get the magnet link of the best possible current release of an anime through SeaDex or SubsPlease/Erai-raws
-* Users enter an anime title and it will output a list of matching titles from the Anilist API for users to select (e.g a specific season for it)
+* Users enter an anime title and it will output a list of matching titles from the Anilist API for users to select (e.g a specific season for the anime)
 * Depending on the status of the show, the script will then search in Seadex (Finished shows) for the Best Releases or in Nyaa for SubsPlease/Erai-raws releases (Airing shows)
 * Users select their preferred file and a Magnet Link will be output, which users can choose to copy into their clipboard with a click of a key (using `Pyperclip`)
 * **NO** Real-Debrid account is required (users are only getting a Magnet Link)
