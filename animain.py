@@ -167,8 +167,11 @@ def get_url(anime_id, anime_status, title_romaji):
         return subsplease_base_url.format(formatted_title)
 
     elif anime_status == 'NOT_YET_RELEASED':
-        print(f"\nThe show '{title_romaji}' has not been released yet, no files can be found.")
+        print(f"\nThe show '{title_romaji}' has not been released yet.")
         return None
+    
+    elif anime_status == 'CANCELLED':
+        print(f"\nThe show '{title_romaji}' has been cancelled.")
 
     else:
         print(f"\nUnknown anime status: {anime_status}")
@@ -331,7 +334,7 @@ def main():
             except ValueError:
                 print("Invalid selection. Please enter a number.")
     else:
-        print("No results found")
+        print("No results found.")
 
 if __name__ == "__main__":
     main()
