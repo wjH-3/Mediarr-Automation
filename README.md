@@ -20,10 +20,10 @@
 > **Make sure you are logged into both Real-Debrid and Debrid Media Manager prior to running the script**
 
 ## Optional parameters to modify in source code (main.py):
-* Driver path (not needed if using webdriver manager -- automated)
+* Driver path (not needed if using Webdriver Manager -- automated)
 * User profile path (default user name is `user`)
 * User profile directory name (if default, then `Default`)
-* Regex for movies/tv based on output device's media codec and format compatibilities (*Advanced*)
+* Regex for movies/tv based on output device's media codec and format compatibilities (*advanced*)
 
 ## Usage Guide:
 1. Download `main.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
