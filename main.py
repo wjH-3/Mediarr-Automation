@@ -8,6 +8,13 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
 import sys
 import time
+import psutil
+
+def browser_open(browser='chrome'):
+    for process in psutil.process_iter(['name']):
+        if browser in process.info['name'].lower():
+            return True
+    return False
 
 # IMDb search functions
 # IMDb ID for movies
@@ -172,6 +179,10 @@ def main():
     input("Reminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
 
     while True:
+        if browser_open():
+            print("Browser window detected. Please close all browser windows before continuing.")
+            input("Press Enter to continue...\n")
+
         media_type = input("Movie or TV? [M/T]: ").strip().upper()
         
         if media_type in ['M', 'T']:
