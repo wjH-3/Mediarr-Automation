@@ -69,6 +69,7 @@ def automate_webpage(url, search_text, media_type):
     chrome_options = Options()
     chrome_options.add_argument(f"user-data-dir={chrome_profile_path}")  # Path to user data directory
     chrome_options.add_argument("profile-directory=Default")  # Specify profile directory (e.g., 'Profile 1' if you use a custom profile) (can be modified)
+    chrome_options.add_argument('--disable-dev-tools-on-startup') # Disable browser logging
 
     # Create a service object for ChromeDriver
     service = Service(ChromeDriverManager().install())
@@ -155,9 +156,13 @@ def automate_webpage(url, search_text, media_type):
 
         time.sleep(10)
 
-        print(f"File '{file_names[selected_num - 1]}' added to library successfully. Click on the file then click on 'DL' to send to Real-Debrid to download or stream it.\nOpening DMM Library...")
+        print(f"File '{file_names[selected_num - 1]}' added to library successfully. Click on the file then click on 'DL' to send to Real-Debrid to download or stream it.")
 
-        time.sleep(8)
+        time.sleep(3)
+
+        print("Opening DMM Library...")
+
+        time.sleep(5)
 
         # Show browser window
         driver.maximize_window()
