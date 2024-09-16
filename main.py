@@ -155,9 +155,9 @@ def automate_webpage(url, search_text, media_type):
 
         time.sleep(10)
 
-        print(f"File '{file_names[selected_num - 1]}' added to library successfully. Click on the file then click on 'DL' to send to Real-Debrid to download or stream it. Now opening DMM Library...")
+        print(f"File '{file_names[selected_num - 1]}' added to library successfully. Click on the file then click on 'DL' to send to Real-Debrid to download or stream it.\nOpening DMM Library...")
 
-        time.sleep(5)
+        time.sleep(8)
 
         # Show browser window
         driver.maximize_window()
