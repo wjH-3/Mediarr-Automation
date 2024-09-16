@@ -69,7 +69,6 @@ def automate_webpage(url, search_text, media_type):
     chrome_options = Options()
     chrome_options.add_argument(f"user-data-dir={chrome_profile_path}")  # Path to user data directory
     chrome_options.add_argument("profile-directory=Default")  # Specify profile directory (e.g., 'Profile 1' if you use a custom profile) (can be modified)
-    chrome_options.add_argument('--disable-dev-tools-on-startup') # Disable browser logging
 
     # Create a service object for ChromeDriver
     service = Service(ChromeDriverManager().install())
