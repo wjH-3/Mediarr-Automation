@@ -14,7 +14,7 @@
 * Real-Debrid premium account 
 * Web browser driver (e.g Chrome driver) corresponding to browser version (no manual installation required if using WebDriver Manager)
 * Python 3.11 or later (enable *add Python to PATH* during installation)
-* Relevant python modules (which require installation): Selenium (`pip install selenium`), IMDB (`pip install imdbpy`), WebDriver Manager (`pip install webdriver-manager`)
+* Relevant python modules (which require installation): Selenium (`pip install selenium`), IMDB (`pip install imdbpy`), WebDriver Manager (`pip install webdriver-manager`), PSUtil (`pip install psutil`)
 
 > **Make sure all browser windows are closed before running the script**
 
