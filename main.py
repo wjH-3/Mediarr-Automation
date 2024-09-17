@@ -61,6 +61,9 @@ def automate_webpage(url, search_text, media_type):
     # URL info
     print(f"Scraping from -> '{url}'...")
 
+    # Logs
+    print("\nSession Logs (ignore):")
+
     # Set up WebDriver (assuming Chrome)
     # Path to your Chrome user profile (can be modified) (change 'user' to your own user name)
     chrome_profile_path = "C:/Users/user/AppData/Local/Google/Chrome/User Data"
@@ -107,9 +110,12 @@ def automate_webpage(url, search_text, media_type):
         file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
         file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
 
+        #Separator
+        print("\n---------Session End---------")
+
         # Check if there are any files found
         if not file_name_elements:
-            print(f"No matching files found from '{url}'. The script will now terminate...")
+            print(f"\nNo matching files found from '{url}'. The script will now terminate...")
             sys.exit(1)
 
         # Get the text from each file name element
@@ -180,11 +186,11 @@ def automate_webpage(url, search_text, media_type):
         sys.exit(1)
 
 def main():
-    input("Reminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
+    input("\nReminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
 
     while True:
         if browser_open():
-            print("Browser window detected. Please close all browser windows before continuing.")
+            print("Warning: Browser window detected. Please close all browser windows before continuing.")
             input("Press Enter to continue...\n")
 
         media_type = input("Movie or TV? [M/T]: ").strip().upper()
