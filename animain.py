@@ -95,9 +95,9 @@ status_map = {
 def get_url(anime_id, anime_status, title_romaji):
     # Alternative source for 'subsplease' is currently 'erai-raws'.
     # If returning further errors, change to any other release group of choice
-    subsplease_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1"
+    subsplease_base_url = "https://nyaa.ink/user/subsplease?f=0&c=1_2&q={}+1080p&o=desc&p=1"
     seadex_base_url = "https://releases.moe/"
-    subsplease_batch_base_url = "https://nyaa.land/user/subsplease?f=0&c=1_2&q={}+1080p+batch&o=desc&p=1"
+    subsplease_batch_base_url = "https://nyaa.ink/user/subsplease?f=0&c=1_2&q={}+1080p+batch&o=desc&p=1"
     seadex_api_url = "https://releases.moe/api/collections/entries/records?expand=trs&filter=alID={}"
 
     def custom_quote(s):
@@ -153,7 +153,7 @@ def get_url(anime_id, anime_status, title_romaji):
                     for tr in data['items'][0]['expand']['trs']:
                         if tr['id'] == item and tr['tracker'] == "Nyaa" and tr['releaseGroup'] == list(release_groups)[choice - 1]:
                             original_url = tr['url']
-                            new_url = original_url.replace(".si/", ".land/")
+                            new_url = original_url.replace(".si/", ".ink/")
                             return f"{new_url}"
                 
         # If no SeaDex entry or API call failed, fall back to SubsPlease batch
