@@ -59,7 +59,7 @@ python main.py
 * Alternative Source to `Subsplease`, currently using `Erai-raws`
 * Input key to check alternative source, currently set to `C`
 * Default Quality is set to `1080p` for the Nyaa queries, change it in `base_url`. Other options are `720p` and `480p` (may yield less results)
-* Nyaa domain extension currently set to `nyaa.ink`, can be changed to `nyaa.si` or others. For a list of working Nyaa proxies, visit [Nyaa Torrents](https://nyaatorrents.info/)
+* Nyaa domain extension currently set to `nyaa.si`, can be changed to `nyaa.land` or others. For a list of working Nyaa proxies, visit [Nyaa Torrents](https://nyaatorrents.info/)
 
 ## Usage guide
 1. Download `animain.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
