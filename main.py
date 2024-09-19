@@ -103,8 +103,18 @@ def automate_webpage(url, search_text, media_type):
             print(f"\nError: '{url}' is not a valid URL. The script will now terminate...")
             sys.exit(1)
     
-        # Wait for the results to filter (120 seconds)
-        time.sleep(120)
+        # Detect for "Show Uncached" button to appear (indicating all files parsed)
+        def detect_uncached(driver, xpath):
+            while True:
+                try:
+                    element = driver.find_element(By.XPATH, xpath)
+                    return element
+                except NoSuchElementException:
+                    time.sleep(3)  # Wait for 3 seconds before trying again
+
+        # Wait indefinitely for the specific element to be present
+        target_element_xpath = "//*[@id='__next']/div/div[2]/div[3]/button[2]"
+        detect_uncached(driver, target_element_xpath)
 
         # Scrape all file names (generalized selector)
         file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
@@ -159,7 +169,18 @@ def automate_webpage(url, search_text, media_type):
         # Click the button corresponding to the selected file
         button.click()
 
-        time.sleep(10)
+        # Detect for "Show Uncached" button to appear (indicating all files parsed)
+        def detect_successful(driver, xpath):
+            while True:
+                try:
+                    element = driver.find_element(By.XPATH, xpath)
+                    return element
+                except NoSuchElementException:
+                    time.sleep(1)  # Wait for 1 second before trying again
+
+        # Wait indefinitely for the specific element to be present
+        target_element_xpath = "//*[@id='__next']/div/div[1]/div/div/div[2]"
+        detect_successful(driver, target_element_xpath)
 
         print(f"File '{file_names[selected_num - 1]}' added to library successfully. Click on the file then click on 'DL' to send to Real-Debrid to download or stream it.")
 
