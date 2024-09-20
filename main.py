@@ -149,6 +149,7 @@ def automate_webpage(url, search_text, media_type):
                     print("Script terminated by user.")
                     sys.exit(0)  # Exit with status 0 for user-initiated termination
                 elif user_choice == 'N':
+                    print("Listing all matching files...")
                     break
                 else:
                     print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
