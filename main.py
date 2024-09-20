@@ -86,7 +86,6 @@ def automate_webpage(url, search_text, media_type):
     # Redirect WebDriver logs to devnull
     service = Service(ChromeDriverManager().install(), log_path=os.devnull)
 
-
     # Start ChromeDriver using the profile and service
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
