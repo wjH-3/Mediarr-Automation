@@ -114,17 +114,24 @@ def automate_webpage(url, search_text, media_type):
             sys.exit(1)
     
         # Detect for "Show Uncached" button to appear (indicating all files parsed)
-        def detect_uncached(driver, xpath):
+        def detect_uncached(driver, xpath1, xpath2):
             while True:
                 try:
-                    element = driver.find_element(By.XPATH, xpath)
-                    return element
+                    element1 = driver.find_element(By.XPATH, xpath1)
+                    return element1
                 except NoSuchElementException:
-                    time.sleep(3)  # Wait for 3 seconds before trying again
+                    pass
+                try:
+                    element2 = driver.find_element(By.XPATH, xpath2)
+                    return element2
+                except NoSuchElementException:
+                    pass
+                time.sleep(3)  # Wait for 3 seconds before trying again
 
         # Wait indefinitely for the specific element to be present
-        target_element_xpath = "//*[@id='__next']/div/div[2]/div[3]/button[2]"
-        detect_uncached(driver, target_element_xpath)
+        movie_target_element_xpath = "//*[@id='__next']/div/div[2]/div[3]/button[2]"
+        tv_target_element_xpath = "//*[@id='__next']/div/div[2]/div[4]/button"
+        detect_uncached(driver, movie_target_element_xpath, tv_target_element_xpath)
 
         # Scrape all file names (generalized selector)
         file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
