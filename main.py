@@ -78,7 +78,7 @@ def automate_webpage(url, search_text, media_type):
     chrome_options.add_argument(f"user-data-dir={chrome_profile_path}")  # Path to user data directory
     chrome_options.add_argument("profile-directory=Default")  # Specify profile directory (e.g., 'Profile 1' if you use a custom profile) (can be modified)
 
-    # Add these options to reduce logging
+    # Reduce Selenium logging
     chrome_options.add_argument('--log-level=3')  # Only show fatal errors
     chrome_options.add_argument('--silent')
     chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
