@@ -14,6 +14,7 @@ import os
 # Suppress TensorFlow logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+# Check if browser window(s) open
 def browser_open(browser='chrome'):
     for process in psutil.process_iter(['name']):
         if browser in process.info['name'].lower():
@@ -130,7 +131,7 @@ def automate_webpage(url, search_text, media_type):
         file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
         file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
 
-        #Separator
+        # Separator
         # print("\n---------Session End---------")
 
         # Check if there are any files found
