@@ -9,6 +9,10 @@ from selenium.common.exceptions import NoSuchElementException, WebDriverExceptio
 import sys
 import time
 import psutil
+import os
+
+# Suppress TensorFlow logs
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 def browser_open(browser='chrome'):
     for process in psutil.process_iter(['name']):
@@ -62,7 +66,7 @@ def automate_webpage(url, search_text, media_type):
     print(f"Scraping from -> '{url}'...")
 
     # Logs
-    print("\nSession Logs (ignore):")
+    # print("\nSession Logs (ignore):")
 
     # Set up WebDriver (assuming Chrome)
     # Path to your Chrome user profile (can be modified) (change 'user' to your own user name)
@@ -73,8 +77,14 @@ def automate_webpage(url, search_text, media_type):
     chrome_options.add_argument(f"user-data-dir={chrome_profile_path}")  # Path to user data directory
     chrome_options.add_argument("profile-directory=Default")  # Specify profile directory (e.g., 'Profile 1' if you use a custom profile) (can be modified)
 
-    # Create a service object for ChromeDriver
-    service = Service(ChromeDriverManager().install())
+    # Add these options to reduce logging
+    chrome_options.add_argument('--log-level=3')  # Only show fatal errors
+    chrome_options.add_argument('--silent')
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
+    # Redirect WebDriver logs to devnull
+    service = Service(ChromeDriverManager().install(), log_path=os.devnull)
+
 
     # Start ChromeDriver using the profile and service
     driver = webdriver.Chrome(service=service, options=chrome_options)
@@ -121,7 +131,7 @@ def automate_webpage(url, search_text, media_type):
         file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
 
         #Separator
-        print("\n---------Session End---------")
+        # print("\n---------Session End---------")
 
         # Check if there are any files found
         if not file_name_elements:
@@ -161,7 +171,7 @@ def automate_webpage(url, search_text, media_type):
                 # Handle case where the input is not an integer
                 print("Invalid input. Please enter a number only.")
         
-        print("Getting file, please wait...")
+        print("\nGetting file, please wait...")
 
         # Locate the corresponding button for the selected file (within the same section)
         button = selected_file_element.find_element(By.XPATH, "./following-sibling::div[contains(@class, 'space-x-2')]/button")
@@ -247,7 +257,7 @@ def main():
             else:
                 print("Invalid input. Please enter a digit.")
     
-    print("Please wait for around 2 minutes...")
+    print("\nScraping files, please wait...")
 
     time.sleep(3)
 
