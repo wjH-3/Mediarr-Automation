@@ -129,43 +129,62 @@ def automate_webpage(url, search_text, media_type):
         # Scrape all file names (generalized selector)
         file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
         file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
+        button_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[2]/button[1]")
 
         # Separator
         # print("\n---------Session End---------")
 
-        # Check if there are any files found
-        if not file_name_elements:
-            print(f"\nNo matching files found from '{url}'. The script will now terminate...")
-            sys.exit(1)
-
-        # Get the text from each file name element
-        print("\nMatching files found:")
+        # Get the text from each file name element and button
         file_names = [element.text for element in file_name_elements]
+        file_sizes = [' '.join(element.text.split(';')[0].strip().split()[1:]) for element in file_size_elements]
+        button_texts = [element.text for element in button_elements]
 
-        # Extract only the total file size from each element
-        file_sizes = []
-        for element in file_size_elements:
-            size_text = element.text
-            # Extract the first part before the semicolon, which should be the total size
-            total_size = size_text.split(';')[0].strip()
-            # Extract just the size value (e.g., "57.89 GB")
-            size_value = ' '.join(total_size.split()[1:])
-            file_sizes.append(size_value)
+        # Check if any files are already in the library
+        files_in_library = any(button_text == "RD (100%)" for button_text in button_texts)
 
-        # Print file names to the terminal for the user to select
-        for idx, (file_name, file_size) in enumerate(zip(file_names, file_sizes), start=1):
-            print(f"{idx}. {file_name} - {file_size}")
+        if files_in_library:
+            while True:
+                user_choice = input("\nOne or more matching file(s) found are already in the library ('https://debridmediamanager.com/library').\n-> Do you want to terminate the script? [Y/N]: ").strip().upper()
+                if user_choice == 'Y':
+                    print("Script terminated by user.")
+                    sys.exit(0)  # Exit with status 0 for user-initiated termination
+                elif user_choice == 'N':
+                    break
+                else:
+                    print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
+
+        # Create a list of available files (not already in library)
+        available_files = []
+        files_in_library = []
+        for idx, (file_name, file_size, button_text) in enumerate(zip(file_names, file_sizes, button_texts), start=1):
+            if button_text != "RD (100%)":
+                available_files.append((idx, file_name, file_size))
+            else:
+                files_in_library.append((file_name, file_size))
+
+        # Print available files with new numbering
+        print("\nMatching files found:")
+        for file_name, file_size in files_in_library:
+            print(f"✓ {file_name} - {file_size} (Already in Library)")
+        for new_idx, (_, file_name, file_size) in enumerate(available_files, start=1):
+            print(f"{new_idx}. {file_name} - {file_size}")
+
+        # Check if there are any available files
+        if not available_files:
+            print("\nAll matching files found are already in the library ('https://debridmediamanager.com/library'). The script will now terminate...")
+            sys.exit(1)
 
         while True:
             try:
                 # Get user to input a number to choose the corresponding file
                 selected_num = int(input("Type in the NUMBER corresponding to the file you want: "))
                 
-                if 1 <= selected_num <= len(file_name_elements):  # Ensure the number is within the valid range
-                    selected_file_element = file_name_elements[selected_num - 1]
-                    break  # Exit the loop if the input is valid
+                if 1 <= selected_num <= len(available_files):
+                    selected_file_index = available_files[selected_num - 1][0] - 1  # Get the original index
+                    selected_file_element = file_name_elements[selected_file_index]
+                    break
                 else:
-                    print(f"Please enter a number between 1 and {len(file_name_elements)}.")
+                    print(f"Please enter a number between 1 and {len(available_files)}.")
             
             except ValueError:
                 # Handle case where the input is not an integer
@@ -174,10 +193,10 @@ def automate_webpage(url, search_text, media_type):
         print("\nGetting file, please wait...")
 
         # Locate the corresponding button for the selected file (within the same section)
-        button = selected_file_element.find_element(By.XPATH, "./following-sibling::div[contains(@class, 'space-x-2')]/button")
+        focus_button = selected_file_element.find_element(By.XPATH, "./following-sibling::div[contains(@class, 'space-x-2')]/button")
 
         # Click the button corresponding to the selected file
-        button.click()
+        focus_button.click()
 
         # Detect for "Show Uncached" button to appear (indicating all files parsed)
         def detect_successful(driver, xpath):
