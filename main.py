@@ -133,7 +133,7 @@ def automate_webpage(url, search_text, media_type):
         tv_target_element_xpath = "//*[@id='__next']/div/div[2]/div[4]/button"
         detect_uncached(driver, movie_target_element_xpath, tv_target_element_xpath)
 
-        # Scrape all file names (generalized selector)
+        # Scrape all file names and their file sizes (generalized selector)
         file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
         file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
         button_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[2]/button[1]")
@@ -206,7 +206,7 @@ def automate_webpage(url, search_text, media_type):
         # Click the button corresponding to the selected file
         focus_button.click()
 
-        # Detect for "Show Uncached" button to appear (indicating all files parsed)
+        # Detect for "Succesfully added" message to appear (indicating file added to library)
         def detect_successful(driver, xpath):
             while True:
                 try:
