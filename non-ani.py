@@ -11,6 +11,14 @@ import time
 import psutil
 import os
 
+# Check if 'user' and 'profile' variables exist
+if len(sys.argv) < 3:
+    print("Error: Missing arguments for user and profile")
+    sys.exit(1)
+
+user = sys.argv[1]
+profile = sys.argv[2]
+
 # Suppress TensorFlow logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -71,12 +79,12 @@ def automate_webpage(url, search_text, media_type):
 
     # Set up WebDriver (assuming Chrome)
     # Path to your Chrome user profile (can be modified) (change 'user' to your own user name)
-    chrome_profile_path = "C:/Users/user/AppData/Local/Google/Chrome/User Data"
+    chrome_profile_path = f"C:/Users/{user}/AppData/Local/Google/Chrome/User Data"
 
     # Set Chrome options to use the existing profile
     chrome_options = Options()
     chrome_options.add_argument(f"user-data-dir={chrome_profile_path}")  # Path to user data directory
-    chrome_options.add_argument("profile-directory=Default")  # Specify profile directory (e.g., 'Profile 1' if you use a custom profile) (can be modified)
+    chrome_options.add_argument(f"profile-directory={profile}")  # Specify profile directory (e.g., 'Profile 1' if you use a custom profile) (can be modified)
 
     # Reduce Selenium logging
     chrome_options.add_argument('--log-level=3')  # Only show fatal errors
