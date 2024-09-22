@@ -19,9 +19,6 @@ if len(sys.argv) < 3:
 user = sys.argv[1]
 profile = sys.argv[2]
 
-# Suppress TensorFlow logs
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
 # Check if browser window(s) open
 def browser_open(browser='chrome'):
     for process in psutil.process_iter(['name']):
@@ -76,6 +73,9 @@ def automate_webpage(url, search_text, media_type):
 
     # Logs
     # print("\nSession Logs (ignore):")
+
+    # Suppress TensorFlow logs
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
     # Set up WebDriver (assuming Chrome)
     # Path to your Chrome user profile (can be modified) (change 'user' to your own user name)
