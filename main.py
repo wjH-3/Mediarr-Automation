@@ -145,21 +145,10 @@ def automate_webpage(url, search_text, media_type):
         file_names = [element.text for element in file_name_elements]
         file_sizes = [' '.join(element.text.split(';')[0].strip().split()[1:]) for element in file_size_elements]
         button_texts = [element.text for element in button_elements]
+        library_url = 'https://debridmediamanager.com/library'
 
         # Check if any files are already in the library
         files_in_library = any(button_text == "RD (100%)" for button_text in button_texts)
-
-        if files_in_library:
-            while True:
-                user_choice = input("\nOne or more matching file(s) found are already in the library ('https://debridmediamanager.com/library').\n-> Do you want to terminate the script? [Y/N]: ").strip().upper()
-                if user_choice == 'Y':
-                    print("Script terminated by user.")
-                    sys.exit(0)  # Exit with status 0 for user-initiated termination
-                elif user_choice == 'N':
-                    print("Listing all matching files...")
-                    break
-                else:
-                    print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
 
         # Create a list of available files (not already in library)
         available_files = []
@@ -179,8 +168,41 @@ def automate_webpage(url, search_text, media_type):
 
         # Check if there are any available files
         if not available_files:
-            print("\nAll matching files found are already in the library ('https://debridmediamanager.com/library'). The script will now terminate...")
-            sys.exit(1)
+            print("All matching files found are already in the library.")
+            while True:
+                user_choice = input(f"Do you want to go to the library? [Y/N]: ").strip().upper()
+                if user_choice == 'Y':
+                    print("Opening DMM Library...")
+
+                    # Open the library url
+                    time.sleep(3)
+                    driver.maximize_window()
+                    driver.get(library_url)
+
+                    input("\nPress Enter to terminate the script and browser window...")
+                elif user_choice == 'N':
+                    print("Script now terminates...")
+                    sys.exit(0)
+                else:
+                    print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
+        
+        if files_in_library:
+            print("One or more matching file(s) found are already in the library.")
+            while True:
+                user_choice = input("Do you want to go to the library? [Y/N]: ").strip().upper()
+                if user_choice == 'Y':
+                    print("Opening DMM Library...")
+
+                    # Open the library url
+                    time.sleep(3)
+                    driver.maximize_window()
+                    driver.get(library_url)
+
+                    input("\nPress Enter to terminate the script and browser window...")
+                elif user_choice == 'N':
+                    break
+                else:
+                    print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
 
         while True:
             try:
@@ -231,7 +253,6 @@ def automate_webpage(url, search_text, media_type):
         driver.maximize_window()
 
         # Go to DMM library
-        library_url = 'https://debridmediamanager.com/library'
         driver.get(library_url)
 
         input("\nPress Enter to terminate the script and browser window...")
