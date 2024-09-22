@@ -36,8 +36,7 @@ def run_non_anime_script():
 
 def main():
     while True:
-        print("Anime or Non-Anime? [A/N]")
-        choice = input().strip().upper()
+        choice = input("Anime or Non-Anime? [A/N]: ").strip().upper()
 
         if choice == 'A':
             run_anime_script()
