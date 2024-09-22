@@ -7,15 +7,13 @@ import sys
 CONFIG_PATH = 'config.json'
 
 def get_config():
-    if getattr(sys, 'frozen', False):
-        # Running as compiled exe
+    if getattr(sys, 'frozen', False):  # Check if running as an executable
         config_dir = os.path.dirname(sys.executable)
     else:
-        # Running as script
         config_dir = os.path.dirname(__file__)
-    
+
     config_path = os.path.join(config_dir, CONFIG_PATH)
-    
+
     if os.path.exists(config_path):
         with open(config_path, 'r') as f:
             return json.load(f)
