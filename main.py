@@ -3,7 +3,7 @@ import json
 import subprocess
 
 def get_non_anime_config():
-    # Check if configuration already exists
+    # Check if config file already exists
     config_path = 'non_anime_config.json'
     if os.path.exists(config_path):
         with open(config_path, 'r') as f:
@@ -12,7 +12,7 @@ def get_non_anime_config():
         # First-time setup
         print("First-time setup for Non-Anime script. Please input the necessary information variables. (Note: Input is case-sensitive)")
         user = input("Enter your system user name: ") # Case-sesitive
-        profile = input("Enter your Chrome profile name: ") # Case-sensitive
+        profile = input("Enter your Chrome profile directory name: ") # Case-sensitive
         config = {'user': user, 'profile': profile}
 
         # Save configuration for future runs
@@ -22,7 +22,7 @@ def get_non_anime_config():
         return config
 
 def run_anime_script():
-    # Run the anime script (replace 'anime_script.py' with the actual script name)
+    # Run the anime script
     subprocess.run(['python', 'ani.py'])
 
 def run_non_anime_script():
@@ -31,19 +31,20 @@ def run_non_anime_script():
     user = config['user']
     profile = config['profile']
 
-    # Inject into the non-anime script (replace 'non_anime_script.py' with the actual script name)
+    # Inject into the non-anime script
     subprocess.run(['python', 'non-ani.py', user, profile])
 
 def main():
-    print("Anime or Non-Anime? [A/N]")
-    choice = input().strip().upper()
+    while True:
+        print("Anime or Non-Anime? [A/N]")
+        choice = input().strip().upper()
 
-    if choice == 'A':
-        run_anime_script()
-    elif choice == 'N':
-        run_non_anime_script()
-    else:
-        print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
+        if choice == 'A':
+            run_anime_script()
+        elif choice == 'N':
+            run_non_anime_script()
+        else:
+            print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
 
 if __name__ == "__main__":
     main()
