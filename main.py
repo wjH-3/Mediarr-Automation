@@ -46,7 +46,8 @@ def main():
         if choice == 'A':
             ani.main()
         elif choice == 'N':
-            non_ani.set_global_variables(config['user'], config['profile'])
+            # Pass config as command line arguments
+            sys.argv = [sys.argv[0], config['user'], config['profile']]
             non_ani.main()
         else:
             print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
