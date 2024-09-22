@@ -1,47 +1,38 @@
 import os
 import json
-import subprocess
+import ani
+import non_ani
+import sys
 
-def get_non_anime_config():
-    # Check if config file already exists
-    config_path = 'non_anime_config.json'
-    if os.path.exists(config_path):
-        with open(config_path, 'r') as f:
+CONFIG_PATH = 'config.json'
+
+def get_config():
+    if os.path.exists(CONFIG_PATH):
+        with open(CONFIG_PATH, 'r') as f:
             return json.load(f)
     else:
-        # First-time setup
-        print("First-time setup for Non-Anime script. Please input the necessary information variables. (Note: Input is case-sensitive)")
-        user = input("Enter your system user name: ") # Case-sesitive
-        profile = input("Enter your Chrome profile directory name: ") # Case-sensitive
+        print("First-time setup. Please input the necessary information. (Note: Input is case-sensitive)")
+        user = input("Enter your system user name: ")
+        profile = input("Enter your Chrome profile directory name: ")
         config = {'user': user, 'profile': profile}
 
-        # Save configuration for future runs
-        with open(config_path, 'w') as f:
+        with open(CONFIG_PATH, 'w') as f:
             json.dump(config, f)
 
         return config
 
-def run_anime_script():
-    # Run the anime script
-    subprocess.run(['python', 'ani.py'])
-
-def run_non_anime_script():
-    # Get user and profile info from config
-    config = get_non_anime_config()
-    user = config['user']
-    profile = config['profile']
-
-    # Inject into the non-anime script
-    subprocess.run(['python', 'non-ani.py', user, profile])
-
 def main():
+    config = get_config()
+
     while True:
         choice = input("Anime or Non-Anime? [A/N]: ").strip().upper()
 
         if choice == 'A':
-            run_anime_script()
+            ani.main()
         elif choice == 'N':
-            run_non_anime_script()
+            # Pass config as command line arguments
+            sys.argv = [sys.argv[0], config['user'], config['profile']]
+            non_ani.main()
         else:
             print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
 
