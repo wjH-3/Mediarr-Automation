@@ -22,8 +22,8 @@ def get_config():
 
 def create_config(config_path):
     print("First-time setup. Please input the necessary information. (Note: Input is case-sensitive)")
-    user = input("Enter your system user name: ").strip().upper()
-    profile = input("Enter your Chrome profile directory name: ").strip().upper()
+    user = input("Enter your system user name: ").strip()
+    profile = input("Enter your Chrome profile directory name: ").strip()
     config = {'user': user, 'profile': profile}
 
     try:
@@ -51,17 +51,24 @@ def run_non_ani(user, profile):
         sys.argv = original_argv
 
 def main():
-    config = get_config()
+    try:
+        config = get_config()
 
-    while True:
-        choice = input("Anime or Non-Anime? [A/N]: ").strip().upper()
+        while True:
+            choice = input("Anime or Non-Anime? [A/N]: ").strip().upper()
 
-        if choice == 'A':
-            ani.main()
-        elif choice == 'N':
-            run_non_ani(config['user'], config['profile'])
-        else:
-            print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
+            if choice == 'A':
+                ani.main()
+                break
+            elif choice == 'N':
+                run_non_ani(config['user'], config['profile'])
+                break
+            else:
+                print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
+    
+    except Exception as e:
+        print(f"\nAn error occurred:\n{str(e)}")
+        input("\nPress Enter to exit...")
 
 if __name__ == "__main__":
     main()
