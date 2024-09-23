@@ -278,7 +278,7 @@ def scrape_file_list(url):
 
 def main():
     # Usage
-    anime_title = input("Enter Anime: ")
+    anime_title = input("\nEnter Anime: ")
     results = search_anilist(anime_title)
 
     if results:
