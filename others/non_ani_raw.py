@@ -180,6 +180,7 @@ def automate_webpage(url, search_text, media_type):
                     driver.get(library_url)
 
                     input("\nPress Enter to terminate the script and browser window...")
+                    break
                 elif user_choice == 'N':
                     print("Script now terminates...")
                     sys.exit(0)
@@ -199,6 +200,7 @@ def automate_webpage(url, search_text, media_type):
                     driver.get(library_url)
 
                     input("\nPress Enter to terminate the script and browser window...")
+                    break
                 elif user_choice == 'N':
                     break
                 else:
