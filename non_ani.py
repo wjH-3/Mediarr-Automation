@@ -11,13 +11,13 @@ import time
 import psutil
 import os
 
-# Check if 'user' and 'profile' variables exist
-if len(sys.argv) < 3:
-    print("Error: Missing arguments for user and profile")
-    sys.exit(1)
-
-user = sys.argv[1]
-profile = sys.argv[2]
+def get_user_profile():
+    # Check if 'user' and 'profile' variables exist in sys.argv
+    if len(sys.argv) >= 3:
+        return sys.argv[1], sys.argv[2]
+    else:
+        print("Error: Missing arguments for user and profile")
+        sys.exit(1)
 
 # Check if browser window(s) open
 def browser_open(browser='chrome'):
@@ -67,7 +67,7 @@ def get_url(media_type, imdb_id, tv_query=None):
         return f"{base_tv_url}{imdb_id}/{tv_query}"
 
 # Web automation for scraping and interacting with search results
-def automate_webpage(url, search_text, media_type):
+def automate_webpage(url, search_text, media_type, user, profile):
     # URL info
     print(f"Scraping from -> '{url}'...")
 
@@ -273,6 +273,8 @@ def automate_webpage(url, search_text, media_type):
         sys.exit(1)
 
 def main():
+    user, profile = get_user_profile()
+
     input("\nReminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
 
     while True:
@@ -319,7 +321,7 @@ def main():
 
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
-        automate_webpage(url, search_text, media_type)
+        automate_webpage(url, search_text, media_type, user, profile)
 
 if __name__ == "__main__":
     main()
