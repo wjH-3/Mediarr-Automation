@@ -1,4 +1,4 @@
 - command to build assuming the two scripts (ani.py and non-ani.py) are in the same folder as main.py
 
 -->
-pyinstaller --onefile --add-data "ani.py;." --add-data "non-ani.py;." --name Mediarr main.py
+pyinstaller --onefile --name Mediarr main.py
