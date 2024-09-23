@@ -2,6 +2,14 @@
 *...through sailing the High Seas...*
 
 
+# How to Use: The Easy Way
+
+1. Go to Releases and download the latest version of `Mediarr.exe` into a folder
+2. On first launch (you only have to do this ONCE), go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
+3. The profile path is in the format of [ `driver name` \Users\ `system user name` \AppData\Local\Google\Chrome\User Data\ `profile directory name` ]
+4. Based on the directory path shown, enter your `system user name` and `profile directory name` accordingly when prompted
+5. Continue following each of the prompts shown
+*Note: The executable is specifically made for use with Google Chrome on Windows. To make it compatible with other browsers (as long as they have support for WebDriver), you can download the source code and alter `non_ani.py` and then build with `Pyinstaller` using the command in `toBuild.txt`.*
 
 # *Non-Anime*: Python Script for Real-Debrid
 
@@ -20,16 +28,16 @@
 
 > **Make sure you are logged into both Real-Debrid and Debrid Media Manager prior to running the script**
 
-## Optional parameters to modify in source code (main.py):
+## Optional parameters to modify in source code (non_ani.py):
 * Driver path (not needed if using Webdriver Manager -- automated)
 * User profile path (default user name is `user`)
 * User profile directory name (if default, then `Default`)
 * Regex for movies/tv based on output device's media codec and format compatibilities (*advanced*)
 
 ## Usage Guide:
-1. Download `main.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
+1. Download `non_ani.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
 2. Go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
-3. Open `main.py` in an IDE or Notepad
+3. Open `non_ani.py` in an IDE or Notepad
 4. Change `user` in `chrome_profile_path` to the correct user name with reference to `Profile Path`
 5. Change `Default` in `profile-directory` to the correct profile name with reference to `Profile Path`
 6. Save changes to `main.py` and close
@@ -55,14 +63,14 @@ python main.py
 * Python 3.11 or later (enable *add Python to PATH* during installation)
 * Relevant python modules (which require installation): Requests (`pip install requests`), BeautifulSoup (`pip install beaufitulsoup4`), Pyperclip (`pip install pyperclip`)
 
-## Optional parameters to modify in source code (animain.py):
+## Optional parameters to modify in source code (ani.py):
 * Alternative Source to `Subsplease`, currently using `Erai-raws`
 * Input key to check alternative source, currently set to `C`
 * Default Quality is set to `1080p` for the Nyaa queries, change it in `base_url`. Other options are `720p` and `480p` (may yield less results)
 * Nyaa domain extension currently set to `nyaa.si`, can be changed to `nyaa.land` or others. For a list of working Nyaa proxies, visit [Nyaa Torrents](https://nyaatorrents.info/)
 
 ## Usage guide
-1. Download `animain.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
+1. Download `ani.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
 2. In the directory of where the files are, *right click* > *open in Terminal*
 3. In the Terminal,
 ```python 
