@@ -9,7 +9,11 @@
 3. The profile path is in the format of [ `driver name` \Users\ `system user name` \AppData\Local\Google\Chrome\User Data\ `profile directory name` ]
 4. Based on the directory path shown, enter your `system user name` and `profile directory name` accordingly when prompted
 5. Continue following each of the prompts shown
+
 *Note: The executable is specifically made for use with Google Chrome on Windows. To make it compatible with other browsers (as long as they have support for WebDriver), you can download the source code and alter `non_ani.py` and then build with `Pyinstaller` using the command in `toBuild.txt`.*
+
+---
+
 
 # *Non-Anime*: Python Script for Real-Debrid
 
