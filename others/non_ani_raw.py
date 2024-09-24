@@ -147,6 +147,10 @@ def automate_webpage(url, search_text, media_type):
         button_texts = [element.text for element in button_elements]
         library_url = 'https://debridmediamanager.com/library'
 
+        if not file_names:
+            print("\nNo matching files found. The script will now terminate...")
+            sys.exit(1)
+
         # Check if any files are already in the library
         files_in_library = any(button_text == "RD (100%)" for button_text in button_texts)
 
