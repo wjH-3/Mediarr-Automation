@@ -111,7 +111,7 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
 
         # Define search patterns
         search_patterns = [
-            "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p).*$" if media_type == 'M' else "bluray ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
+            "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
             "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:2160p).*$" if media_type == 'M' else "web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$"
         ]
 
