@@ -112,7 +112,8 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
         # Define search patterns
         search_patterns = [
             "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
-            "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:2160p).*$" if media_type == 'M' else "web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$"
+            "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:2160p).*$" if media_type == 'M' else "web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$",
+            "1080p ^(?!.*(?:hdr|dv|dovi)).*(?:web|bluray|blu-ray).*$"
         ]
 
         for search_text in search_patterns:
@@ -178,13 +179,13 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
             if media_type == 'T':  # For TV Shows
                 if qty != "1" and button_text != "RD (100%)":
                     available_files.append((idx, file_name, file_size))
-                else:
+                elif button_text == "RD (100%)":
                     files_in_library.append((file_name, file_size))
                 
             elif media_type == 'M':  # For Movies
                 if button_text != "RD (100%)":
                     available_files.append((idx, file_name, file_size))
-                else:
+                elif button_text == "RD (100%)":
                     files_in_library.append((file_name, file_size))
 
         # Print available files with new numbering
