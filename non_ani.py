@@ -155,6 +155,8 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
             if file_name_elements:
                 break
 
+# --------------------------------------------------------
+
         # Get the text from each file name element and button
         file_names = [element.text for element in file_name_elements]
         file_sizes = [' '.join(element.text.split(';')[0].strip().split()[1:]) for element in file_size_elements]
