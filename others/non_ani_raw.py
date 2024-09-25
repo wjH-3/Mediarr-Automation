@@ -101,7 +101,7 @@ def automate_webpage(url, media_type, tv_query=None):
 
         releases = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4")
         if not releases:
-            input("\nNo releases found for this title. Press Enter to terminate script...")
+            input("\nNo releases found for this title. Press Enter to terminate the script and browser window...")
             return
 
         # Define search patterns
@@ -119,7 +119,7 @@ def automate_webpage(url, media_type, tv_query=None):
 
             except NoSuchElementException:
             # If search filter is not found, print an error message
-                input(f"\nError: '{url}' is not a valid URL. The script will now terminate...")
+                print(f"\nError: '{url}' is not a valid URL. The script will now terminate...")
                 sys.exit(1)
     
             # Detect for "Show Uncached" button to appear (indicating all files parsed)
@@ -149,8 +149,8 @@ def automate_webpage(url, media_type, tv_query=None):
 
             if file_name_elements:
                 break
-            else:
-                print("\nNo Bluray releases found, checking for WEB releases...")
+            # else:
+                # print("\nNo Bluray releases found, checking for WEB releases...")
 
         # Separator
         # print("\n---------Session End---------")
@@ -162,8 +162,8 @@ def automate_webpage(url, media_type, tv_query=None):
         library_url = 'https://debridmediamanager.com/library'
 
         if not file_names:
-            print("\nNo matching files found with the given search filters. The script will now terminate...")
-            sys.exit(1)
+            input("\nNo matching files found with the given search filters. Press Enter to terminate the script and browser window...")
+            return
 
         # Check if any files are already in the library
         files_in_library = any(button_text == "RD (100%)" for button_text in button_texts)
@@ -198,10 +198,10 @@ def automate_webpage(url, media_type, tv_query=None):
                     driver.get(library_url)
 
                     input("\nPress Enter to terminate the script and browser window...")
-                    break
+                    return
                 elif user_choice == 'N':
-                    print("Script now terminates...")
-                    sys.exit(0)
+                    input("\nPress Enter to terminate the script and browser window...")
+                    return
                 else:
                     print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
         
@@ -218,7 +218,7 @@ def automate_webpage(url, media_type, tv_query=None):
                     driver.get(library_url)
 
                     input("\nPress Enter to terminate the script and browser window...")
-                    break
+                    return
                 elif user_choice == 'N':
                     break
                 else:
