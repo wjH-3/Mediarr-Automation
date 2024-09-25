@@ -329,7 +329,7 @@ def main():
 
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
-        automate_webpage(url, media_type, tv_query, user, profile)
+        automate_webpage(url, media_type, user, profile, tv_query)
 
 if __name__ == "__main__":
     main()
