@@ -106,7 +106,7 @@ def automate_webpage(url, media_type, tv_query=None):
 
         # Define search patterns
         search_patterns = [
-            "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p).*$" if media_type == 'M' else "bluray ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
+            "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
             "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:2160p).*$" if media_type == 'M' else "web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$"
         ]
 
@@ -146,6 +146,7 @@ def automate_webpage(url, media_type, tv_query=None):
             file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
             file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
             button_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[2]/button[1]")
+            # file_quantity_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]/text()[6]")
 
             if file_name_elements:
                 break
@@ -158,6 +159,7 @@ def automate_webpage(url, media_type, tv_query=None):
         # Get the text from each file name element and button
         file_names = [element.text for element in file_name_elements]
         file_sizes = [' '.join(element.text.split(';')[0].strip().split()[1:]) for element in file_size_elements]
+        file_quantity = [element.text.split('(')[-1].split()[0] for element in file_size_elements]
         button_texts = [element.text for element in button_elements]
         library_url = 'https://debridmediamanager.com/library'
 
@@ -171,11 +173,18 @@ def automate_webpage(url, media_type, tv_query=None):
         # Create a list of available files (not already in library)
         available_files = []
         files_in_library = []
-        for idx, (file_name, file_size, button_text) in enumerate(zip(file_names, file_sizes, button_texts), start=1):
-            if button_text != "RD (100%)":
-                available_files.append((idx, file_name, file_size))
-            else:
-                files_in_library.append((file_name, file_size))
+        for idx, (file_name, file_size, button_text, qty) in enumerate(zip(file_names, file_sizes, button_texts, file_quantity), start=1):
+            if media_type == 'T':  # For TV Shows
+                if qty != "1" and button_text != "RD (100%)":
+                    available_files.append((idx, file_name, file_size))
+                else:
+                    files_in_library.append((file_name, file_size))
+                
+            elif media_type == 'M':  # For Movies
+                if button_text != "RD (100%)":
+                    available_files.append((idx, file_name, file_size))
+                else:
+                    files_in_library.append((file_name, file_size))
 
         # Print available files with new numbering
         print("\nMatching files found:")
