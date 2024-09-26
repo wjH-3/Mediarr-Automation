@@ -1,5 +1,5 @@
 - command to build assuming the two scripts (ani.py and non-ani.py) are in the same folder as main.py
-- make sure Pyinstaller module is intalled in the system (installation: 'pip install pyinstaller')
+- make sure Pyinstaller module is installed in the system (installation: 'pip install pyinstaller')
 
 -->
 pyinstaller --onefile --name Mediarr main.py
