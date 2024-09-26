@@ -59,7 +59,7 @@ def get_url(media_type, imdb_id, tv_query=None):
         return f"{base_tv_url}{imdb_id}/{tv_query}"
 
 # Web automation for scraping and interacting with search results
-def automate_webpage(url, search_text, media_type):
+def automate_webpage(url, media_type, tv_query=None):
     # URL info
     print(f"Scraping from -> '{url}'...")
 
@@ -99,44 +99,60 @@ def automate_webpage(url, search_text, media_type):
         # Wait for the page to load
         time.sleep(5)
 
-        # Locate the search filter
-        try:
-            search_filter = driver.find_element(By.CSS_SELECTOR, "#query")
+        releases = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4")
+        if not releases:
+            input("\nNo releases found for this title. Press Enter to terminate the script and browser window...")
+            return
 
-            # Click on the filter and enter the search text
-            search_filter.click()
-            search_filter.send_keys(search_text)
-            search_filter.send_keys(Keys.RETURN)
+        # Define search patterns
+        search_patterns = [
+            "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
+            "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:2160p).*$" if media_type == 'M' else "web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$",
+            "1080p ^(?!.*(?:hdr|dv|dovi)).*(?:web|bluray|blu-ray).*$"
+        ]
 
-        except NoSuchElementException:
+        for search_text in search_patterns:
+            try:
+                search_filter = driver.find_element(By.CSS_SELECTOR, "#query")
+                search_filter.clear()  # Clear any existing text
+                search_filter.send_keys(search_text)
+                search_filter.send_keys(Keys.RETURN)
+
+            except NoSuchElementException:
             # If search filter is not found, print an error message
-            print(f"\nError: '{url}' is not a valid URL. The script will now terminate...")
-            sys.exit(1)
+                print(f"\nError: '{url}' is not a valid URL. The script will now terminate...")
+                sys.exit(1)
     
-        # Detect for "Show Uncached" button to appear (indicating all files parsed)
-        def detect_uncached(driver, xpath1, xpath2):
-            while True:
-                try:
-                    element1 = driver.find_element(By.XPATH, xpath1)
-                    return element1
-                except NoSuchElementException:
-                    pass
-                try:
-                    element2 = driver.find_element(By.XPATH, xpath2)
-                    return element2
-                except NoSuchElementException:
-                    pass
-                time.sleep(3)  # Wait for 3 seconds before trying again
+            # Detect for "Show Uncached" button to appear (indicating all files parsed)
+            def detect_uncached(driver, xpath1, xpath2):
+                while True:
+                    try:
+                        element1 = driver.find_element(By.XPATH, xpath1)
+                        return element1
+                    except NoSuchElementException:
+                        pass
+                    try:
+                        element2 = driver.find_element(By.XPATH, xpath2)
+                        return element2
+                    except NoSuchElementException:
+                        pass
+                    time.sleep(3)  # Wait for 3 seconds before trying again
 
-        # Wait indefinitely for the specific element to be present
-        movie_target_element_xpath = "//*[@id='__next']/div/div[2]/div[3]/button[2]"
-        tv_target_element_xpath = "//*[@id='__next']/div/div[2]/div[4]/button"
-        detect_uncached(driver, movie_target_element_xpath, tv_target_element_xpath)
+            # Wait indefinitely for the specific element to be present
+            movie_target_element_xpath = "//*[@id='__next']/div/div[2]/div[3]/button[2]"
+            tv_target_element_xpath = "//*[@id='__next']/div/div[2]/div[4]/button"
+            detect_uncached(driver, movie_target_element_xpath, tv_target_element_xpath)
 
-        # Scrape all file names and their file sizes (generalized selector)
-        file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
-        file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
-        button_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[2]/button[1]")
+            # Scrape all file names and their file sizes (generalized selector)
+            file_name_elements = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4 > div > div > h2")
+            file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
+            button_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[2]/button[1]")
+            # file_quantity_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]/text()[6]")
+
+            if file_name_elements:
+                break
+            # else:
+                # print("\nNo Bluray releases found, checking for WEB releases...")
 
         # Separator
         # print("\n---------Session End---------")
@@ -144,12 +160,13 @@ def automate_webpage(url, search_text, media_type):
         # Get the text from each file name element and button
         file_names = [element.text for element in file_name_elements]
         file_sizes = [' '.join(element.text.split(';')[0].strip().split()[1:]) for element in file_size_elements]
+        file_quantity = [element.text.split('(')[-1].split()[0] for element in file_size_elements]
         button_texts = [element.text for element in button_elements]
         library_url = 'https://debridmediamanager.com/library'
 
         if not file_names:
-            print("\nNo matching files found. The script will now terminate...")
-            sys.exit(1)
+            input("\nNo matching files found with the given search filters. Press Enter to terminate the script and browser window...")
+            return
 
         # Check if any files are already in the library
         files_in_library = any(button_text == "RD (100%)" for button_text in button_texts)
@@ -157,11 +174,18 @@ def automate_webpage(url, search_text, media_type):
         # Create a list of available files (not already in library)
         available_files = []
         files_in_library = []
-        for idx, (file_name, file_size, button_text) in enumerate(zip(file_names, file_sizes, button_texts), start=1):
-            if button_text != "RD (100%)":
-                available_files.append((idx, file_name, file_size))
-            else:
-                files_in_library.append((file_name, file_size))
+        for idx, (file_name, file_size, button_text, qty) in enumerate(zip(file_names, file_sizes, button_texts, file_quantity), start=1):
+            if media_type == 'T':  # For TV Shows
+                if qty != "1" and button_text != "RD (100%)":
+                    available_files.append((idx, file_name, file_size))
+                elif button_text == "RD (100%)":
+                    files_in_library.append((file_name, file_size))
+                
+            elif media_type == 'M':  # For Movies
+                if button_text != "RD (100%)":
+                    available_files.append((idx, file_name, file_size))
+                elif button_text == "RD (100%)":
+                    files_in_library.append((file_name, file_size))
 
         # Print available files with new numbering
         print("\nMatching files found:")
@@ -184,10 +208,10 @@ def automate_webpage(url, search_text, media_type):
                     driver.get(library_url)
 
                     input("\nPress Enter to terminate the script and browser window...")
-                    break
+                    return
                 elif user_choice == 'N':
-                    print("Script now terminates...")
-                    sys.exit(0)
+                    input("\nPress Enter to terminate the script and browser window...")
+                    return
                 else:
                     print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
         
@@ -204,7 +228,7 @@ def automate_webpage(url, search_text, media_type):
                     driver.get(library_url)
 
                     input("\nPress Enter to terminate the script and browser window...")
-                    break
+                    return
                 elif user_choice == 'N':
                     break
                 else:
@@ -273,11 +297,11 @@ def automate_webpage(url, search_text, media_type):
 def main():
     input("\nReminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
 
-    while True:
-        if browser_open():
-            print("Warning: Browser window detected. Please close all browser windows before continuing.")
-            input("Press Enter to continue...\n")
+    if browser_open():
+        print("Warning: Browser window detected. Please close all browser windows before continuing.")
+        input("Press Enter to continue...\n")
 
+    while True:
         media_type = input("Movie or TV? [M/T]: ").strip().upper()
         
         if media_type in ['M', 'T']:
@@ -289,24 +313,12 @@ def main():
         imdb_id = get_movie_id()
         tv_query = None
 
-        while True:
-            movie_query = input("Is it a recently released (within this month) movie? [Y/N]: ").strip().upper()
-            if movie_query == 'Y':
-                search_text = "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:2160p).*$" # (can be modified)
-                break  # Exit the loop on valid input
-            elif movie_query == 'N':
-                search_text = "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p).*$" # (can be modified)
-                break  # Exit the loop on valid input
-            else:
-                print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
-
     elif media_type =='T':
         imdb_id = get_tv_id()
 
         while True:
             tv_query = input("What season of the show are you looking for? Enter the season number - ")
             if tv_query.isdigit():
-                search_text = "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$" # (can be modified)
                 break
             else:
                 print("Invalid input. Please enter a digit.")
@@ -317,7 +329,7 @@ def main():
 
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
-        automate_webpage(url, search_text, media_type)
+        automate_webpage(url, media_type, tv_query)
 
 if __name__ == "__main__":
     main()
