@@ -1,5 +1,5 @@
 # **Mediarr Automation**
-*...through sailing the High Seas...*
+***...through sailing the High Seas...***
 
 
 A simple CLI Python app that complements Real-Debrid and Debrid Media Manager, allowing users to get any Non-anime or Anime content, whether it be movies or shows, in a fast and automated way. 
@@ -84,7 +84,7 @@ python non_animain.py
 * Default Quality is set to `1080p` for the Nyaa queries, change it in `base_url`. Other options are `720p` and `480p` (may yield less results)
 * Nyaa domain extension currently set to `nyaa.si`, can be changed to `nyaa.land` or others. For a list of working Nyaa proxies, visit [Nyaa Torrents](https://nyaatorrents.info/)
 
-## Usage guide
+## Usage Guide:
 1. Download `ani.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
 2. In the directory of where the files are, *right click* > *open in Terminal*
 3. In the Terminal,
