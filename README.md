@@ -2,11 +2,22 @@
 *...through sailing the High Seas...*
 
 
+A simple CLI Python app that complements Real-Debrid and Debrid Media Manager, allowing users to get any Non-anime or Anime content, whether it be movies or shows, in a fast and automated way. 
+
+Non-anime content is scraped directly from DMM, displaying the relevant files in a list for users to choose from, with dynamic regex filtering to scrape only the highest quality files and also the ability to query a specific season of a show. For Anime, it makes use of the AniList and SeaDex API to get the magnet links of a Best Release of the specified anime, as well as querying Nyaa for SubsPlease/Erai-raws releases of currently airing anime.
+
+All of this can be done right on the terminal, and no other installation is required except for the executable (`Mediarr.exe`).
+
+*Note: You can also choose to use either the non-anime or anime script by itself. For more details on how to do so, head over to their respective sections where there are instructions and also more details about the script themselves.*
+
+---
+
+
 # How to Use: The Easy Way
 
 1. Go to Releases and download the latest version of `Mediarr.exe` into a folder
 2. On first launch (you only have to do this ONCE), go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
-3. The profile path is in the format of [ `driver name` \Users\ `system user name` \AppData\Local\Google\Chrome\User Data\ `profile directory name` ]
+3. The profile path is in the format of [`driver name`\Users\ `system user name`\AppData\Local\Google\Chrome\User Data\ `profile directory name`]
 4. Based on the directory path shown, enter your `system user name` and `profile directory name` accordingly when prompted
 5. Continue following each of the prompts shown
 
@@ -32,19 +43,19 @@
 
 > **Make sure you are logged into both Real-Debrid and Debrid Media Manager prior to running the script**
 
-## Optional parameters to modify in source code (non_ani.py):
+## Optional parameters to modify in source code (non_ani_raw.py):
 * Driver path (not needed if using Webdriver Manager -- automated)
 * User profile path (default user name is `user`)
 * User profile directory name (if default, then `Default`)
 * Regex for movies/tv based on output device's media codec and format compatibilities (*advanced*)
 
 ## Usage Guide:
-1. Download `non_ani.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
+1. Download `non_ani_raw.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
 2. Go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
-3. Open `non_ani.py` in an IDE or Notepad
+3. Open `non_ani_raw.py` in an IDE or Notepad
 4. Change `user` in `chrome_profile_path` to the correct user name with reference to `Profile Path`
 5. Change `Default` in `profile-directory` to the correct profile name with reference to `Profile Path`
-6. Save changes to `main.py` and close
+6. Save changes to `non_ani_raw.py` and close
 7. In the directory of where the files are, *right click* > *open in Terminal*
 8. In the Terminal,
 ```python
