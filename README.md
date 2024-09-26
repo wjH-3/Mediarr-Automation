@@ -4,7 +4,7 @@
 
 A simple CLI Python app that complements Real-Debrid and Debrid Media Manager, allowing users to get any Non-anime or Anime content, whether it be movies or shows, in a fast and automated way. 
 
-Non-anime content is scraped directly from DMM, displaying the relevant files in a list for users to choose from, with dynamic regex filtering to scrape only the highest quality files and also the ability to query a specific season of a show. For Anime, it makes use of the AniList and SeaDex API to get the magnet links of a Best Release of the specified anime, as well as querying Nyaa for SubsPlease/Erai-raws releases of currently airing anime.
+Non-anime content is scraped directly from DMM, displaying the relevant files in a list for users to choose from, with dynamic regex filtering to scrape only the highest quality files and also the ability to query a specific season of a show. For Anime, it makes use of the AniList and SeaDex API to get the magnet links of a Best Release of the specified anime, as well as query Nyaa for SubsPlease/Erai-raws releases of currently airing anime.
 
 All of this can be done right on the terminal, and no other installation is required except for the executable (`Mediarr.exe`).
 
@@ -59,7 +59,7 @@ All of this can be done right on the terminal, and no other installation is requ
 7. In the directory of where the files are, *right click* > *open in Terminal*
 8. In the Terminal,
 ```python
-python main.py
+python non_ani_raw.py
 ```
 9. Follow each of the prompts shown
 
@@ -89,6 +89,6 @@ python main.py
 2. In the directory of where the files are, *right click* > *open in Terminal*
 3. In the Terminal,
 ```python 
-python animain.py
+python ani.py
 ```
 4. Follow each of the prompts shown
