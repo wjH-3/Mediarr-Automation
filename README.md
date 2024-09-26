@@ -43,23 +43,23 @@ All of this can be done right on the terminal, and no other installation is requ
 
 > **Make sure you are logged into both Real-Debrid and Debrid Media Manager prior to running the script**
 
-## Optional parameters to modify in source code (non_ani_raw.py):
+## Optional parameters to modify in source code (non_animain.py):
 * Driver path (not needed if using Webdriver Manager -- automated)
 * User profile path (default user name is `user`)
 * User profile directory name (if default, then `Default`)
 * Regex for movies/tv based on output device's media codec and format compatibilities (*advanced*)
 
 ## Usage Guide:
-1. Download `non_ani_raw.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
+1. Download `non_animain.py` into a folder (optionally, download the entire ZIP of the project and extract all files into a folder)
 2. Go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
-3. Open `non_ani_raw.py` in an IDE or Notepad
+3. Open `non_animain.py` in an IDE or Notepad
 4. Change `user` in `chrome_profile_path` to the correct user name with reference to `Profile Path`
 5. Change `Default` in `profile-directory` to the correct profile name with reference to `Profile Path`
-6. Save changes to `non_ani_raw.py` and close
+6. Save changes to `non_animain.py` and close
 7. In the directory of where the files are, *right click* > *open in Terminal*
 8. In the Terminal,
 ```python
-python non_ani_raw.py
+python non_animain.py
 ```
 9. Follow each of the prompts shown
 
