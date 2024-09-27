@@ -16,10 +16,11 @@ All of this can be done right on the terminal, and no other installation is requ
 # Setup Guide:
 
 1. Go to Releases and download the latest version of `Mediarr.exe` into a folder
-2. On first launch (you only have to do this ONCE), go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
-3. The profile path is in the format of [`driver name`\Users\ `system user name`\AppData\Local\Google\Chrome\User Data\ `profile directory name`]
-4. Based on the directory path shown, enter your `system user name` and `profile directory name` accordingly when prompted
-5. Continue following each of the prompts shown
+2. For the first time opening the executable, you might get the message that Windows doesn't recognize it -- *click on 'More info'* > *Run anyway*
+3. On first launch (you only have to do this ONCE), go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
+4. The profile path is in the format of [`driver name`\Users\ `system user name`\AppData\Local\Google\Chrome\User Data\ `profile directory name`]
+5. Based on the directory path shown, enter your `system user name` and `profile directory name` accordingly when prompted
+6. Continue following each of the prompts shown
 
 *Note: The executable is specifically made for use with Google Chrome on Windows. To make it compatible with other browsers (as long as they have support for WebDriver), you can download the source code and alter `non_ani.py` and then build with `Pyinstaller` using the command in `toBuild.txt`.*
 
