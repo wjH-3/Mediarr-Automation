@@ -1,5 +1,5 @@
 # **Mediarr Automation**
-***...through sailing the High Seas...***
+***Sail the High Seas...***
 
 
 A simple CLI Python app that complements Real-Debrid and Debrid Media Manager, allowing users to get any Non-anime or Anime content, whether it be movies or shows, in a fast and automated way. 
@@ -8,12 +8,12 @@ Non-anime content is scraped directly from DMM, displaying the relevant files in
 
 All of this can be done right on the terminal, and no other installation is required except for the executable (`Mediarr.exe`).
 
-*Note: You can also choose to use either the non-anime or anime script by itself. For more details on how to do so, head over to their respective sections where there are instructions and also more details about the script themselves.*
+*Note: You can also choose to use either the non-anime or anime script by itself. For more info on how to do so, head over to their respective sections where there are instructions and also more details about the script themselves.*
 
 ---
 
 
-# How to Use: The Easy Way
+# Setup Guide:
 
 1. Go to Releases and download the latest version of `Mediarr.exe` into a folder
 2. On first launch (you only have to do this ONCE), go to ***chrome://version/*** (or similar for other browsers) and locate `Profile Path`
@@ -25,8 +25,10 @@ All of this can be done right on the terminal, and no other installation is requ
 
 ---
 
-
-# *Non-Anime*: Python Script for Real-Debrid
+# Individual Scripts:
+More about non_ani.py and ani.py.
+<details>
+<summary><b>Non-Anime: Python Script for Real-Debrid</b></summary>
 
 * This is a simple script for users to easily and instantly add the specific file (with the condition that it must be cached by Real-Debrid) of a movie or TV show that they want into their DMM Library by scraping results from Debrid Media Manager's search query
 * Users enter the movie/TV show title along with its year (as well as specify the season for the TV show) and the script will output a list of available files (along with their respective file sizes) for you to select
@@ -62,11 +64,12 @@ All of this can be done right on the terminal, and no other installation is requ
 python non_animain.py
 ```
 9. Follow each of the prompts shown
+</details>
 
 ---
 
-
-# *Anime*: Python Script to get Magnet Link
+<details>
+<summary><b>Anime: Python Script to get Magnet Link</b><summary>
 
 * A light and fast script for users to get the magnet link of the best possible current release of an anime through SeaDex or SubsPlease/Erai-raws
 * Users enter an anime title and it will output a list of matching titles from the Anilist API for users to select (e.g a specific season for the anime)
@@ -92,3 +95,4 @@ python non_animain.py
 python ani.py
 ```
 4. Follow each of the prompts shown
+<details>
