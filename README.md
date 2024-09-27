@@ -66,7 +66,6 @@ python non_animain.py
 9. Follow each of the prompts shown
 </details>
 
----
 
 <details>
 <summary><b>Anime: Python Script to get Magnet Link</b><summary>
@@ -95,4 +94,4 @@ python non_animain.py
 python ani.py
 ```
 4. Follow each of the prompts shown
-<details>
+</details>
