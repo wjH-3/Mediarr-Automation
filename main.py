@@ -21,7 +21,7 @@ def get_config():
         return create_config(config_path)
 
 def create_config(config_path):
-    print("First-time setup. Please input the necessary information. (Note: Input is case-sensitive)")
+    print("First-time setup. Please input the necessary information. (Note: Input is case-sensitive.)")
     user = input("Enter your system user name: ").strip()
     profile = input("Enter your Chrome profile directory name: ").strip()
     config = {'user': user, 'profile': profile}
@@ -29,7 +29,7 @@ def create_config(config_path):
     try:
         with open(config_path, 'w') as f:
             json.dump(config, f)
-        print("Configuration saved successfully.")
+        print("Configuration saved successfully.\n")
     except IOError as e:
         print(f"Unable to write config file. Error: {e}")
         print("You'll need to enter this information each time you run the program.")
