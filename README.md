@@ -68,7 +68,7 @@ python non_animain.py
 
 
 <details>
-<summary><b>Anime: Python Script to get Magnet Link</b><summary>
+<summary><b>Anime: Python Script to get Magnet Link</b></summary>
 
 * A light and fast script for users to get the magnet link of the best possible current release of an anime through SeaDex or SubsPlease/Erai-raws
 * Users enter an anime title and it will output a list of matching titles from the Anilist API for users to select (e.g a specific season for the anime)
