@@ -183,9 +183,14 @@ def main(auto_paste=False):
     
     if not is_instant:
         choice = input("Do you want to proceed? [Y/N]: ").strip().upper()
-        if choice != 'Y':
-            print("Exiting...")
-            sys.exit()
+        while True:
+            if choice == 'N':
+                print("Exiting...")
+                return
+            if choice == 'Y':
+                break
+            else:
+                print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
 
     process_torrent(api_token, magnet_link)
 
