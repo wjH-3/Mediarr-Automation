@@ -49,7 +49,7 @@ def get_tv_id():
     ia = IMDb()
 
     while True:
-        keywords = input("Enter title + year (e.g Stranger Things 2016): ")
+        keywords = input("Enter show title (e.g Stranger Things): ")
         search_results = ia.search_movie(keywords)  # Note: This also works for TV series
     
         if search_results:
@@ -211,7 +211,7 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
                     pyperclip.copy(keywords)
                     torrentLibrary.main(auto_paste=True)
 
-                    continue
+                    return
                 elif user_choice == 'N':
                     input("\nPress Enter to terminate the script and browser window...\n")
                     return
@@ -230,7 +230,7 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
                     pyperclip.copy(keywords)
                     torrentLibrary.main(auto_paste=True)
 
-                    continue
+                    return
                 elif user_choice == 'N':
                     break
                 else:
@@ -274,6 +274,8 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         detect_successful(driver, target_element_xpath)
 
         print(f"Magnet Link for '{file_names[selected_num - 1]}' copied successfully.")
+
+        RD.main(auto_paste=True)
 
         driver.quit()
 
@@ -321,7 +323,6 @@ def main():
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
         automate_webpage(url, media_type, user, profile, keywords, tv_query)
-        RD.main(auto_paste=True)
 
 if __name__ == "__main__":
     main()
