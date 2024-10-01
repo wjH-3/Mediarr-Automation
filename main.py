@@ -6,6 +6,7 @@ import sys
 import unrestrict
 import RD
 import DMM_library
+import torrentLibrary
 
 CONFIG_PATH = 'config.json'
 TOKEN_PATH = 'token.json'
@@ -25,7 +26,7 @@ def get_config():
         return create_config(config_path)
 
 def create_config(config_path):
-    print("First-time setup. Please input the necessary information. (Note: Input is case-sensitive.)")
+    print("First-time setup. Please input the necessary information. The config will be stored locally in 'config.json'. (Note: Input is case-sensitive.)")
     user = input("Enter your system user name: ").strip()
     profile = input("Enter your Chrome profile directory name: ").strip()
     config = {'user': user, 'profile': profile}
@@ -104,7 +105,7 @@ def main():
         token = get_token()
 
         while True:
-            options = print("Options:\n1. Search Movies/TV Shows\n2. Add Magnet Link\n3. Unrestrict Link\n4. Go DMM Library")
+            options = print("Options:\n1. Search Movies/TV Shows\n2. Watch Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link\n5. Go DMM Library")
             choice = input("Enter Option Number: ")
             if choice == '1':
                 while True:
@@ -120,12 +121,16 @@ def main():
                         print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
                 continue
             if choice == '2':
-                RD.main()
+                torrentLibrary.main()
                 continue
             if choice == '3':
+                RD.main()
                 unrestrict.main()
                 continue
             if choice == '4':
+                unrestrict.main()
+                continue
+            if choice == '5':
                 open_DMM_library(config['user'], config['profile'])
                 continue
             else:
