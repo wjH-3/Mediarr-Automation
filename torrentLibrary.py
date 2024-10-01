@@ -133,6 +133,7 @@ class RealDebridCLI:
                 pyperclip.copy(selected_link)
                 print("Link copied, unrestricting link...")
                 unrestrict.main(auto_paste=True)
+                return
             else:
                 # Display available files
                 print("\nAvailable files:")
@@ -145,8 +146,8 @@ class RealDebridCLI:
 
                     if file_choice == "":  # If the user presses Enter without input
                         print("Exiting...\n")
-                        break
-
+                        return
+                        
                     try:
                         file_choice=int(file_choice)
                         if 1 <= file_choice <= len(file_link_pairs):
@@ -189,6 +190,7 @@ def main(auto_paste: bool = False):
         return
     cli = RealDebridCLI(api_token, auto_paste)
     cli.run()
+    return
 
 if __name__ == "__main__":
     main()
