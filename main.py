@@ -125,7 +125,6 @@ def main():
                 continue
             if choice == '3':
                 RD.main()
-                unrestrict.main()
                 continue
             if choice == '4':
                 unrestrict.main()
