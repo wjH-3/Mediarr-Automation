@@ -3,8 +3,12 @@ import json
 import ani
 import non_ani
 import sys
+import unrestrict
+import RD
+import DMM_library
 
 CONFIG_PATH = 'config.json'
+TOKEN_PATH = 'token.json'
 
 def get_config():
     if getattr(sys, 'frozen', False):  # Check if running as an executable
@@ -36,6 +40,36 @@ def create_config(config_path):
 
     return config
 
+def get_token():
+    if getattr(sys, 'frozen', False):
+        token_dir = os.path.dirname(sys.executable)
+    else:
+        token_dir = os.path.dirname(__file__)
+
+    token_path = os.path.join(token_dir, TOKEN_PATH)
+
+    if os.path.exists(token_path):
+        with open(token_path, 'r') as f:
+            return json.load(f)
+    else:
+        return create_token(token_path)  # Changed from create_config to create_token
+
+def create_token(token_path):
+    print("First-time setup. Please input the Real-Debrid API token. The token will be stored locally in 'token.json'.")
+    print("You can find your token at: https://real-debrid.com/apitoken")
+    api_token = input("Enter your RD API token: ").strip()
+    token = {'token': api_token}
+
+    try:
+        with open(token_path, 'w') as f:
+            json.dump(token, f)
+        print("API token saved successfully.\n")
+    except IOError as e:
+        print(f"Unable to write token file. Error: {e}")
+        print("You'll need to enter this information each time you run the program.")
+
+    return token
+
 def run_non_ani(user, profile):
     # Preserve the original sys.argv
     original_argv = sys.argv.copy()
@@ -50,21 +84,52 @@ def run_non_ani(user, profile):
         # Restore the original sys.argv
         sys.argv = original_argv
 
+def open_DMM_library(user, profile):
+    # Preserve the original sys.argv
+    original_argv = sys.argv.copy()
+    
+    # Set sys.argv for non_ani.py
+    sys.argv = [sys.argv[0], user, profile]
+    
+    try:
+        # Run non_ani.main()
+        DMM_library.main()
+    finally:
+        # Restore the original sys.argv
+        sys.argv = original_argv
+
 def main():
     try:
         config = get_config()
+        token = get_token()
 
         while True:
-            choice = input("Anime or Non-Anime? [A/N]: ").strip().upper()
+            options = print("Options:\n1. Search Movies/TV Shows\n2. Add Magnet Link\n3. Unrestrict Link\n4. Go DMM Library")
+            choice = input("Enter Option Number: ")
+            if choice == '1':
+                while True:
+                    media_type = input("\nAnime or Non-Anime? [A/N]: ").strip().upper()
 
-            if choice == 'A':
-                ani.main()
-                break
-            elif choice == 'N':
-                run_non_ani(config['user'], config['profile'])
-                break
+                    if media_type == 'A':
+                        ani.main()
+                        break
+                    elif media_type == 'N':
+                        run_non_ani(config['user'], config['profile'])
+                        break
+                    else:
+                        print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
+                continue
+            if choice == '2':
+                RD.main()
+                continue
+            if choice == '3':
+                unrestrict.main()
+                continue
+            if choice == '4':
+                open_DMM_library(config['user'], config['profile'])
+                continue
             else:
-                print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
+                print("Invalid input, please enter a number from 1 to 4.")
     
     except Exception as e:
         print(f"\nAn error occurred:\n{str(e)}")
