@@ -43,22 +43,29 @@ def main(auto_paste=False):
         print("Invalid token data. Please run the main script to set up your token.")
         return
     
-    if auto_paste:
-        link = pyperclip.paste()
-    else:
-        link = input("\nEnter Hoster Link: ")
+    while True:
+        if auto_paste:
+            link = pyperclip.paste()
+        else:
+            link = input("\nInput Hoster Link or press Enter to Exit: ")
 
-    # Call the function to unrestrict the link
-    result = unrestrict_link(api_token, link)
+        if link == "":
+            print("Exiting...\n")
+            break
 
-    # Output the result in a formatted way
-    if isinstance(result, dict):
-        print("\nDownload Link:", result.get('download', 'No link found'))
-        pyperclip.copy(result.get('download'))
-        print("Download Link successfully copied to clipboard.\n")
+        # Call the function to unrestrict the link
+        result = unrestrict_link(api_token, link)
 
-    else:
-        print(result)
+        # Output the result in a formatted way
+        if isinstance(result, dict):
+            print("\nDownload Link:", result.get('download', 'No link found'))
+            pyperclip.copy(result.get('download'))
+            print("Download Link successfully copied to clipboard.\n")
+        else:
+            print(result)
+        
+        if auto_paste:
+            break
 
 if __name__ == "__main__":
     main()
