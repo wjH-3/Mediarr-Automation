@@ -4,10 +4,13 @@ from typing import List, Dict, Any
 import re
 import os
 import sys
+import pyperclip
+import unrestrict
 
 class RealDebridCLI:
-    def __init__(self, api_token: str):
+    def __init__(self, api_token: str, auto_paste: bool = False):
         self.api_token = api_token
+        self.auto_paste = auto_paste
         self.base_url = "https://api.real-debrid.com/rest/1.0"
         self.headers = {'Authorization': f'Bearer {self.api_token}'}
 
@@ -78,10 +81,16 @@ class RealDebridCLI:
         
         return matching_torrents
 
+    def get_search_query(self) -> str:
+        if self.auto_paste:
+            return pyperclip.paste()
+        else:
+            return input("\nInput file name: ").strip()
+
     def run(self):
         try:
-            # Get search input
-            search_query = input("\nInput file name: ").strip()
+            # Get search input using the new method
+            search_query = self.get_search_query()
             print(f"Searching for: {search_query}")
             
             # Search torrents
@@ -115,33 +124,51 @@ class RealDebridCLI:
             selected_files = [f for f in torrent_info['files'] if f['selected'] == 1]
             file_link_pairs = list(zip(selected_files, torrent_info['links']))
             
-            # Display available files
-            print("\nAvailable files:")
-            for i, (file, _) in enumerate(file_link_pairs, 1):
-                print(f"{i}. {file['path']}")
-            
-            # Get user choice for file
-            while True:
-                try:
-                    file_choice = int(input("\nSelect a file (enter number): "))
-                    if 1 <= file_choice <= len(file_link_pairs):
-                        break
-                    print("Invalid choice. Please try again.")
-                except ValueError:
-                    print("Please enter a valid number.")
-            
-            # Display selected file and its link
-            selected_file, selected_link = file_link_pairs[file_choice - 1]
-            print("\nSelected file:")
-            print(f"Path: {selected_file['path']}")
-            print(f"Link: {selected_link}")
+            if len(file_link_pairs) == 1:
+                # If there's only one file, print its path and link directly
+                print("\nGetting file...")
+                selected_file, selected_link = file_link_pairs[0]
+                print(f"File: {selected_file['path']}")
+                print(f"Link: {selected_link}")
+                pyperclip.copy(selected_link)
+                print("Link copied, unrestricting link...")
+                unrestrict.main(auto_paste=True)
+            else:
+                # Display available files
+                print("\nAvailable files:")
+                for i, (file, _) in enumerate(file_link_pairs, 1):
+                    print(f"{i}. {file['path']}")
+                
+                # Get user choice for file
+                while True:
+                    file_choice = input("Input Number to Choose File or press Enter to Exit: ")
 
+                    if file_choice == "":  # If the user presses Enter without input
+                        print("Exiting...\n")
+                        break
+
+                    try:
+                        file_choice=int(file_choice)
+                        if 1 <= file_choice <= len(file_link_pairs):
+                            # Display selected file and its link
+                            selected_file, selected_link = file_link_pairs[file_choice - 1]
+                            print("\nSelected file:")
+                            print(f"File: {selected_file['path']}")
+                            print(f"Link: {selected_link}")
+                            pyperclip.copy(selected_link)
+                            print("Link copied, unrestricting link...")
+                            unrestrict.main(auto_paste=True)
+                        else:
+                            print("Invalid choice. Please try again.")
+                    except ValueError:
+                        print("Please enter a valid number.")                
+                
         except requests.RequestException as e:
             print(f"API Error: {e}")
         except Exception as e:
             print(f"An error occurred: {e}")
 
-def main():
+def main(auto_paste: bool = False):
     # Get the API token from the token.json file
     token_data = None
     if getattr(sys, 'frozen', False):
@@ -160,7 +187,7 @@ def main():
     if not api_token:
         print("Invalid token data. Please run the main script to set up your token.")
         return
-    cli = RealDebridCLI(api_token)
+    cli = RealDebridCLI(api_token, auto_paste)
     cli.run()
 
 if __name__ == "__main__":
