@@ -109,7 +109,7 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
 
         releases = driver.find_elements(By.CSS_SELECTOR, "#__next > div > div.mx-2.my-1.overflow-x-auto.grid.grid-cols-1.sm\\:grid-cols-2.md\:grid-cols-3.lg\\:grid-cols-4.xl\\:grid-cols-6.gap-4")
         if not releases:
-            input("\nNo releases found for this title. Press Enter to terminate the script and browser window...")
+            input("\nNo releases found for this title. Press Enter to terminate the script and browser window...\n")
             return
 
         # Define search patterns
@@ -128,8 +128,8 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
 
             except NoSuchElementException:
             # If search filter is not found, print an error message
-                print(f"\nError: '{url}' is not a valid URL. The script will now terminate...")
-                sys.exit(1)
+                input(f"\nError: '{url}' is not a valid URL. Press Enter to terminate the script and browser window...\n")
+                return
     
             # Detect for "Show Uncached" button to appear (indicating all files parsed)
             def detect_uncached(driver, xpath1, xpath2):
@@ -169,7 +169,7 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         library_url = 'https://debridmediamanager.com/library'
 
         if not file_names:
-            input("\nNo matching files found with the given search filters. Press Enter to terminate the script and browser window...")
+            input("\nNo matching files found with the given search filters. Press Enter to terminate the script and browser window...\n")
             return
 
         # Check if any files are already in the library
@@ -213,7 +213,7 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
 
                     continue
                 elif user_choice == 'N':
-                    input("\nPress Enter to terminate the script and browser window...")
+                    input("\nPress Enter to terminate the script and browser window...\n")
                     return
                 else:
                     print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
