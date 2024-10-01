@@ -2,6 +2,7 @@ import requests
 import sys
 import os
 import json
+import pyperclip
 
 def unrestrict_link(api_token, link):
     url = 'https://api.real-debrid.com/rest/1.0/unrestrict/link'
@@ -22,7 +23,7 @@ def unrestrict_link(api_token, link):
     except Exception as err:
         return f"An error occurred: {err}"
 
-def main():
+def main(auto_paste=False):
     # Get the API token from the token.json file
     token_data = None
     if getattr(sys, 'frozen', False):
@@ -42,7 +43,10 @@ def main():
         print("Invalid token data. Please run the main script to set up your token.")
         return
     
-    link = input("Enter Hoster Link: ")
+    if auto_paste:
+        link = pyperclip.paste()
+    else:
+        link = input("\nEnter Hoster Link: ")
 
     # Call the function to unrestrict the link
     result = unrestrict_link(api_token, link)
@@ -50,6 +54,9 @@ def main():
     # Output the result in a formatted way
     if isinstance(result, dict):
         print("\nDownload Link:", result.get('download', 'No link found'))
+        pyperclip.copy(result.get('download'))
+        print("Download Link successfully copied to clipboard.\n")
+
     else:
         print(result)
 
