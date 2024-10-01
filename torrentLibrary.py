@@ -1,0 +1,167 @@
+import requests
+import json
+from typing import List, Dict, Any
+import re
+import os
+import sys
+
+class RealDebridCLI:
+    def __init__(self, api_token: str):
+        self.api_token = api_token
+        self.base_url = "https://api.real-debrid.com/rest/1.0"
+        self.headers = {'Authorization': f'Bearer {self.api_token}'}
+
+    def get_torrent_list(self) -> List[Dict[str, Any]]:
+        all_torrents = []
+        page = 1
+        has_more_pages = True
+
+        print("Fetching torrent library...")
+        while has_more_pages:
+            response = requests.get(
+                f"{self.base_url}/torrents",
+                params={'page': page},
+                headers=self.headers
+            )
+            
+            # Check for 204 No Content, indicating no more torrents
+            if response.status_code == 204:
+                print("All torrents fetched.")
+                break
+            elif response.status_code != 200:
+                print(f"API Error: {response.status_code}, {response.text}")
+                break
+            
+            try:
+                page_data = response.json()
+            except json.JSONDecodeError as e:
+                print(f"API Error: {str(e)}. Response content: {response.text}")
+                break
+
+            if not page_data:
+                has_more_pages = False
+            else:
+                all_torrents.extend(page_data)
+                # print(f"Fetched page {page} ({len(page_data)} torrents)")
+                page += 1
+
+        print(f"Total number of torrents: {len(all_torrents)}")
+        return all_torrents
+
+    def get_torrent_info(self, torrent_id: str) -> Dict[str, Any]:
+        response = requests.get(f"{self.base_url}/torrents/info/{torrent_id}", headers=self.headers)
+        response.raise_for_status()
+        return response.json()
+
+    def normalize_string(self, s: str) -> str:
+        # Convert to lowercase and replace common separators with spaces
+        s = re.sub(r'[._-]', ' ', s.lower())
+        # Remove common torrent notation like 1080p, 2160p, S01, E01, etc.
+        s = re.sub(r'\b\d{4}p\b|\b[s]\d{2}\b|\b[e]\d{2}\b|\bweb\b|\bh264\b|\bh265\b|\bx264\b|\bx265\b|\bhdr\b|\bsdr\b|\bdl\b|\bbluray\b|\bremux\b|\binternal\b', '', s, flags=re.IGNORECASE)
+        # Remove release group names in brackets
+        s = re.sub(r'\[.*?\]|\(.*?\)', '', s)
+        # Remove extra whitespace
+        s = ' '.join(s.split())
+        return s
+
+    def search_torrents(self, search_query: str) -> List[Dict[str, Any]]:
+        all_torrents = self.get_torrent_list()
+        normalized_query = self.normalize_string(search_query)
+        query_parts = normalized_query.split()
+        
+        matching_torrents = []
+        for torrent in all_torrents:
+            normalized_filename = self.normalize_string(torrent['filename'])
+            # Check if all parts of the search query are in the filename
+            if all(part in normalized_filename for part in query_parts):
+                matching_torrents.append(torrent)
+        
+        return matching_torrents
+
+    def run(self):
+        try:
+            # Get search input
+            search_query = input("\nInput file name: ").strip()
+            print(f"Searching for: {search_query}")
+            
+            # Search torrents
+            matching_torrents = self.search_torrents(search_query)
+            
+            if not matching_torrents:
+                print("No matching torrents found.")
+                return
+            
+            # Display matching torrents
+            print(f"\nFound {len(matching_torrents)} matching torrents:")
+            for i, torrent in enumerate(matching_torrents, 1):
+                print(f"{i}. {torrent['filename']}")
+            
+            # Get user choice for torrent
+            while True:
+                try:
+                    choice = int(input("\nSelect a torrent (enter number): "))
+                    if 1 <= choice <= len(matching_torrents):
+                        break
+                    print("Invalid choice. Please try again.")
+                except ValueError:
+                    print("Please enter a valid number.")
+            
+            selected_torrent = matching_torrents[choice - 1]
+            
+            # Get detailed info for selected torrent
+            torrent_info = self.get_torrent_info(selected_torrent['id'])
+            
+            # Filter and match selected files with links
+            selected_files = [f for f in torrent_info['files'] if f['selected'] == 1]
+            file_link_pairs = list(zip(selected_files, torrent_info['links']))
+            
+            # Display available files
+            print("\nAvailable files:")
+            for i, (file, _) in enumerate(file_link_pairs, 1):
+                print(f"{i}. {file['path']}")
+            
+            # Get user choice for file
+            while True:
+                try:
+                    file_choice = int(input("\nSelect a file (enter number): "))
+                    if 1 <= file_choice <= len(file_link_pairs):
+                        break
+                    print("Invalid choice. Please try again.")
+                except ValueError:
+                    print("Please enter a valid number.")
+            
+            # Display selected file and its link
+            selected_file, selected_link = file_link_pairs[file_choice - 1]
+            print("\nSelected file:")
+            print(f"Path: {selected_file['path']}")
+            print(f"Link: {selected_link}")
+
+        except requests.RequestException as e:
+            print(f"API Error: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+def main():
+    # Get the API token from the token.json file
+    token_data = None
+    if getattr(sys, 'frozen', False):
+        token_path = os.path.join(os.path.dirname(sys.executable), 'token.json')
+    else:
+        token_path = os.path.join(os.path.dirname(__file__), 'token.json')
+    
+    try:
+        with open(token_path, 'r') as f:
+            token_data = json.load(f)
+    except FileNotFoundError:
+        print("API token not found. Please run the main script to set up your token.")
+        return
+    
+    api_token = token_data.get('token')
+    if not api_token:
+        print("Invalid token data. Please run the main script to set up your token.")
+        return
+    cli = RealDebridCLI(api_token)
+    cli.run()
+
+if __name__ == "__main__":
+    main()
