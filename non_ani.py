@@ -11,6 +11,8 @@ import time
 import psutil
 import os
 import RD
+import torrentLibrary
+import pyperclip
 
 # Check if 'user' and 'profile' variables exist in sys.argv
 def get_user_profile():
@@ -38,7 +40,7 @@ def get_movie_id():
     
         if search_results:
             movie = search_results[0]
-            return movie.getID()
+            return movie.getID(), keywords
         else:
             print(f"Error: Unable to find the movie '{keywords}'. Make sure both the title and year are correct.")
 
@@ -53,7 +55,7 @@ def get_tv_id():
         if search_results:
             for result in search_results:
                 if result.get('kind') in ['tv series', 'tv mini series']:
-                    return result.getID()
+                    return result.getID(), keywords
         else:
             print(f"Error: Unable to find the show '{keywords}'. Make sure both the title and year are correct.")
 
@@ -68,7 +70,7 @@ def get_url(media_type, imdb_id, tv_query=None):
         return f"{base_tv_url}{imdb_id}/{tv_query}"
 
 # Web automation for scraping and interacting with search results
-def automate_webpage(url, media_type, user, profile, tv_query=None):
+def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
     # URL info
     print(f"Scraping from -> '{url}'...")
 
@@ -199,18 +201,17 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
         # Check if there are any available files
         if not available_files:
             print("All matching files found are already in the library.")
+            user_choice = input(f"Do you want to get the matching files from the library? [Y/N]: ").strip().upper()
             while True:
-                user_choice = input(f"Do you want to go to the library? [Y/N]: ").strip().upper()
                 if user_choice == 'Y':
-                    print("Opening DMM Library...")
+                    driver.quit()
+                    print("Getting relevant torrent file(s)...")
 
-                    # Open the library url
-                    time.sleep(3)
-                    driver.maximize_window()
-                    driver.get(library_url)
+                    # Go to torrentLibrary
+                    pyperclip.copy(keywords)
+                    torrentLibrary.main(auto_paste=True)
 
-                    input("\nPress Enter to terminate the script and browser window...")
-                    return
+                    continue
                 elif user_choice == 'N':
                     input("\nPress Enter to terminate the script and browser window...")
                     return
@@ -219,18 +220,17 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
         
         if files_in_library:
             print("One or more matching file(s) found are already in the library.")
+            user_choice = input("Do you want to get the matching files from the library? [Y/N]: ").strip().upper()
             while True:
-                user_choice = input("Do you want to go to the library? [Y/N]: ").strip().upper()
                 if user_choice == 'Y':
-                    print("Opening DMM Library...")
+                    driver.quit()
+                    print("Getting relevant torrent file(s)...")
 
-                    # Open the library url
-                    time.sleep(3)
-                    driver.maximize_window()
-                    driver.get(library_url)
+                    # Go to torrentLibrary
+                    pyperclip.copy(keywords)
+                    torrentLibrary.main(auto_paste=True)
 
-                    input("\nPress Enter to terminate the script and browser window...")
-                    return
+                    continue
                 elif user_choice == 'N':
                     break
                 else:
@@ -275,6 +275,8 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
 
         print(f"Magnet Link for '{file_names[selected_num - 1]}' copied successfully.")
 
+        driver.quit()
+
     except WebDriverException:
         print(f"\nError: '{url}' could not be reached. The script will now terminate...")
         sys.exit(1)
@@ -299,11 +301,11 @@ def main():
             print("Invalid input. Please enter 'M' for movie or 'T' for TV.")
     
     if media_type == 'M':
-        imdb_id = get_movie_id()
+        imdb_id, keywords = get_movie_id()
         tv_query = None
 
     elif media_type =='T':
-        imdb_id = get_tv_id()
+        imdb_id, keywords = get_tv_id()
 
         while True:
             tv_query = input("What season of the show are you looking for? Enter the season number - ")
@@ -318,7 +320,7 @@ def main():
 
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
-        automate_webpage(url, media_type, user, profile, tv_query)
+        automate_webpage(url, media_type, user, profile, keywords, tv_query)
         RD.main(auto_paste=True)
 
 if __name__ == "__main__":
