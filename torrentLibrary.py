@@ -97,7 +97,7 @@ class RealDebridCLI:
             matching_torrents = self.search_torrents(search_query)
             
             if not matching_torrents:
-                print("No matching torrents found.")
+                print("No matching torrents found.\n")
                 return
             
             # Display matching torrents
