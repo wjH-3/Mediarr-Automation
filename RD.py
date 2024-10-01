@@ -185,7 +185,7 @@ def main(auto_paste=False):
         choice = input("Do you want to proceed? [Y/N]: ").strip().upper()
         while True:
             if choice == 'N':
-                print("Exiting...")
+                print("Exiting...\n")
                 return
             if choice == 'Y':
                 break
