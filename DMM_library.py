@@ -54,7 +54,7 @@ def go_library(user, profile):
         driver.get(library_url)
         driver.maximize_window()
 
-        input("\nPress Enter to terminate the script and browser window...")
+        input("\nPress Enter to terminate the script and browser window...\n")
     except WebDriverException:
         print(f"\nError: '{library_url}' could not be reached. The script will now terminate...")
         sys.exit(1)
