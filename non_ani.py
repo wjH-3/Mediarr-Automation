@@ -10,6 +10,7 @@ import sys
 import time
 import psutil
 import os
+import RD
 
 # Check if 'user' and 'profile' variables exist in sys.argv
 def get_user_profile():
@@ -254,7 +255,7 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
         print("\nGetting file, please wait...")
 
         # Locate the corresponding button for the selected file (within the same section)
-        focus_button = selected_file_element.find_element(By.XPATH, "./following-sibling::div[contains(@class, 'space-x-2')]/button")
+        focus_button = selected_file_element.find_element(By.XPATH, "./following-sibling::div[contains(@class, 'space-x-2')]/button[4]")
 
         # Click the button corresponding to the selected file
         focus_button.click()
@@ -272,21 +273,7 @@ def automate_webpage(url, media_type, user, profile, tv_query=None):
         target_element_xpath = "//*[@id='__next']/div/div[1]/div/div/div[2]"
         detect_successful(driver, target_element_xpath)
 
-        print(f"File '{file_names[selected_num - 1]}' added to library successfully. Click on the file then click on 'DL' to send to Real-Debrid to download or stream it.")
-
-        time.sleep(3)
-
-        print("Opening DMM Library...")
-
-        time.sleep(5)
-
-        # Show browser window
-        driver.maximize_window()
-
-        # Go to DMM library
-        driver.get(library_url)
-
-        input("\nPress Enter to terminate the script and browser window...")
+        print(f"Magnet Link for '{file_names[selected_num - 1]}' copied successfully.")
 
     except WebDriverException:
         print(f"\nError: '{url}' could not be reached. The script will now terminate...")
@@ -332,6 +319,7 @@ def main():
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
         automate_webpage(url, media_type, user, profile, tv_query)
+        RD.main(auto_paste=True)
 
 if __name__ == "__main__":
     main()
