@@ -19,8 +19,9 @@ def get_user_profile():
     if len(sys.argv) >= 3:
         return sys.argv[1], sys.argv[2]
     else:
-        print("Error: Missing arguments for user and profile")
-        sys.exit(1)
+        print("Error: Missing arguments for user and profile.")
+        input("Press Enter to Exit...")
+        return
 
 # Check if browser window(s) open
 def browser_open(browser='chrome'):
@@ -281,7 +282,8 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
 
     except WebDriverException:
         print(f"\nError: '{url}' could not be reached. The script will now terminate...")
-        sys.exit(1)
+        input("Press Enter to Exit...")
+        return
     except Exception as e:
         print(f"\nAn unexpected error occurred. Details:\n{str(e)}")
 
