@@ -129,6 +129,7 @@ def process_torrent(api_token, magnet_link):
         print(f"Download Link: {selected_file['download']}")
         pyperclip.copy(selected_file['download'])
         print("Download Link successfully copied to clipboard.\n")
+        input("Press Enter to Exit...")
     else:
         print("\nFile list:")
         for i, link in enumerate(unrestricted_links, 1):
@@ -139,6 +140,7 @@ def process_torrent(api_token, magnet_link):
 
             if choice == "":  # If the user presses Enter without input
                 print("Exiting...\n")
+                time.sleep(1)
                 break
 
             try:
@@ -186,6 +188,7 @@ def main(auto_paste=False):
         while True:
             if choice == 'N':
                 print("Exiting...\n")
+                time.sleep(1)
                 return
             if choice == 'Y':
                 break
