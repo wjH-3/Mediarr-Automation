@@ -49,7 +49,7 @@ def get_tv_id():
     ia = IMDb()
 
     while True:
-        keywords = input("Enter show title (e.g Stranger Things): ")
+        keywords = input("Enter title + year (e.g Stranger Things 2016): ")
         search_results = ia.search_movie(keywords)  # Note: This also works for TV series
     
         if search_results:
@@ -114,9 +114,9 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
 
         # Define search patterns
         search_patterns = [
-            "remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
-            "web-dl ^(?!.*(?:hdr|dv|dovi)).*(?:2160p).*$" if media_type == 'M' else "web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$",
-            "1080p ^(?!.*(?:hdr|dv|dovi)).*(?:web|bluray|blu-ray).*$"
+            r"remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
+            r"2160p ^(?!.*\b(?:hdr|dv|dovi)\b).*\b(?:web[-\s]?dl)\b.*$" if media_type == 'M' else r"web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$",
+            r"^(?!.*(?:hdr|dv|dovi)).*\b(?:1080p|2160p)\b.*(?:web|blu(?:ray|-ray|\sray)).*$"
         ]
 
         for search_text in search_patterns:
