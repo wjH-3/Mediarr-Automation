@@ -59,12 +59,27 @@ class RealDebridCLI:
     def normalize_string(self, s: str) -> str:
         # Convert to lowercase and replace common separators with spaces
         s = re.sub(r'[._-]', ' ', s.lower())
+        s = re.sub(r':', ' ', s.lower())  # Replace colons with spaces
+
+        # Split the string into parts to check for title and year
+        parts = s.split()
+        
+        # Check if the string is purely numeric (e.g., the movie "2012")
+        if not re.fullmatch(r'\d+', s.strip()):
+            # If not purely numeric, look for a year at the end of the string
+            if len(parts) > 1 and re.fullmatch(r'\d{4}', parts[-1]):
+                # Remove the last part if it's a year (four digits)
+                s = ' '.join(parts[:-1])
+
         # Remove common torrent notation like 1080p, 2160p, S01, E01, etc.
         s = re.sub(r'\b\d{4}p\b|\b[s]\d{2}\b|\b[e]\d{2}\b|\bweb\b|\bh264\b|\bh265\b|\bx264\b|\bx265\b|\bhdr\b|\bsdr\b|\bdl\b|\bbluray\b|\bremux\b|\binternal\b', '', s, flags=re.IGNORECASE)
+        
         # Remove release group names in brackets
         s = re.sub(r'\[.*?\]|\(.*?\)', '', s)
+        
         # Remove extra whitespace
         s = ' '.join(s.split())
+    
         return s
 
     def search_torrents(self, search_query: str) -> List[Dict[str, Any]]:
