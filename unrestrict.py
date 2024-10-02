@@ -1,6 +1,7 @@
 import requests
 import sys
 import os
+import time
 import json
 import pyperclip
 
@@ -51,6 +52,7 @@ def main(auto_paste=False):
 
         if link == "":
             print("Exiting...\n")
+            time.sleep(1)
             break
 
         # Call the function to unrestrict the link
