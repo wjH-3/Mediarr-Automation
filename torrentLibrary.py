@@ -4,6 +4,7 @@ from typing import List, Dict, Any
 import re
 import os
 import sys
+import time
 import pyperclip
 import unrestrict
 
@@ -113,6 +114,7 @@ class RealDebridCLI:
             
             if not matching_torrents:
                 print("No matching torrents found.\n")
+                input("Press Enter to Exit...")
                 return
             
             # Display matching torrents
@@ -148,6 +150,7 @@ class RealDebridCLI:
                 pyperclip.copy(selected_link)
                 print("Link copied, unrestricting link...")
                 unrestrict.main(auto_paste=True)
+                input("Press Enter to Exit...")
                 return
             else:
                 # Display available files
@@ -161,6 +164,7 @@ class RealDebridCLI:
 
                     if file_choice == "":  # If the user presses Enter without input
                         print("Exiting...\n")
+                        time.sleep(1)
                         return
                         
                     try:
