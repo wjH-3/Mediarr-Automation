@@ -99,12 +99,16 @@ def open_DMM_library(user, profile):
         # Restore the original sys.argv
         sys.argv = original_argv
 
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 def main():
     try:
         config = get_config()
         token = get_token()
 
         while True:
+            clear_screen()
             options = print("Options:\n1. Search Movies/TV Shows\n2. Watch Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link\n5. Go DMM Library")
             choice = input("Enter Option Number: ")
             if choice == '1':
