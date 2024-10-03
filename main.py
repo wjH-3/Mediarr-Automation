@@ -3,6 +3,7 @@ import json
 import ani
 import non_ani
 import sys
+import time
 import unrestrict
 import RD
 import DMM_library
@@ -139,6 +140,7 @@ def main():
                 continue
             else:
                 print("Invalid input, please enter a number from 1 to 5.")
+                time.sleep(2)
     
     except Exception as e:
         print(f"\nAn error occurred:\n{str(e)}")
