@@ -275,10 +275,10 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         detect_successful(driver, target_element_xpath)
 
         print(f"Magnet Link for '{file_names[selected_num - 1]}' copied successfully.")
+        
+        driver.quit()
 
         RD.main(auto_paste=True)
-
-        driver.quit()
 
     except WebDriverException:
         print(f"\nError: '{url}' could not be reached. The script will now terminate...")
