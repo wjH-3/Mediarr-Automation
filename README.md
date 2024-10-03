@@ -5,10 +5,10 @@
 A simple CLI Python app that utilises the [Real-Debrid](https://real-debrid.com/) API alongside [Debrid Media Manager](https://debridmediamanager.com/). It allows users to access a suite of Real-Debrid's main features, as well as get any Non-anime or Anime content, whether it be movies or shows, in a fast and automated way all within the Terminal itself. 
 
 ## Features:
-* Search for **Non-Anime** movies/TV shows: Scrape a particular movie/show from DMM, displaying the relevant files in a list for users to choose from
+* **Search for Non-Anime** movies/TV shows: Scrape a particular movie/show from DMM, displaying the relevant files in a list for users to choose from
     * query a specific season of a show
     * dynamic regex filtering to scrape only the highest quality files first and then automatically change up the filters if files are not found
-* **Anime**: makes use of the AniList and SeaDex API to get the magnet links of a Best Release of the specified anime, as well as query Nyaa for SubsPlease/Erai-raws releases of currently airing anime
+* **Search for Anime**: makes use of the AniList and SeaDex API to get the magnet links of a Best Release of the specified anime, as well as query Nyaa for SubsPlease/Erai-raws releases of currently airing anime
 * **Get DL Link instantly**: After selecting the file you want, Mediarr will automatically get the RD links for the torrent and unrestrict them, outputting a DL Link that's copied into your clipboard using `Pyperclip`. From there, you can simply paste the link into your Video Player to stream the content right away or download it if you want
 * **Paste your own Magnet Link**: Paste your own magnet link in and it will first check for **Instant Availability**, i.e if the torrent is cached in RD. If it is, it will automatcially proceed to add the torrent and then unrestrict it and output the DL Links. If it is not, it will inform you and asks if you still want to proceed to download the torrent
 * **Unrestrict Link**: Similarly, you can paste in any link from RD's supported hosters and it will unrestrict and output the DL Link for you
