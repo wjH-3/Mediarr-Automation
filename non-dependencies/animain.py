@@ -5,7 +5,6 @@
 import requests # pip install requests
 from bs4 import BeautifulSoup # pip install beautifulsoup4
 import pyperclip # pip install pyperclip
-import RD
 
 def search_anilist(anime_title):
     # GraphQL query with pagination (Page)
@@ -194,7 +193,7 @@ def scrape_specific_file(url):
     magnet_link = soup.find('a', href=lambda x: x and x.startswith('magnet:'))
     
     if magnet_link:
-        # print(f"\nMagnet Link: {magnet_link['href']}")
+        print(f"\nMagnet Link: {magnet_link['href']}")
         return magnet_link['href']
     else:
         print("\nNo magnet link found on this page.")
@@ -227,8 +226,7 @@ def scrape_file_list(url):
     def display_and_select(files, source):
         if not files:
             print(f"\nNo files with magnet links found for {source}.")
-            input("\nPress Enter to Exit...")
-            return
+            return None
 
         print(f"\nMatching files from {source}:")
         for i, (name, _) in enumerate(files, 1):
@@ -247,7 +245,7 @@ def scrape_file_list(url):
                 if 1 <= choice <= len(files):
                     selected_file, selected_link = files[choice - 1]
                     print(f"\nYou selected: {selected_file}")
-                    # print(f"\nMagnet Link: {selected_link}")
+                    print(f"\nMagnet Link: {selected_link}")
                     return selected_link
                 else:
                     print(f"Invalid number. Please enter a number between 1 and {len(files)}.")
@@ -315,19 +313,21 @@ def main():
                             magnet_link = get_magnet(url)
                             if magnet_link:
                                 while True:
-                                    pyperclip.copy(magnet_link)
-                                    print("Magnet link successfully copied to clipboard.")
-                                    RD.main(auto_paste=True)
-                                    break
-                                    
+                                    copy_input = input("Do you want to copy the magnet link? [Y/N]: ").strip().upper()
+                                    if copy_input == 'Y':
+                                        pyperclip.copy(magnet_link)
+                                        print("Magnet link successfully copied to clipboard.")
+                                        input("\nPress Enter to terminate the script...")
+                                        break
+                                    if copy_input == 'N':
+                                        input("\nPress Enter to terminate the script...")
+                                        break
+                                    else:
+                                        print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
                         else:
                             print("Could not generate a URL for this anime.")
-                            input("\nPress Enter to Exit...")
-                            return
                     else:
                         print("Could not retrieve the anime's status.")
-                        input("\nPress Enter to Exit...")
-                        return
                     break
                 else:
                     print("Invalid selection.")
@@ -335,8 +335,6 @@ def main():
                 print("Invalid selection. Please enter a number.")
     else:
         print("No results found.")
-        input("\nPress Enter to Exit...")
-        return
 
 if __name__ == "__main__":
     main()
