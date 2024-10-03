@@ -90,6 +90,7 @@ def process_torrent(api_token, magnet_link):
             video_file_ids = [file['id'] for file in video_files]
             if not video_file_ids:
                 print("No video files found in the torrent.")
+                input("\nPress Enter to Exit...")
                 return
             break
         else:
@@ -112,6 +113,7 @@ def process_torrent(api_token, magnet_link):
     links = info.get('links', [])
     if not links:
         print("Warning: No links found in torrent info.")
+        input("\nPress Enter to Exit...")
         return
 
     print(f"Unrestricting {len(links)} link(s)...")
@@ -169,11 +171,13 @@ def main(auto_paste=False):
             token_data = json.load(f)
     except FileNotFoundError:
         print("API token not found. Please run the main script to set up your token.")
+        input("\nPress Enter to Exit...")
         return
     
     api_token = token_data.get('token')
     if not api_token:
         print("Invalid token data. Please run the main script to set up your token.")
+        input("\nPress Enter to Exit...")
         return
     
     if auto_paste:

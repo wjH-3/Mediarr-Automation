@@ -227,7 +227,8 @@ def scrape_file_list(url):
     def display_and_select(files, source):
         if not files:
             print(f"\nNo files with magnet links found for {source}.")
-            return None
+            input("\nPress Enter to Exit...")
+            return
 
         print(f"\nMatching files from {source}:")
         for i, (name, _) in enumerate(files, 1):
@@ -321,8 +322,12 @@ def main():
                                     
                         else:
                             print("Could not generate a URL for this anime.")
+                            input("\nPress Enter to Exit...")
+                            return
                     else:
                         print("Could not retrieve the anime's status.")
+                        input("\nPress Enter to Exit...")
+                        return
                     break
                 else:
                     print("Invalid selection.")
@@ -330,6 +335,8 @@ def main():
                 print("Invalid selection. Please enter a number.")
     else:
         print("No results found.")
+        input("\nPress Enter to Exit...")
+        return
 
 if __name__ == "__main__":
     main()

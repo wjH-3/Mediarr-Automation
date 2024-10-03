@@ -37,11 +37,13 @@ def main(auto_paste=False):
             token_data = json.load(f)
     except FileNotFoundError:
         print("API token not found. Please run the main script to set up your token.")
+        input("Press Enter to Exit...")
         return
     
     api_token = token_data.get('token')
     if not api_token:
         print("Invalid token data. Please run the main script to set up your token.")
+        input("Press Enter to Exit...")
         return
     
     while True:

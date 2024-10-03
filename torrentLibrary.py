@@ -101,7 +101,7 @@ class RealDebridCLI:
         if self.auto_paste:
             return pyperclip.paste()
         else:
-            return input("\nInput file name: ").strip()
+            return input("\nInput Movie/TV Show: ").strip()
 
     def run(self):
         try:
@@ -201,11 +201,13 @@ def main(auto_paste: bool = False):
             token_data = json.load(f)
     except FileNotFoundError:
         print("API token not found. Please run the main script to set up your token.")
+        input("Press Enter to Exit...")
         return
     
     api_token = token_data.get('token')
     if not api_token:
         print("Invalid token data. Please run the main script to set up your token.")
+        input("Press Enter to Exit...")
         return
     cli = RealDebridCLI(api_token, auto_paste)
     cli.run()

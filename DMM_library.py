@@ -13,7 +13,8 @@ def get_user_profile():
         return sys.argv[1], sys.argv[2]
     else:
         print("Error: Missing arguments for user and profile")
-        sys.exit(1)
+        input("Press Enter to Exit...")
+        return
 
 # Check if browser window(s) open
 def browser_open(browser='chrome'):
@@ -57,7 +58,8 @@ def go_library(user, profile):
         input("\nPress Enter to terminate the script and browser window...\n")
     except WebDriverException:
         print(f"\nError: '{library_url}' could not be reached. The script will now terminate...")
-        sys.exit(1)
+        input("Press Enter to Exit...")
+        return
     except Exception as e:
         print(f"\nAn unexpected error occurred. Details:\n{str(e)}")
 
@@ -68,8 +70,10 @@ def main():
     input("Press Enter to continue...")
 
     if browser_open():
-        print("Warning: Browser window detected. Please close all browser windows before continuing.")
-        input("Press Enter to continue...\n")
+        print("\nWarning: Browser window detected. Please close all browser windows before continuing.")
+        input("Press Enter to continue...")
+
+    print("\nOpening DMM Library...")
 
     go_library(user, profile)
 
