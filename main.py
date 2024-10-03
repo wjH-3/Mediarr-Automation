@@ -111,6 +111,7 @@ def main():
 
         while True:
             clear_screen()
+            time.sleep(0.5)
             options = print("Options:\n1. Search Movies/TV Shows\n2. Get Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link\n5. Go DMM Library")
             choice = input("Enter Option Number: ")
             if choice == '1':
@@ -139,12 +140,12 @@ def main():
                 open_DMM_library(config['user'], config['profile'])
                 continue
             else:
-                print("Invalid input, please enter a number from 1 to 5.")
+                print("\nInvalid input. Please enter a Number from 1 to 5.")
                 time.sleep(2)
     
     except Exception as e:
         print(f"\nAn error occurred:\n{str(e)}")
-        input("\nPress Enter to exit...")
+        input("\nPress Enter to Exit...")
 
 if __name__ == "__main__":
     main()
