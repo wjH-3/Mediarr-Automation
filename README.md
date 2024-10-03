@@ -1,4 +1,4 @@
-# **Mediarr Automation**
+# **Mediarr**
 ***Sail the High Seas...***
 
 
@@ -42,7 +42,7 @@ All of this can be done right on the terminal, and no other installation is requ
 # Individual Scripts:
 More about non_ani.py and ani.py.
 <details>
-<summary><b>Non-Anime: Python Script for Real-Debrid</b></summary>
+<summary><b>Non-Anime: Python Script for DMM</b></summary>
 
 * This is a simple script for users to easily and instantly add the specific file (with the condition that it must be cached by Real-Debrid) of a movie or TV show that they want into their DMM Library by scraping results from Debrid Media Manager's search query
 * Users enter the movie/TV show title along with its year (as well as specify the season for the TV show) and the script will output a list of available files (along with their respective file sizes) for you to select
