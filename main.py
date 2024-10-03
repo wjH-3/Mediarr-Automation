@@ -27,6 +27,7 @@ def get_config():
 
 def create_config(config_path):
     print("First-time setup. Please input the necessary information. The config will be stored locally in 'config.json'. (Note: Input is case-sensitive.)")
+    print("You can find the relevant info at: chrome://version/, under 'Profile Path'.")
     user = input("Enter your system user name: ").strip()
     profile = input("Enter your Chrome profile directory name: ").strip()
     config = {'user': user, 'profile': profile}
@@ -109,7 +110,7 @@ def main():
 
         while True:
             clear_screen()
-            options = print("Options:\n1. Search Movies/TV Shows\n2. Watch Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link\n5. Go DMM Library")
+            options = print("Options:\n1. Search Movies/TV Shows\n2. Get Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link\n5. Go DMM Library")
             choice = input("Enter Option Number: ")
             if choice == '1':
                 while True:
@@ -137,7 +138,7 @@ def main():
                 open_DMM_library(config['user'], config['profile'])
                 continue
             else:
-                print("Invalid input, please enter a number from 1 to 4.")
+                print("Invalid input, please enter a number from 1 to 5.")
     
     except Exception as e:
         print(f"\nAn error occurred:\n{str(e)}")
