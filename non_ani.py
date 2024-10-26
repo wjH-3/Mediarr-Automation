@@ -222,19 +222,54 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         tv_release_groups = r"(BLURANiUM|FraMeSToR|PmP|decibeL|EPSiLON|HiFi|KRaLiMaRKo|playBD|PTer|SiCFoI|TRiToN|Chotab|CtrlHD|DON|EbP|NTb|SA89|sbR|ABBiE|AJP69|APEX|PAXA|PEXA|XEPA|CasStudio|CRFW|FLUX|HONE|KiNGS|Kitsune|monkee|NOSiViD|NTG|QOQ|RTN|SiC|T6D|TOMMY|ViSUM|3cTWeB|BLUTONiUM|BTW|Cinefeel|CiT|CMRG|Coo7|dB|DEEP|END|ETHiCS|FC|Flights|GNOME|iJP|iKA|iT00NZ|JETIX|KHN|KiMCHI|LAZY|MiU|MZABI|NPMS|NYH|orbitron|PHOENiX|playWEB|PSiG|ROCCaT|RTFM|SbR|SDCC|SIGMA|SMURF|SPiRiT|TEPES|TVSmash|WELP|XEBEC|4KBEC|CEBEX|DRACULA|NINJACENTRAL|SLiGNOME|SwAgLaNdEr|T4H|ViSiON|DEFLATE|INFLATE)(?=(\.(mkv|mp4|avi|mov|flv|wmv|webm))?$)"
         movie_release_groups = r"(3L|BiZKiT|BLURANiUM|CiNEPHiLES|FraMeSToR|PmP|ZQ|Flights|NCmt|playBD|SiCFoI|SURFINBIRD|TEPES|decibeL|EPSiLON|HiFi|iFT|KRaLiMaRKo|NTb|PTP|SumVision|TOA|TRiToN|CtrlHD|MainFrame|DON|W4NK3R|HQMUX|BHDStudio|hallowed|HONE|PTer|SPHD|WEBDV|BBQ|c0kE|Chotab|CRiSC|D-Z0N3|Dariush|EbP|EDPH|Geek|LolHD|TayTO|TDD|TnP|VietHD|EA|HiDt|HiSD|QOQ|SA89|sbR|LoRD|playHD|ABBIE|AJP69|APEX|PAXA|PEXA|XEPA|BLUTONiUM|CMRG|CRFW|CRUD|FLUX|GNOME|KiNGS|Kitsune|NOSiViD|NTG|SiC|dB|MiU|monkee|MZABI|PHOENiX|playWEB|SbR|SMURF|TOMMY|XEBEC|4KBEC|CEBEX)(?=(\.(mkv|mp4|avi|mov|flv|wmv|webm))?$)"
 
-        # Track the selected file name for the success message
         selected_file_name = None
+        
+        # Convert the regex patterns into lists to maintain priority order
+        tv_groups_list = ['BLURANiUM', 'FraMeSToR', 'PmP', 'decibeL', 'EPSiLON', 'HiFi', 'KRaLiMaRKo', 'playBD', 'PTer', 'SiCFoI', 'TRiToN', 'Chotab', 'CtrlHD', 'DON', 'EbP', 'NTb', 'SA89', 'sbR', 'ABBiE', 'AJP69', 'APEX', 'PAXA', 'PEXA', 'XEPA', 'CasStudio', 'CRFW', 'FLUX', 'HONE', 'KiNGS', 'Kitsune', 'monkee', 'NOSiViD', 'NTG', 'QOQ', 'RTN', 'SiC', 'T6D', 'TOMMY', 'ViSUM', '3cTWeB', 'BLUTONiUM', 'BTW', 'Cinefeel', 'CiT', 'CMRG', 'Coo7', 'dB', 'DEEP', 'END', 'ETHiCS', 'FC', 'Flights', 'GNOME', 'iJP', 'iKA', 'iT00NZ', 'JETIX', 'KHN', 'KiMCHI', 'LAZY', 'MiU', 'MZABI', 'NPMS', 'NYH', 'orbitron', 'PHOENiX', 'playWEB', 'PSiG', 'ROCCaT', 'RTFM', 'SbR', 'SDCC', 'SIGMA', 'SMURF', 'SPiRiT', 'TEPES', 'TVSmash', 'WELP', 'XEBEC', '4KBEC', 'CEBEX', 'DRACULA', 'NINJACENTRAL', 'SLiGNOME', 'SwAgLaNdEr', 'T4H', 'ViSiON', 'DEFLATE', 'INFLATE']
+        movie_groups_list = ['3L', 'BiZKiT', 'BLURANiUM', 'CiNEPHiLES', 'FraMeSToR', 'PmP', 'ZQ', 'Flights', 'NCmt', 'playBD', 'SiCFoI', 'SURFINBIRD', 'TEPES', 'decibeL', 'EPSiLON', 'HiFi', 'iFT', 'KRaLiMaRKo', 'NTb', 'PTP', 'SumVision', 'TOA', 'TRiToN', 'CtrlHD', 'MainFrame', 'DON', 'W4NK3R', 'HQMUX', 'BHDStudio', 'hallowed', 'HONE', 'PTer', 'SPHD', 'WEBDV', 'BBQ', 'c0kE', 'Chotab', 'CRiSC', 'D-Z0N3', 'Dariush', 'EbP', 'EDPH', 'Geek', 'LolHD', 'TayTO', 'TDD', 'TnP', 'VietHD', 'EA', 'HiDt', 'HiSD', 'QOQ', 'SA89', 'sbR', 'LoRD', 'playHD', 'ABBIE', 'AJP69', 'APEX', 'PAXA', 'PEXA', 'XEPA', 'BLUTONiUM', 'CMRG', 'CRFW', 'CRUD', 'FLUX', 'GNOME', 'KiNGS', 'Kitsune', 'NOSiViD', 'NTG', 'SiC', 'dB', 'MiU', 'monkee', 'MZABI', 'PHOENiX', 'playWEB', 'SbR', 'SMURF', 'TOMMY', 'XEBEC', '4KBEC', 'CEBEX']
 
-        # Find first file with a good release group for TV or Movie
+        # Track the best match found
+        best_match = {
+            'priority': float('inf'),  # Initialize with highest possible number
+            'original_idx': None,
+            'file_name': None,
+            'file_element_idx': None
+        }
+
+        # Find file with highest priority release group
         for idx, (original_idx, file_name, file_size) in enumerate(available_files):
-            if (media_type == 'T' and re.search(tv_release_groups, file_name)) or \
-            (media_type == 'M' and re.search(movie_release_groups, file_name)):
-                selected_file_index = original_idx - 1  # Get the original index
-                selected_file_element = file_name_elements[selected_file_index]  # Get the actual web element
-                selected_file_name = file_name  # Store the selected file name
-                print(f"Good Release found: '{file_name}'")
-                print("Auto-selecting...")
-                break
+            if media_type == 'T':
+                # Check for TV release groups
+                for priority, group in enumerate(tv_groups_list):
+                    if re.search(f"{group}(?=(\.(mkv|mp4|avi|mov|flv|wmv|webm))?$)", file_name):
+                        if priority < best_match['priority']:
+                            best_match = {
+                                'priority': priority,
+                                'original_idx': original_idx,
+                                'file_name': file_name,
+                                'file_element_idx': original_idx - 1
+                            }
+                        break
+            elif media_type == 'M':
+                # Check for Movie release groups
+                for priority, group in enumerate(movie_groups_list):
+                    if re.search(f"{group}(?=(\.(mkv|mp4|avi|mov|flv|wmv|webm))?$)", file_name):
+                        if priority < best_match['priority']:
+                            best_match = {
+                                'priority': priority,
+                                'original_idx': original_idx,
+                                'file_name': file_name,
+                                'file_element_idx': original_idx - 1
+                            }
+                        break
+
+        # If we found a match, use it
+        if best_match['file_name'] is not None:
+            selected_file_index = best_match['file_element_idx']
+            selected_file_element = file_name_elements[selected_file_index]
+            selected_file_name = best_match['file_name']
+            print(f"Good Release found: '{selected_file_name}'")
+            print("Auto-selecting...")
 
         if selected_file_name is None:
             # Manual selection      
