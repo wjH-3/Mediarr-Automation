@@ -13,6 +13,7 @@ import os
 import RD
 import torrentLibrary
 import pyperclip
+import re
 
 # Check if 'user' and 'profile' variables exist in sys.argv
 def get_user_profile():
@@ -199,26 +200,6 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         for new_idx, (_, file_name, file_size) in enumerate(available_files, start=1):
             print(f"{new_idx}. {file_name} - {file_size}")
 
-        # Check if there are any available files
-        if not available_files:
-            print("All matching files found are already in the library.")
-            user_choice = input(f"Do you want to get the matching files from the library? [Y/N]: ").strip().upper()
-            while True:
-                if user_choice == 'Y':
-                    driver.quit()
-                    print("Getting relevant torrent file(s)...")
-
-                    # Go to torrentLibrary
-                    pyperclip.copy(keywords)
-                    torrentLibrary.main(auto_paste=True)
-
-                    return
-                elif user_choice == 'N':
-                    input("\nPress Enter to terminate the script and browser window...\n")
-                    return
-                else:
-                    print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
-        
         if files_in_library:
             print("One or more matching file(s) found are already in the library.")
             user_choice = input("Do you want to get the matching files from the library? [Y/N]: ").strip().upper()
@@ -237,21 +218,42 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
                 else:
                     print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
 
-        while True:
-            try:
-                # Get user to input a number to choose the corresponding file
-                selected_num = int(input("Type in the NUMBER corresponding to the file you want: "))
+        # Define regex patterns for good TV and Movie release groups at the end of the file name
+        tv_release_groups = r"(BLURANiUM|FraMeSToR|PmP|decibeL|EPSiLON|HiFi|KRaLiMaRKo|playBD|PTer|SiCFoI|TRiToN|Chotab|CtrlHD|DON|EbP|NTb|SA89|sbR|ABBiE|AJP69|APEX|PAXA|PEXA|XEPA|CasStudio|CRFW|FLUX|HONE|KiNGS|Kitsune|monkee|NOSiViD|NTG|QOQ|RTN|SiC|T6D|TOMMY|ViSUM|3cTWeB|BLUTONiUM|BTW|Cinefeel|CiT|CMRG|Coo7|dB|DEEP|END|ETHiCS|FC|Flights|GNOME|iJP|iKA|iT00NZ|JETIX|KHN|KiMCHI|LAZY|MiU|MZABI|NPMS|NYH|orbitron|PHOENiX|playWEB|PSiG|ROCCaT|RTFM|SbR|SDCC|SIGMA|SMURF|SPiRiT|TEPES|TVSmash|WELP|XEBEC|4KBEC|CEBEX|DRACULA|NINJACENTRAL|SLiGNOME|SwAgLaNdEr|T4H|ViSiON|DEFLATE|INFLATE)$"
+        movie_release_groups = r"(3L|BiZKiT|BLURANiUM|CiNEPHiLES|FraMeSToR|PmP|ZQ|Flights|NCmt|playBD|SiCFoI|SURFINBIRD|TEPES|decibeL|EPSiLON|HiFi|iFT|KRaLiMaRKo|NTb|PTP|SumVision|TOA|TRiToN|CtrlHD|MainFrame|DON|W4NK3R|HQMUX|BHDStudio|hallowed|HONE|PTer|SPHD|WEBDV|BBQ|c0kE|Chotab|CRiSC|D-Z0N3|Dariush|EbP|EDPH|Geek|LolHD|TayTO|TDD|TnP|VietHD|EA|HiDt|HiSD|QOQ|SA89|sbR|LoRD|playHD|ABBIE|AJP69|APEX|PAXA|PEXA|XEPA|BLUTONiUM|CMRG|CRFW|CRUD|FLUX|GNOME|KiNGS|Kitsune|NOSiViD|NTG|SiC|dB|MiU|monkee|MZABI|PHOENiX|playWEB|SbR|SMURF|TOMMY|XEBEC|4KBEC|CEBEX)$"
+
+        # Track the selected file name for the success message
+        selected_file_name = None
+
+        # Find first file with a good release group for TV or Movie
+        for idx, (original_idx, file_name, file_size) in enumerate(available_files):
+            if (media_type == 'T' and re.search(tv_release_groups, file_name)) or \
+            (media_type == 'M' and re.search(movie_release_groups, file_name)):
+                selected_file_index = original_idx - 1  # Get the original index
+                selected_file_element = file_name_elements[selected_file_index]  # Get the actual web element
+                selected_file_name = file_name  # Store the selected file name
+                print(f"Good Release found: '{file_name}'")
+                print("Auto-selecting...")
+                break
+
+        if selected_file_name is None:
+            # Manual selection      
+            while True:
+                try:
+                    # Get user to input a number to choose the corresponding file
+                    selected_num = int(input("Type in the NUMBER corresponding to the file you want: "))
+                    
+                    if 1 <= selected_num <= len(available_files):
+                        selected_file_index = available_files[selected_num - 1][0] - 1  # Get the original index
+                        selected_file_element = file_name_elements[selected_file_index]
+                        selected_file_name = file_names[selected_file_index]  # Store the selected file name
+                        break
+                    else:
+                        print(f"Please enter a number between 1 and {len(available_files)}.")
                 
-                if 1 <= selected_num <= len(available_files):
-                    selected_file_index = available_files[selected_num - 1][0] - 1  # Get the original index
-                    selected_file_element = file_name_elements[selected_file_index]
-                    break
-                else:
-                    print(f"Please enter a number between 1 and {len(available_files)}.")
-            
-            except ValueError:
-                # Handle case where the input is not an integer
-                print("Invalid input. Please enter a number only.")
+                except ValueError:
+                    # Handle case where the input is not an integer
+                    print("Invalid input. Please enter a number only.")
         
         print("\nGetting file, please wait...")
 
@@ -274,7 +276,7 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         target_element_xpath = "//*[@id='__next']/div/div[1]/div/div/div[2]"
         detect_successful(driver, target_element_xpath)
 
-        print(f"Magnet Link for '{file_names[selected_num - 1]}' copied successfully.")
+        print(f"Magnet Link for '{selected_file_name}' copied successfully.")
         
         driver.quit()
 
@@ -286,6 +288,8 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         return
     except Exception as e:
         print(f"\nAn unexpected error occurred. Details:\n{str(e)}")
+        input("Press Enter to Exit...")
+        return
 
 def main():
     user, profile = get_user_profile()
