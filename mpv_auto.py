@@ -15,7 +15,6 @@ def play_in_mpv(link):
 
     try:
         player.play(link)
-        time.sleep(0.5)
         player.wait_for_playback()
     finally:
         player.terminate()
