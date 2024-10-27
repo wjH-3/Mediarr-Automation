@@ -4,6 +4,7 @@ import time
 import sys
 import os
 import pyperclip
+from mpv_auto import play_in_mpv
 
 VIDEO_EXTENSIONS = ('.avi', '.mkv', '.mp4', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpeg', '.mpg')
 
@@ -129,8 +130,9 @@ def process_torrent(api_token, magnet_link):
         selected_file = unrestricted_links[0]
         print(f"\nFile: {selected_file['filename']}")
         print(f"Download Link: {selected_file['download']}")
-        pyperclip.copy(selected_file['download'])
-        print("Download Link successfully copied to clipboard.\n")
+        link = selected_file['download']
+        print("Opening in MPV...\n")
+        play_in_mpv(link)
         input("Press Enter to Exit...")
     else:
         print("\nFile list:")
@@ -151,8 +153,9 @@ def process_torrent(api_token, magnet_link):
                     selected_file = unrestricted_links[choice - 1]
                     print(f"\nSelected file: {selected_file['filename']}")
                     print(f"Download link: {selected_file['download']}")
-                    pyperclip.copy(selected_file['download'])
-                    print("Download Link successfully copied to clipboard.\n")
+                    link = selected_file['download']
+                    print("Opening in MPV...\n")
+                    play_in_mpv(link)
                 else:
                     print("Invalid choice. Please try again.")
             except ValueError:
