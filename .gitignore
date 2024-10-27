@@ -1,5 +1,6 @@
 /build/
 /dist/
+/mpv/
 /__pycache__/
 *.spec
 *.json
