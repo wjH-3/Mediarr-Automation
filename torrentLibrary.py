@@ -118,21 +118,26 @@ class RealDebridCLI:
                 return
             
             # Display matching torrents
-            print(f"\nFound {len(matching_torrents)} matching torrents:")
+            print(f"\nFound {len(matching_torrents)} matching torrent(s):")
             for i, torrent in enumerate(matching_torrents, 1):
                 print(f"{i}. {torrent['filename']}")
             
-            # Get user choice for torrent
-            while True:
-                try:
-                    choice = int(input("\nSelect a torrent (enter number): "))
-                    if 1 <= choice <= len(matching_torrents):
-                        break
-                    print("Invalid choice. Please try again.")
-                except ValueError:
-                    print("Please enter a valid number.")
-            
-            selected_torrent = matching_torrents[choice - 1]
+            if len(matching_torrents) == 1:
+                print("Only 1 matching torrent found. Auto-selecting...")
+                selected_torrent = matching_torrents[0]
+
+            else:   
+                # Get user choice for torrent
+                while True:
+                    try:
+                        choice = int(input("\nSelect a torrent (enter number): "))
+                        if 1 <= choice <= len(matching_torrents):
+                            break
+                        print("Invalid choice. Please try again.")
+                    except ValueError:
+                        print("Please enter a valid number.")
+                
+                selected_torrent = matching_torrents[choice - 1]
             
             # Get detailed info for selected torrent
             torrent_info = self.get_torrent_info(selected_torrent['id'])
@@ -185,8 +190,12 @@ class RealDebridCLI:
                 
         except requests.RequestException as e:
             print(f"API Error: {e}")
+            input("Press Enter to Exit...")
+            return
         except Exception as e:
             print(f"An error occurred: {e}")
+            input("Press Enter to Exit...")
+            return
 
 def main(auto_paste: bool = False):
     # Get the API token from the token.json file
