@@ -8,6 +8,7 @@ import unrestrict
 import RD
 import DMM_library
 import torrentLibrary
+from mpv_auto import play_in_mpv
 
 CONFIG_PATH = 'config.json'
 TOKEN_PATH = 'token.json'
