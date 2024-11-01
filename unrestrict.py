@@ -4,6 +4,7 @@ import os
 import time
 import json
 import pyperclip
+from mpv_auto import play_in_mpv
 
 def unrestrict_link(api_token, link):
     url = 'https://api.real-debrid.com/rest/1.0/unrestrict/link'
@@ -63,8 +64,9 @@ def main(auto_paste=False):
         # Output the result in a formatted way
         if isinstance(result, dict):
             print("\nDownload Link:", result.get('download', 'No link found'))
-            pyperclip.copy(result.get('download'))
-            print("Download Link successfully copied to clipboard.\n")
+            link = result.get('download')
+            print("Opening in MPV...\n")
+            play_in_mpv(link)
         else:
             print(result)
         

@@ -3,3 +3,7 @@
 
 -->
 pyinstaller --onefile --name Mediarr main.py
+
+w/ mpv 
+-->
+pyinstaller --onefile --name Mediarr --add-data "mpv_files;mpv_files" main.py
