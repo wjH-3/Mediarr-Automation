@@ -6,7 +6,7 @@ def get_movie_id(keywords):
     
     if search_results:
         movie = search_results[0]
-        return movie.getID()
+        return movie.getID(), movie['title']
     else:
         return None
 
@@ -17,7 +17,7 @@ def get_tv_id(keywords):
     if search_results:
         for result in search_results:
             if result.get('kind') in ['tv series', 'tv mini series']:
-                return result.getID()
+                return result.getID(), result['title']
     return None
 
 def main():
@@ -35,7 +35,8 @@ def main():
         result = get_tv_id(keywords)
 
     if result:
-        print(f"\nIMDb ID for '{keywords}': tt{result}")
+        imdb_id, title = result
+        print(f"\nIMDb data for '{keywords}' - ID: '{imdb_id}', Title: '{title}'")
     else:
         print(f"\nNo IMDb ID found for '{keywords}'.")
 
