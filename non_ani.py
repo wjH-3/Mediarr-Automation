@@ -125,9 +125,9 @@ def automate_webpage(url, media_type, user, profile, keywords, imdb_title, tv_qu
         
         # Define search patterns
         search_patterns = [
-            r"remux ^(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled)).*(?:1080p|1080i).*$",
-            r"2160p ^(?!.*\b(?:hdr|dv|dovi|upscale|upscaling|upscaled)\b).*\b(?:web[-\s]?dl)\b.*$" if media_type == 'M' else r"web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$",
-            r"^(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled)).*\b(?:1080p|2160p)\b.*(?:web|blu(?:ray|-ray|\sray)).*$"
+            r"remux ^(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled|[\u0400-\u04FF])).*(?:1080p|1080i).*$",
+            r"2160p ^(?!.*\b(?:hdr|dv|dovi|upscale|upscaling|upscaled|[\u0400-\u04FF])\b).*\b(?:web[-\s]?dl)\b.*$" if media_type == 'M' else r"web ^(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled|[\u0400-\u04FF])).*(?:1080p|2160p).*$",
+            r"^(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled|[\u0400-\u04FF])).*\b(?:1080p|2160p)\b.*(?:web|blu(?:ray|-ray|\sray)).*$"
         ]
 
         for search_text in search_patterns:
