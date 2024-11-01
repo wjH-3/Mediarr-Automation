@@ -6,6 +6,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from PTT import Parser, add_defaults
+import regex
+from PTT.transformers import (boolean)
+from RTN import title_match
 import sys
 import time
 import psutil
@@ -42,7 +46,7 @@ def get_movie_id():
     
         if search_results:
             movie = search_results[0]
-            return movie.getID(), keywords
+            return movie.getID(), keywords, movie['title']
         else:
             print(f"Error: Unable to find the movie '{keywords}'. Make sure both the title and year are correct.")
 
@@ -57,7 +61,7 @@ def get_tv_id():
         if search_results:
             for result in search_results:
                 if result.get('kind') in ['tv series', 'tv mini series']:
-                    return result.getID(), keywords
+                    return result.getID(), keywords, result['title']
         else:
             print(f"Error: Unable to find the show '{keywords}'. Make sure both the title and year are correct.")
 
@@ -72,7 +76,7 @@ def get_url(media_type, imdb_id, tv_query=None):
         return f"{base_tv_url}{imdb_id}/{tv_query}"
 
 # Web automation for scraping and interacting with search results
-def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
+def automate_webpage(url, media_type, user, profile, keywords, imdb_title, tv_query=None):
     # URL info
     print(f"Scraping from -> '{url}'...")
 
@@ -99,7 +103,7 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
     # Start ChromeDriver using the profile and service
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    try:        
+    try:      
         # Minimize window
         driver.minimize_window()
 
@@ -113,12 +117,17 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         if not releases:
             input("\nNo releases found for this title. Press Enter to terminate the script and browser window...\n")
             return
-
+        
+        # Initialize parser and add default handlers
+        parser = Parser()
+        add_defaults(parser)
+        parser.add_handler("trash", regex.compile(r"\b(\w+rip|hc|((h[dq]|clean)(.+)?)?cam.?(rip|rp)?|(h[dq])?(ts|tc)(?:\d{3,4})?|tele(sync|cine)?|\d+[0o]+([mg]b)|\d{3,4}tc)\b"), boolean, {"remove": False})
+        
         # Define search patterns
         search_patterns = [
-            r"remux ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|1080i).*$",
-            r"2160p ^(?!.*\b(?:hdr|dv|dovi)\b).*\b(?:web[-\s]?dl)\b.*$" if media_type == 'M' else r"web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$",
-            r"^(?!.*(?:hdr|dv|dovi)).*\b(?:1080p|2160p)\b.*(?:web|blu(?:ray|-ray|\sray)).*$"
+            r"remux ^(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled)).*(?:1080p|1080i).*$",
+            r"2160p ^(?!.*\b(?:hdr|dv|dovi|upscale|upscaling|upscaled)\b).*\b(?:web[-\s]?dl)\b.*$" if media_type == 'M' else r"web ^(?!.*(?:hdr|dv|dovi)).*(?:1080p|2160p).*$",
+            r"^(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled)).*\b(?:1080p|2160p)\b.*(?:web|blu(?:ray|-ray|\sray)).*$"
         ]
 
         for search_text in search_patterns:
@@ -158,46 +167,78 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
             file_size_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[1]")
             button_elements = driver.find_elements(By.XPATH, "//*[@id='__next']/div/div[4]/div/div/div[2]/button[1]")
 
-            if file_name_elements:
-                break
+            if not file_name_elements:
+                continue
 
 # --------------------------------------------------------
 
-        # Get the text from each file name element and button
-        file_names = [element.text for element in file_name_elements]
-        file_sizes = [' '.join(element.text.split(';')[0].strip().split()[1:]) for element in file_size_elements]
-        file_quantity = [element.text.split('(')[-1].split()[0] for element in file_size_elements]
-        button_texts = [element.text for element in button_elements]
-        library_url = 'https://debridmediamanager.com/library'
+            # Get the text from each file name element and button
+            file_names = [element.text for element in file_name_elements]
+            file_sizes = [' '.join(element.text.split(';')[0].strip().split()[1:]) for element in file_size_elements]
+            file_quantity = [element.text.split('(')[-1].split()[0] for element in file_size_elements]
+            button_texts = [element.text for element in button_elements]
+            library_url = 'https://debridmediamanager.com/library'
 
-        if not file_names:
-            input("\nNo matching files found with the given search filters. Press Enter to terminate the script and browser window...\n")
-            return
+            #if not file_names:
+                #time.sleep(0.5)
+                #print("\nNo matching files found with the given search filters. Trying the next...\n")
+                #continue
 
-        # Check if any files are already in the library
-        files_in_library = any(button_text == "RD (100%)" for button_text in button_texts)
+            # Check if any files are already in the library
+            files_in_library = any(button_text == "RD (100%)" for button_text in button_texts)
 
-        # Create a list of available files (not already in library)
-        available_files = []
-        files_in_library = []
-        for idx, (file_name, file_size, button_text, qty) in enumerate(zip(file_names, file_sizes, button_texts, file_quantity), start=1):
-            if media_type == 'T':  # For TV Shows
-                if qty != "1" and button_text != "RD (100%)":
-                    available_files.append((idx, file_name, file_size))
-                elif button_text == "RD (100%)":
-                    files_in_library.append((file_name, file_size))
+            # Create a list of available files (not already in library)
+            available_files = []
+            files_in_library = []
+            for idx, (file_name, file_size, button_text, qty) in enumerate(zip(file_names, file_sizes, button_texts, file_quantity), start=1):
+                if media_type == 'T':  # For TV Shows
+                    if qty != "1" and button_text != "RD (100%)":
+                        available_files.append((idx, file_name, file_size))
+                    elif button_text == "RD (100%)":
+                        files_in_library.append((file_name, file_size))
+                    
+                elif media_type == 'M':  # For Movies
+                    if button_text != "RD (100%)":
+                        available_files.append((idx, file_name, file_size))
+                    elif button_text == "RD (100%)":
+                        files_in_library.append((file_name, file_size))
+
+            filtered_files = []
+
+            for idx, file_name, file_size in available_files:
+                result = parser.parse(file_name)
+
+                # Check for 'trash' and 'upscaled' fields and apply filters
+                is_trash = result.get('trash', False)
+                is_upscaled = result.get('upscaled', False)
                 
-            elif media_type == 'M':  # For Movies
-                if button_text != "RD (100%)":
-                    available_files.append((idx, file_name, file_size))
-                elif button_text == "RD (100%)":
-                    files_in_library.append((file_name, file_size))
+                # Append the file if it's neither trash nor upscaled
+                if not is_trash and not is_upscaled:
+                    title = result.get('title')
+
+                    # Perform title matching
+                    match = title_match(imdb_title, title)
+
+                    # If no title match, skip this file
+                    if not match:
+                        continue
+
+                    filtered_files.append((idx, file_name, file_size))
+
+            if filtered_files:
+                break
+            else:
+                print(f"No matching files found after filtering. Trying next regex...")
+        
+        if not filtered_files and not files_in_library:
+            input("\nNo matching files found with any given regex filters. Press Enter to terminate the script and browser window...\n")
+            return
 
         # Print available files with new numbering
         print("\nMatching files found:")
         for file_name, file_size in files_in_library:
             print(f"✓ {file_name} - {file_size} (Already in Library)")
-        for new_idx, (_, file_name, file_size) in enumerate(available_files, start=1):
+        for new_idx, (_, file_name, file_size) in enumerate(filtered_files, start=1):
             print(f"{new_idx}. {file_name} - {file_size}")
 
         if files_in_library:
@@ -237,7 +278,7 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
         }
 
         # Find file with highest priority release group
-        for idx, (original_idx, file_name, file_size) in enumerate(available_files):
+        for idx, (original_idx, file_name, file_size) in enumerate(filtered_files):
             if media_type == 'T':
                 # Check for TV release groups
                 for priority, group in enumerate(tv_groups_list):
@@ -278,13 +319,13 @@ def automate_webpage(url, media_type, user, profile, keywords, tv_query=None):
                     # Get user to input a number to choose the corresponding file
                     selected_num = int(input("Type in the NUMBER corresponding to the file you want: "))
                     
-                    if 1 <= selected_num <= len(available_files):
-                        selected_file_index = available_files[selected_num - 1][0] - 1  # Get the original index
+                    if 1 <= selected_num <= len(filtered_files):
+                        selected_file_index = filtered_files[selected_num - 1][0] - 1  # Get the original index
                         selected_file_element = file_name_elements[selected_file_index]
                         selected_file_name = file_names[selected_file_index]  # Store the selected file name
                         break
                     else:
-                        print(f"Please enter a number between 1 and {len(available_files)}.")
+                        print(f"Please enter a number between 1 and {len(filtered_files)}.")
                 
                 except ValueError:
                     # Handle case where the input is not an integer
@@ -344,11 +385,12 @@ def main():
             print("Invalid input. Please enter 'M' for movie or 'T' for TV.")
     
     if media_type == 'M':
-        imdb_id, keywords = get_movie_id()
+        imdb_id, keywords, imdb_title = get_movie_id()
         tv_query = None
+        print(f"\nIMDb Data for '{keywords}' - ID: '{imdb_id}', Title: '{imdb_title}'")
 
     elif media_type =='T':
-        imdb_id, keywords = get_tv_id()
+        imdb_id, keywords, imdb_title = get_tv_id()
 
         while True:
             tv_query = input("What season of the show are you looking for? Enter the season number - ")
@@ -356,6 +398,7 @@ def main():
                 break
             else:
                 print("Invalid input. Please enter a digit.")
+        print(f"\nIMDb Data for '{keywords}' - ID: '{imdb_id}', Title: '{imdb_title}'")
     
     print("\nScraping files, please wait...")
 
@@ -363,7 +406,7 @@ def main():
 
     if imdb_id:
         url = get_url(media_type, imdb_id, tv_query)
-        automate_webpage(url, media_type, user, profile, keywords, tv_query)
+        automate_webpage(url, media_type, user, profile, keywords, imdb_title, tv_query)
 
 if __name__ == "__main__":
     main()
