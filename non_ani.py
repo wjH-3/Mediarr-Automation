@@ -89,6 +89,7 @@ def automate_webpage(url, media_type, user, profile, keywords, imdb_title, tv_qu
 
     # Set Chrome options to use the existing profile
     chrome_options = Options()
+    #chrome_options.add_argument("--headless")
     chrome_options.add_argument(f"user-data-dir={chrome_profile_path}")  # Path to user data directory
     chrome_options.add_argument(f"profile-directory={profile}")  # Specify profile directory (e.g., 'Profile 1' if you use a custom profile) (can be modified)
 
@@ -243,8 +244,8 @@ def automate_webpage(url, media_type, user, profile, keywords, imdb_title, tv_qu
 
         if files_in_library:
             print("One or more matching file(s) found are already in the library.")
-            user_choice = input("Do you want to get the matching files from the library? [Y/N]: ").strip().upper()
             while True:
+                user_choice = input("Do you want to get the matching files from the library? [Y/N]: ").strip().upper()
                 if user_choice == 'Y':
                     driver.quit()
                     print("Getting relevant torrent file(s)...")
