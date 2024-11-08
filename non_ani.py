@@ -89,7 +89,6 @@ def automate_webpage(url, media_type, user, profile, keywords, imdb_title, tv_qu
 
     # Set Chrome options to use the existing profile
     chrome_options = Options()
-    #chrome_options.add_argument("--headless")
     chrome_options.add_argument(f"user-data-dir={chrome_profile_path}")  # Path to user data directory
     chrome_options.add_argument(f"profile-directory={profile}")  # Specify profile directory (e.g., 'Profile 1' if you use a custom profile) (can be modified)
 
