@@ -1,7 +1,9 @@
-from imdb import Cinemagoer
+from imdb import IMDb
+import pytvmaze
+
 
 def get_movie_id(keywords):
-    ia = Cinemagoer()
+    ia = IMDb()
     search_results = ia.search_movie(keywords)
     
     if search_results:
@@ -11,13 +13,18 @@ def get_movie_id(keywords):
         return None
 
 def get_tv_id(keywords):
-    ia = Cinemagoer()
+    ia = IMDb()
     search_results = ia.search_movie(keywords)  # Note: This also works for TV series
     
     if search_results:
         for result in search_results:
             if result.get('kind') in ['tv series', 'tv mini series']:
-                return result.getID(), result['title']
+                imdb_id = result.getID()
+                print(imdb_id)
+                tvm = pytvmaze.TVMaze()
+                show = tvm.get_show(imdb_id=f'tt{imdb_id}')
+                is_airing = show.status.lower() == 'running'
+                return result.getID(), result['title'], is_airing
     return None
 
 def main():
@@ -35,8 +42,14 @@ def main():
         result = get_tv_id(keywords)
 
     if result:
-        imdb_id, title = result
-        print(f"\nIMDb data for '{keywords}' - ID: '{imdb_id}', Title: '{title}'")
+        if media_type == 'M':
+            imdb_id, title = result
+            print(f"\nIMDb data for '{keywords}' - ID: '{imdb_id}', Title: '{title}'")
+        else:
+            imdb_id, title, is_airing = result
+            airing_status = "Airing" if is_airing else "Finished"
+            print(f"\nIMDb data for '{keywords}' - ID: '{imdb_id}', Title: '{title}, Status: {airing_status}'")
+            
     else:
         print(f"\nNo IMDb ID found for '{keywords}'.")
 
