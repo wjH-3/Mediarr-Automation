@@ -96,6 +96,7 @@ def main():
                         print("\nInstalling Playwright components, please wait...")
                         subprocess.run(install_command, shell=True)
                         print("\nPlaywright installation successful. Returning to the Options menu...")
+                        time.sleep(1)
                         break
                     else:
                         print("Invalid input. Please type 'playwright install' exactly as shown.")
