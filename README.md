@@ -31,7 +31,7 @@ All of this can be done right on the terminal, and no other installation is requ
 ---
 
 
-# Usage:
+## Usage:
 
 1. Go to [Releases](https://github.com/wjH-3/Mediarr-Automation/releases) and download the latest version of `Mediarr.exe` into a folder
 2. When opening the executable for the first time, you might get the message that Windows doesn't recognize it -- *click on 'More info'* > *Run anyway*
@@ -43,7 +43,7 @@ All of this can be done right on the terminal, and no other installation is requ
 ---
 
 
-# Build:
+## Build:
 
 If you want to alter any of the regex filters, file quality groups, RTN and PTT parameters/settings, MPV configs etc. to your personal preference, you can bulld `Mediarr.exe` yourself
 1. Download latest Source Code from [Releases](https://github.com/wjH-3/Mediarr-Automation/releases)
