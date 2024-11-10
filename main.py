@@ -94,12 +94,20 @@ def main():
                     install_command = input("\nTo proceed, please type 'playwright install' and press Enter: ").strip()
                     if install_command == "playwright install":
                         print("\nInstalling Playwright components, please wait...")
-                        subprocess.run(install_command, shell=True)
-                        print("\nPlaywright installation successful. Returning to the Options menu...")
-                        time.sleep(1)
+
+                        # Run the command and wait for it to complete
+                        result = subprocess.run(install_command, shell=True)
+
+                        if result.returncode == 0:
+                            print("\nPlaywright installation successful. Returning to the Options menu...")
+                            time.sleep(3)
+                        else:
+                            print("\nPlaywright installation failed. Please check your setup and try again.")
+                            time.sleep(3)
                         break
                     else:
                         print("Invalid input. Please type 'playwright install' exactly as shown.")
+
             else:
                 print(f"\nAn error occurred:\n{error_message}")
                 input("\nPress Enter to exit...")
