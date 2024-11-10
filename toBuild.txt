@@ -1,9 +1,10 @@
-- command to build assuming the two scripts (ani.py and non-ani.py) are in the same folder as main.py
+- command to build assuming all the Python scripts and the mpv_files folder are in the same directory as main.py
 - make sure Pyinstaller module is installed in the system (installation: 'pip install pyinstaller')
 
--->
-pyinstaller --onefile --name Mediarr main.py
-
-w/ mpv 
+with mpv:
 -->
 pyinstaller --onefile --name Mediarr --add-data "mpv_files;mpv_files" main.py
+
+no mpv:
+-->
+pyinstaller --onefile --name Mediarr main.py
