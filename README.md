@@ -34,11 +34,11 @@ All of this can be done right on the terminal, and no other installation is requ
 # Usage:
 
 1. Go to [Releases](https://github.com/wjH-3/Mediarr-Automation/releases) and download the latest version of `Mediarr.exe` into a folder
-2. For the first time opening the executable, you might get the message that Windows doesn't recognize it -- *click on 'More info'* > *Run anyway*
-3. On first launch (you only have to do this ONCE), you will be prompted to login to DMM on a Chromium browser using `Playwright`. If Chromium is not detected in the system it will inform you and all you have to do is `playwright install` on the Terminal and it will proceed to install the required components for you
-4. After logging in successfully, the logged in browser session will then be saved in a JSON file locally, namely `session.json`
-5. On first launch (you only have to do this ONCE), get your Real-Debrid API Token from the [Real-Debrid Website](https://real-debrid.com/apitoken) and input it when prompted (the token is stored in a JSON file locally, namely `token.json`)
-6. After the first-time setup, you will be greeted with an Options Menu. Choose your preferred option and continue following each of the prompts shown.
+2. When opening the executable for the first time, you might get the message that Windows doesn't recognize it -- *click on 'More info'* > *Run anyway*
+3. On first launch (you only have to do this ONCE), get your Real-Debrid API Token from the [Real-Debrid Website](https://real-debrid.com/apitoken) and input it when prompted (the token is stored in a JSON file locally, namely `token.json`)
+4. When first searching for Non-Anime content (you only have to do this ONCE), you will be prompted to login to DMM on a Chromium browser using `Playwright`. If Chromium is not detected in your system it will inform you and all you have to do is `playwright install` on the Terminal and it will proceed to install the required components for you
+5. After logging in successfully, the logged in browser session will then be saved in a JSON file locally, namely `session.json` (so that you won't have to login repeatedly each time)
+6. You will be greeted with an Options Menu whenever you open `Mediarr`. Choose your preferred option and continue following each of the prompts shown.
 
 ---
 
