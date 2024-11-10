@@ -4,6 +4,8 @@ import ani
 import non_aniV2
 import sys
 import time
+import re
+import subprocess
 import unrestrict
 import RD
 import torrentLibrary
@@ -81,8 +83,25 @@ def main():
                     time.sleep(2)
         
         except Exception as e:
-            print(f"\nAn error occurred:\n{str(e)}")
-            input("\nPress Enter to Exit...")
+            error_message = str(e)
+
+            # Check if the error is related to Playwright missing the browser executable
+            if re.search(r"BrowserType\.launch: Executable doesn't exist", error_message):
+                print("\nPlaywright setup is required. Please install the required browser binaries.")
+                
+                # Prompt the user to type 'playwright install' directly
+                while True:
+                    install_command = input("\nTo proceed, please type 'playwright install' and press Enter: ").strip()
+                    if install_command == "playwright install":
+                        print("\nInstalling Playwright components, please wait...")
+                        subprocess.run(install_command, shell=True)
+                        print("\nPlaywright installation successful. Returning to the Options menu...")
+                        break
+                    else:
+                        print("Invalid input. Please type 'playwright install' exactly as shown.")
+            else:
+                print(f"\nAn error occurred:\n{error_message}")
+                input("\nPress Enter to exit...")
 
 if __name__ == "__main__":
     main()
