@@ -131,7 +131,7 @@ def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
         
         # Check if results are empty (end of available pages)
         if not data.get('results') or data['results'] == []:
-            print(f"\nNo more results after {page_num} pages")
+            print(f"No more results after {page_num} pages")
             break
 
         # Process the results
@@ -145,7 +145,7 @@ def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
         page_num += 1
 
     #print("\nAvailable files: ")
-    print(f"\nNumber of available files: {len(available_files)}")
+    print(f"Number of available files: {len(available_files)}")
     #print(available_files)
 
     # Apply filters to the collected files
@@ -153,7 +153,7 @@ def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
     add_defaults(parser)  # Add default handlers
     filtered_files = filter_files(available_files, imdb_title, parser)
     #print("\nFiltered files: ")
-    print(f"\nNumber of filtered files: {len(filtered_files)}")
+    print(f"Number of filtered files: {len(filtered_files)}")
     #print(filtered_files)
     
     return filtered_files
@@ -213,7 +213,7 @@ def check_instant_RD(api_token, filtered_files):
     ]
     
     #print("\nInstantly available files: ")
-    print(f"\nNumber of instantly available files: {len(instant_RD)}")
+    print(f"Number of instantly available files: {len(instant_RD)}")
     #print(f"{instant_RD}")
 
     return instant_RD
@@ -235,7 +235,7 @@ def get_file(instant_RD, media_type, is_airing=None):
     # Base quality patterns
     base_quality_patterns = {
         'fhd_remux': r'^(?=.*\b(?:1080p|1080i)\b)(?=.*remux).*$',
-        'uhd_web': r'^(?=.*\b(?:web[-\s]?dl)\b)(?=.*2160p).*$' if media_type == 'M' else r'^(?=.*\b(?:1080p|2160p)\b)(?=.*web).*$',
+        'web': r'^(?=.*\b(?:web[-\s]?dl)\b)(?=.*2160p).*$' if media_type == 'M' else r'^(?=.*\b(?:1080p|2160p)\b)(?=.*web).*$',
         'uhd_fhd_web_&_bluray': r'^(?=.*(?:web|blu(?:ray|-ray|\sray)))(?=.*\b(?:2160p|1080p)\b).*$',
         'others': r'.*'  # Catch-all pattern
     }
@@ -437,9 +437,7 @@ def main():
                 print("Invalid input. Please enter a digit.")
         print(f"\nIMDb Data for '{keywords}' - ID: '{imdb_id}', Title: '{imdb_title}', Status: {airing_status}'")
     
-    print("\nScraping files, please wait...")
-
-    time.sleep(3)
+    print("\nScraping files, please wait...\n")
 
     if imdb_id:
         scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query)
