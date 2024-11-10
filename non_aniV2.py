@@ -281,7 +281,7 @@ def get_file(instant_RD, media_type, is_airing=None):
         elif media_type == 'T' and is_airing is True:
             if is_full_season is None:  # Only ask once
                 while True:
-                    user_choice = input("\nFull seasons or single episodes files? [S/E]: ")
+                    user_choice = input("\nFull Seasons or Single Episodes files? [S/E]: ")
                     if user_choice.upper() == 'S':
                         is_full_season = 'S'
                         break
@@ -412,7 +412,7 @@ def main():
         return
     
     while True:
-        media_type = input("Movie or TV? [M/T]: ").strip().upper()
+        media_type = input("\nMovie or TV? [M/T]: ").strip().upper()
         
         if media_type in ['M', 'T']:
             break  # Exit the loop if the input is valid
