@@ -1,8 +1,9 @@
 # **Mediarr**
+
 ***Sail the High Seas...***
 
-
 A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debrid.com/) and [Debrid Media Manager](https://debridmediamanager.com/). It allows users to access a suite of Real-Debrid's main features, as well as get any Non-anime or Anime content, whether it be movies or shows, in a fast and automated way all within the Terminal itself. 
+
 
 ## Features:
 
@@ -43,6 +44,7 @@ All of this can be done right on the terminal, and no other installation is requ
 
 
 # Build:
+
 If you want to alter any of the regex filters, file quality groups, RTN and PTT parameters/settings, MPV configs etc. to your personal preference, you can bulld `Mediarr.exe` yourself
 1. Download latest Source Code from [Releases](https://github.com/wjH-3/Mediarr-Automation/releases)
 2. The MPV components are not included in the Source Code (will make size too large otherwise) so building the executable would mean you would need to include them in a folder named `mpv_files` in the same directory as all the other Python component files (whether you intend to change the MPV config files or not -- unless you alter the Python files to not use MPV, which is possible too)
