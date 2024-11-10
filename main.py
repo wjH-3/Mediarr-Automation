@@ -45,43 +45,44 @@ def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 def main():
-    try:
-        token = get_token()
+    while True:
+        try:
+            token = get_token()
 
-        while True:
-            clear_screen()
-            time.sleep(0.5)
-            options = print("Options:\n1. Search Movies/TV Shows\n2. Get Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link")
-            choice = input("Enter Option Number: ")
-            if choice == '1':
-                while True:
-                    media_type = input("\nAnime or Non-Anime? [A/N]: ").strip().upper()
+            while True:
+                clear_screen()
+                time.sleep(0.5)
+                options = print("Options:\n1. Search Movies/TV Shows\n2. Get Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link")
+                choice = input("Enter Option Number: ")
+                if choice == '1':
+                    while True:
+                        media_type = input("\nAnime or Non-Anime? [A/N]: ").strip().upper()
 
-                    if media_type == 'A':
-                        ani.main()
-                        break
-                    elif media_type == 'N':
-                        non_aniV2.main()
-                        break
-                    else:
-                        print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
-                continue
-            if choice == '2':
-                torrentLibrary.main()
-                continue
-            if choice == '3':
-                RD.main()
-                continue
-            if choice == '4':
-                unrestrict.main()
-                continue
-            else:
-                print("\nInvalid input. Please enter a Number from 1 to 4.")
-                time.sleep(2)
-    
-    except Exception as e:
-        print(f"\nAn error occurred:\n{str(e)}")
-        input("\nPress Enter to Exit...")
+                        if media_type == 'A':
+                            ani.main()
+                            break
+                        elif media_type == 'N':
+                            non_aniV2.main()
+                            break
+                        else:
+                            print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
+                    continue
+                if choice == '2':
+                    torrentLibrary.main()
+                    continue
+                if choice == '3':
+                    RD.main()
+                    continue
+                if choice == '4':
+                    unrestrict.main()
+                    continue
+                else:
+                    print("\nInvalid input. Please enter a Number from 1 to 4.")
+                    time.sleep(2)
+        
+        except Exception as e:
+            print(f"\nAn error occurred:\n{str(e)}")
+            input("\nPress Enter to Exit...")
 
 if __name__ == "__main__":
     main()
