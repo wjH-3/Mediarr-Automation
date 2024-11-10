@@ -21,7 +21,7 @@ def login_and_save_session():
         # Load the login page
         page = context.new_page()
         page.goto(LOGIN_URL)
-        print("Please log in and then press Enter here once you're logged in.")
+        print("Please log in to DMM and then press Enter here once you're logged in.")
         input("Press Enter to continue...")
 
         # Save session state (cookies and storage) to file
@@ -37,7 +37,7 @@ class DMMKeyManager:
 
         # Check if session.json exists, and if not, prompt login
         if not os.path.exists(SESSION_FILE):
-            print("Session file not found. Please log in.")
+            print("Session file not found. Directing to log in...")
             login_and_save_session()
         
     def get_new_key_hash(self):
