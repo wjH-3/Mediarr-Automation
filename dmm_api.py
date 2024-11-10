@@ -1,6 +1,7 @@
 from playwright.sync_api import sync_playwright
 import json
 import re
+import os
 
 # Define URLs
 LOGIN_URL = "https://debridmediamanager.com/realdebrid/login"
@@ -11,7 +12,7 @@ SESSION_FILE = "session.json"  # File to save session state
 # Regular expression to capture dmmProblemKey and solution from the URL
 key_solution_pattern = re.compile(r"dmmProblemKey=([a-zA-Z0-9\-]+)&solution=([a-zA-Z0-9]+)")
 
-# Step 1: Log in and save session cookies if not already saved
+# Log in to DMM and save session cookies if not already saved
 def login_and_save_session():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)  # Non-headless for login
@@ -33,11 +34,16 @@ class DMMKeyManager:
         self.dmmProblemKey = None
         self.solution = None
         self.key_solution_pattern = re.compile(r"dmmProblemKey=([a-zA-Z0-9\-]+)&solution=([a-zA-Z0-9]+)")
+
+        # Check if session.json exists, and if not, prompt login
+        if not os.path.exists(SESSION_FILE):
+            print("Session file not found. Please log in.")
+            login_and_save_session()
         
     def get_new_key_hash(self):
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            context = browser.new_context(storage_state="session.json")
+            context = browser.new_context(storage_state=SESSION_FILE)
             page = context.new_page()
 
             def handle_response(response):
