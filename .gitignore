@@ -1,6 +1,7 @@
 /build/
 /dist/
-/mpv_files/
+**/mpv_files/
 **/__pycache__/
 *.spec
 *.json
+*.cmd

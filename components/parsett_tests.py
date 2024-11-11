@@ -24,7 +24,8 @@ files = [
     "From.S01E01.Long.Days.Journey.Into.Night.2160p.WEB-DL.DDP5.1.x265-TEPES[rartv]",
     "2012 2009 1080p Blu-ray Remux AVC DTS-HD MA 5.1 - KRaLiMaRKo",
     "Valiente 4K UHD 2009 2012 HDR TRIAL SPANISH BDRip x264",
-    "2012 / 2012 (2009) UHD BDRemux 2160p от селезень | 4K | HDR | D A | Лицензия"
+    "2012 / 2012 (2009) UHD BDRemux 2160p от селезень | 4K | HDR | D A | Лицензия",
+    "Arcane.S01.1080p.NF.WEBRip.DDP5.1.x265-TEPES[eztv.re]"
 ]
 
 def main(imdb_title):
@@ -43,6 +44,7 @@ def main(imdb_title):
         # Append the file if it's neither trash nor upscaled
         if not is_trash and not is_upscaled:
             title = result.get('title')
+            complete = result.get('complete')
 
             # Perform title matching
             match = title_match(imdb_title, title)
@@ -51,17 +53,17 @@ def main(imdb_title):
             if not match:
                 continue
 
-            filtered_files.append((file, result.get('title', 'Unknown Title')))
+            filtered_files.append((file, result.get('title', 'Unknown Title'), result.get('complete')))
 
     # Print out the filtered files in a numbered list
     if filtered_files:
         print("\nFiltered Files:")
-        for idx, (file, title) in enumerate(filtered_files, start=1):
-            print(f"{idx}. {file} (Title: {title})")
+        for idx, (file, title, complete) in enumerate(filtered_files, start=1):
+            print(f"{idx}. {file} (Title: {title}) (Complete: {complete})")
     else:
         print("\nNo matching files found.")
 
 # Allow direct script execution for testing
 if __name__ == "__main__":
-    test_title = "2012"
+    test_title = "arcane"
     main(test_title)
