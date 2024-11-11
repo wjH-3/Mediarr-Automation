@@ -36,9 +36,8 @@ All of this can be done right on the terminal, and no other installation is requ
 1. Go to [Releases](https://github.com/wjH-3/Mediarr-Automation/releases) and download the latest version of `Mediarr.exe` into a folder
 2. When opening the executable for the first time, you might get the message that Windows doesn't recognize it -- *click on 'More info'* > *Run anyway*
 3. On first launch (you only have to do this ONCE), get your Real-Debrid API Token from the [Real-Debrid Website](https://real-debrid.com/apitoken) and input it when prompted (the token is stored in a JSON file locally, namely `token.json`)
-4. When first searching for Non-Anime content (you only have to do this ONCE), you will be prompted to login to DMM on a Chromium browser using `Playwright`. If Chromium is not detected in your system it will inform you and all you have to do is `playwright install` on the Terminal and it will proceed to install the required components for you
-5. After logging in successfully, the logged in browser session will then be saved in a JSON file locally, namely `session.json` (so that you won't have to login repeatedly each time)
-6. You will be greeted with an Options Menu whenever you open `Mediarr`. Choose your preferred option and continue following each of the prompts shown.
+4. When first searching for Non-Anime content (you only have to do this ONCE), you will be prompted to login to DMM on a Chromium browser using `Playwright`. After logging in successfully, the logged in browser session will then be saved in a JSON file locally, namely `session.json` (so that you won't have to login repeatedly each time)
+5. You will be greeted with an Options Menu whenever you open `Mediarr`. Choose your preferred option and continue following each of the prompts shown
 
 ---
 
@@ -49,6 +48,8 @@ If you want to alter any of the regex filters, file quality groups, RTN and PTT 
 1. Download latest Source Code from [Releases](https://github.com/wjH-3/Mediarr-Automation/releases)
 2. The MPV components are not included in the Source Code (will make size too large otherwise) so building the executable would mean you would need to include them in a folder named `mpv_files` in the same directory as all the other Python component files (whether you intend to change the MPV config files or not -- unless you alter the Python files to not use MPV, which is possible too)
 3. `mpv_files` need to contain the following files and folders: `fonts`, `scripts`, `input.conf`, `mpv.conf`, `libmpv-2.dll`, `mpv.exe`
+4. Playwright components are also not in the Source code. First make sure you have the `playwright` python module installed in your system. Then, navigate to your projects directory in a bash terminal (e.g Git Bash)
+5. `export PLAYWRIGHT_BROWSERS_PATH=0` then `playwright install chromium` and ensure it finishes installing
 4. Main Python files for altering are: `non_aniV2,py`, `ani.py` and `mpv_auto.py`
 5. Nyaa domain (currently set to `nyaa.si`) can be changed to other working proxy domains from [Nyaa Torrents](https://nyaatorrents.info/)
-6. After finish altering all the source code, build using the build instructions in `toBuild.txt` (`Pyinstaller` is needed)
+6. After finish altering all the source code, build using the build instructions in `toBuild.txt` (`Pyinstaller` is needed). Make sure to change `{user}` to your actual system user name
