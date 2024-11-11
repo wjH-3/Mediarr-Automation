@@ -7,8 +7,8 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
 
 ## Features:
 
-* **Search for Non-Anime** movies/TV shows: Scrape a particular movie/show from DMM's API, displaying the relevant files in a list for users to choose from
-    * query a specific season of a show (can detect show's airing status to retrieve complete seasons or single episodes)
+* **Search for Non-Anime** movies/TV shows: Scrape a particular movie/show (using its `IMDb` ID) from DMM's API, displaying the relevant files in a list for users to choose from
+    * query a specific season of a show (also auto-detect show's airing status with `TVMaze` API to retrieve complete seasons or single episodes)
     * `RTN` (Rank Torrent Name) and `PTT` (Parsett) integration for title matching the files and filtering out garbage torrents
     * own custom filter for another layer of filtering to improve quality of files (remove duplicates, no upscaled content, only 1080p and 2160p files etc.)
     * dynamic regex filtering to group files into lists of different quality groups
