@@ -4,12 +4,13 @@ import ani
 import non_aniV2
 import sys
 import time
-import re
-import subprocess
 import unrestrict
 import RD
 import torrentLibrary
 from mpv_auto import play_in_mpv
+import dmm_api
+from playwright.sync_api import sync_playwright
+
 
 TOKEN_PATH = 'token.json'
 
@@ -54,8 +55,9 @@ def main():
             while True:
                 clear_screen()
                 time.sleep(0.5)
-                options = print("Options:\n1. Search Movies/TV Shows\n2. Get Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link")
+                print("Options:\n1. Search Movies/TV Shows\n2. Get Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link")
                 choice = input("Enter Option Number: ")
+                
                 if choice == '1':
                     while True:
                         media_type = input("\nAnime or Non-Anime? [A/N]: ").strip().upper()
@@ -63,9 +65,9 @@ def main():
                         if media_type == 'A':
                             ani.main()
                             break
-                        elif media_type == 'N':
-                            non_aniV2.main()
-                            break
+                        elif media_type == 'N':                           
+                                non_aniV2.main()
+                                break
                         else:
                             print("Invalid choice. Please enter A for Anime or N for Non-Anime.")
                     continue
@@ -81,36 +83,11 @@ def main():
                 else:
                     print("\nInvalid input. Please enter a Number from 1 to 4.")
                     time.sleep(2)
-        
+
         except Exception as e:
             error_message = str(e)
-
-            # Check if the error is related to Playwright missing the browser executable
-            if re.search(r"BrowserType\.launch: Executable doesn't exist", error_message):
-                print("\nPlaywright setup is required. Please install the required browser binaries.")
-                
-                # Prompt the user to type 'playwright install' directly
-                while True:
-                    install_command = input("\nTo proceed, please type 'playwright install' and press Enter: ").strip()
-                    if install_command == "playwright install":
-                        print("\nInstalling Playwright components, please wait...")
-
-                        # Run the command and wait for it to complete
-                        result = subprocess.run(install_command, shell=True)
-
-                        if result.returncode == 0:
-                            print("\nPlaywright installation successful. Returning to the Options menu...")
-                            time.sleep(3)
-                        else:
-                            print("\nPlaywright installation failed. Please check your setup and try again.")
-                            time.sleep(3)
-                        break
-                    else:
-                        print("Invalid input. Please type 'playwright install' exactly as shown.")
-
-            else:
-                print(f"\nAn error occurred:\n{error_message}")
-                input("\nPress Enter to exit...")
+            print(f"\nAn error occurred:\n{error_message}")
+            input("\nPress Enter to exit...")
 
 if __name__ == "__main__":
     main()
