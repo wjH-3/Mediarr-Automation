@@ -12,7 +12,7 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
     * `RTN` (Rank Torrent Name) and `PTT` (Parsett) integration for title matching the files and filtering out garbage torrents
     * own custom filter for another layer of filtering to improve quality of files (remove duplicates, no upscaled content, only 1080p and 2160p files etc.)
     * dynamic regex filtering to group files into lists of different quality groups
-    * integration of `TRaSH Guides` Good Release Groups List to detect files with the best release groups and prioritization of higher tier release groups over lower tiers
+    * integration of `TRaSH Guides` HQ Release Groups to detect files with the best release groups and prioritization of higher tier release groups over lower tiers
     * auto-selects file with the best release group for movies and complete TV show seasons (not single episodes files)
 * **Search for Anime**: 
     * use `AniList` and `SeaDex` API to get the magnet links of a Best Release of the specified anime (if Finished Airing)
