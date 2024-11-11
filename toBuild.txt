@@ -3,7 +3,7 @@
 
 with mpv & playwright:
 -->
-pyinstaller --onefile --name Mediarr --add-data "mpv_files;mpv_files" --add-data "C:/Users/user/AppData/Local/Programs/Python/Python311/Lib/site-packages/playwright/driver/package/.local-browsers/chromium-1140;playwright/browser-chromium" --collect-all playwright --hidden-import playwright.sync_api --hidden-import playwright.async_api main.py
+pyinstaller --onefile --name Mediarr --add-data "mpv_files;mpv_files" --add-data "C:/Users/{user}/AppData/Local/Programs/Python/Python311/Lib/site-packages/playwright/driver/package/.local-browsers/chromium-1140;playwright/browser-chromium" --collect-all playwright --hidden-import playwright.sync_api --hidden-import playwright.async_api main.py
 
 with mpv:
 -->
