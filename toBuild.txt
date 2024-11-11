@@ -1,6 +1,10 @@
 - command to build assuming all the Python scripts and the mpv_files folder are in the same directory as main.py
 - make sure Pyinstaller module is installed in the system (installation: 'pip install pyinstaller')
 
+with mpv & playwright:
+-->
+pyinstaller --onefile --name Mediarr --add-data "mpv_files;mpv_files" --add-data "C:/Users/user/AppData/Local/Programs/Python/Python311/Lib/site-packages/playwright/driver/package/.local-browsers/chromium-1140;playwright/browser-chromium" --collect-all playwright --hidden-import playwright.sync_api --hidden-import playwright.async_api main.py
+
 with mpv:
 -->
 pyinstaller --onefile --name Mediarr --add-data "mpv_files;mpv_files" main.py
