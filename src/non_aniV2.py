@@ -12,7 +12,7 @@ import torrentLibrary
 import pyperclip
 import re
 from dmm_api import key_manager
-from typing import List, Tuple, Dict, Optional
+from typing import List, Tuple, Dict, Optional, Any
 import json
 import pytvmaze
 
@@ -51,10 +51,10 @@ def get_tv_id():
         else:
             print(f"Error: Unable to find the show '{keywords}'. Make sure both the title and year are correct.")
 
-# Scraping DMM API
 available_files = []
 filtered_files = []
 
+# Filter parameters and regex
 def filter_files(available_files: List[Tuple[str, str, float]], imdb_title: str, parser) -> List[Tuple[str, str, float]]:
     
     # Compile the custom regex pattern once, outside the loop
@@ -102,6 +102,7 @@ def filter_files(available_files: List[Tuple[str, str, float]], imdb_title: str,
 
     return filtered_files
 
+# Scraping DMM API
 def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
     page_num = 0
     max_pages = 8
@@ -218,9 +219,108 @@ def check_instant_RD(api_token, filtered_files):
 
     return instant_RD
 
+all_torrents = []
+
+def get_torrent_list(api_token):
+    page = 1
+    has_more_pages = True
+    url = "https://api.real-debrid.com/rest/1.0/torrents"
+    headers = {"Authorization": f"Bearer {api_token}"}
+
+    print("\nChecking if there are matching torrents already in the torrent library...")
+    print("Fetching torrent library...")
+
+    while has_more_pages:
+        response = requests.get(
+            url,
+            params={'page': page},
+            headers=headers
+        )
+        
+        # Check for 204 No Content, indicating no more torrents
+        if response.status_code == 204:
+            print("All torrents fetched.")
+            break
+        elif response.status_code != 200:
+            print(f"API Error: {response.status_code}, {response.text}")
+            break
+        
+        try:
+            page_data = response.json()
+        except json.JSONDecodeError as e:
+            print(f"API Error: {str(e)}. Response content: {response.text}")
+            break
+
+        if not page_data:
+            has_more_pages = False
+        else:
+            all_torrents.extend(page_data)
+            page += 1
+
+    print(f"Total number of torrents: {len(all_torrents)}")
+    return all_torrents
+
+files_in_library = []
+
+def matching_torrents(api_token, instant_RD, all_torrents):
+    # Get torrents from library
+    if not all_torrents:
+        all_torrents = get_torrent_list(api_token)
+        # If torrent library is empty, break from this function
+        if not all_torrents:
+            print("No files found in library.")
+            return False
+
+    # Check each torrent in `all_torrents` against `instant_RD`
+    for torrent in all_torrents:
+        extract_filename = torrent['filename']
+        for idx, (magnet_hash, file_name, file_size) in enumerate(instant_RD):
+            if file_name == extract_filename:  # Match found
+                files_in_library.append(torrent['filename'])
+                del instant_RD[idx] # Remove the matching torrent
+                break  # Move to the next torrent once a match is found
+
+    # If matches are found, prompt user for action
+    if files_in_library:
+        print("\nMatching torrent(s) found in the torrent library:")
+        for idx, file in enumerate(files_in_library, start=1):
+            print(f"{idx}. {file}")
+        
+        # Prompt user to choose action
+        while True: 
+            user_choice = input("Do you want to get a matching torrent from the library instead? [Y/N]: ").strip().upper()   
+            if user_choice == 'Y':
+                # If only one match, use it automatically
+                if len(files_in_library) == 1:
+                    chosen_file = files_in_library[0]
+                else:
+                    while True:
+                        try:
+                            # Allow user to select specific file if there are multiple
+                            choice_num = int(input("Enter the number corresponding to the torrent you want: "))
+                            if 1 <= choice_num <= len(files_in_library):
+                                chosen_file = files_in_library[choice_num - 1]
+                                break
+                            else:
+                                print(f"Please enter a number between 1 and {len(files_in_library)}.")
+                        except ValueError:
+                            print("Invalid input. Please enter a number.")
+
+                # Copy the chosen file name and run the torrent library function
+                pyperclip.copy(chosen_file)
+                torrentLibrary.main(auto_paste=True)
+                return True
+            elif user_choice == 'N':
+                print("Getting instantly available torrents...")
+                break
+            else:
+                print("Please enter 'Y' for yes or 'N' for no.")
+    else:
+        print("No matching torrents found in the torrent library. Getting instantly available torrents...") 
+
 # ----------------------------------------------
 
-def get_file(instant_RD, media_type, is_airing=None):
+def get_file(instant_RD, media_type, is_airing=None):    
     episode_pattern = r"""
         (?:
             [Ss](?:\d{1,2}|\d{4})[\s._-]*[Ee](?:\d{1,3})|
@@ -336,6 +436,14 @@ def get_file(instant_RD, media_type, is_airing=None):
                 if not is_good_release:
                     other_releases.append(file_tuple)
             
+            # Display files already in the library
+            if files_in_library:
+                print("Files in library:")
+                for file in files_in_library:
+                    print(f"- {file}")
+
+                print("-" * 40)  # Separator
+
             # Display good releases
             if good_releases:
                 print("Good release groups:")
@@ -356,6 +464,15 @@ def get_file(instant_RD, media_type, is_airing=None):
         else:
             # For full seasons or movies, use best match logic
             best_match = find_best_match(files)
+
+            # Display files already in the library
+            if files_in_library:
+                print("Files in library:")
+                for file in files_in_library:
+                    print(f"- {file}")
+                    
+                print("-" * 40)  # Separator
+
             for idx, (_, file_name, file_size) in enumerate(files, 1):
                 file_size_gb = file_size/1000
                 print(f"{idx}. {file_name} - {file_size_gb:.2f}GB")
@@ -387,9 +504,6 @@ def get_file(instant_RD, media_type, is_airing=None):
 # ------------------------
 
 def main():
-
-    #input("\nReminder: Make sure you are logged into Real-Debrid (real-debrid.com) and Debrid Media Manager (debridmediamanager.com).\nPress Enter to continue...\n")
-
     # Get the API token from the token.json file
     token_data = None
     if getattr(sys, 'frozen', False):
@@ -411,6 +525,11 @@ def main():
         input("Press Enter to Exit...")
         return
     
+    # List of all initialized lists
+    list_of_lists = [available_files, filtered_files, instant_RD, all_torrents, files_in_library]
+    for lst in list_of_lists:
+        lst.clear() # Clear all lists before proceeding
+
     while True:
         media_type = input("\nMovie or TV? [M/T]: ").strip().upper()
         
@@ -442,7 +561,9 @@ def main():
     if imdb_id:
         scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query)
         check_instant_RD(api_token, filtered_files)
-        magnet_hash = get_file(instant_RD, media_type, is_airing)  # 'M' for movie or 'T' for TV show
+        if matching_torrents(api_token, instant_RD, all_torrents):
+            return
+        magnet_hash = get_file(instant_RD, media_type, is_airing)
         if magnet_hash:
             magnet_link = f"magnet:?xt=urn:btih:{magnet_hash}"
             pyperclip.copy(magnet_link)
