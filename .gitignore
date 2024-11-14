@@ -1,5 +1,5 @@
-/build/
-/dist/
+**/build/
+**/dist/
 **/mpv_files/
 **/__pycache__/
 *.spec
