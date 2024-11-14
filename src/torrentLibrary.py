@@ -130,7 +130,10 @@ class RealDebridCLI:
                 # Get user choice for torrent
                 while True:
                     try:
-                        choice = int(input("\nSelect a torrent (enter number): "))
+                        user_input = input("\nEnter a number to select torrent, or 'q' to quit: ")
+                        if user_input == 'q':
+                            return
+                        choice = int(user_input)
                         if 1 <= choice <= len(matching_torrents):
                             break
                         print("Invalid choice. Please try again.")
