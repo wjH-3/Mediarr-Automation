@@ -343,12 +343,20 @@ def matching_torrents(api_token, instant_RD, all_torrents):
         if not all_torrents:
             print("No files found in library.")
             return False
+        
+    # Regular expression to match any video file extensions at the end of a filename
+    video_ext_pattern = re.compile(r'\.(avi|mkv|mp4|mov|wmv|flv|webm|m4v|mpeg|mpg)$', re.IGNORECASE)
+
+    def strip_extension(filename: str) -> str:
+        """Remove video file extension if present."""
+        return video_ext_pattern.sub('', filename)
 
     # Check each torrent in `all_torrents` against `instant_RD`
     for torrent in all_torrents:
-        extract_filename = torrent['filename']
+        extract_filename = strip_extension(torrent['filename'])
         for idx, (magnet_hash, file_name, file_size) in enumerate(instant_RD):
-            if file_name == extract_filename:  # Match found
+            cleaned_file_name = strip_extension(file_name)
+            if cleaned_file_name == extract_filename:  # Match found
                 files_in_library.append(torrent['filename'])
                 del instant_RD[idx] # Remove the matching torrent
                 break  # Move to the next torrent once a match is found
