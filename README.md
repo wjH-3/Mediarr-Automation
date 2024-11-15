@@ -15,7 +15,7 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
     * after getting all Instantly Available files, it will cross-check with your Torrent Library to see if there are any matching torrents. If yes, it will be shown and you have the option to get the file directly from your library if you choose to
     * dynamic regex filtering to group files into lists of different quality groups
     * integration of `TRaSH Guides` HQ Release Groups to detect files with the best release groups and prioritization of higher tier release groups over lower tiers
-    * determine the best torrent file (file with the highest tier release group) for movies and complete TV show seasons. if it exists, you will have the option auto-select it; for single episodes files, it will show all files with good release groups in its own section
+    * determine the best torrent file (file with the highest tier release group) for movies and complete TV show seasons. if it exists, you will have the option to auto-select it; for single episodes files, it will show all files with good release groups in its own section
 * **Search for Anime**: 
     * use `AniList` API to search for your desired Anime (along with its airing status)
     * use `SeaDex` API to get the magnet links of a Best Release of the specified Anime (if Finished Airing)
@@ -41,7 +41,8 @@ All of this can be done right on the terminal, and no other installation is requ
 
 ## Usage:
 
-1. Go to [Releases](https://github.com/wjH-3/Mediarr-Automation/releases) and download the latest version of `Mediarr.exe` into a folder
+1. Go to [Releases](https://github.com/wjH-3/Mediarr-Automation/releases) and download the latest version of `Mediarr.exe` into a folder 
+*Note: The executable has a fairly large size because both `Chromium` for `Playwright` and `MPV` are bundled together inside for convenience*
 2. When opening the executable for the first time, you might get the message that Windows doesn't recognize it -- *click on 'More info'* > *Run anyway*
 3. On first launch (you only have to do this ONCE), get your Real-Debrid API Token from the [Real-Debrid Website](https://real-debrid.com/apitoken) and input it when prompted (the token is stored in a JSON file locally, namely `token.json`)
 4. When first searching for Non-Anime content (you only have to do this ONCE), you will be prompted to login to DMM on a Chromium browser using `Playwright`. After logging in successfully, the logged in browser session will then be saved in a JSON file locally, namely `session.json` (so that you won't have to login repeatedly each time)
@@ -52,7 +53,7 @@ All of this can be done right on the terminal, and no other installation is requ
 
 ## Build:
 
-If you want to alter any of the regex filters, file quality groups, RTN and PTT parameters/settings, MPV configs etc. to your personal preference, you can bulld `Mediarr.exe` yourself
+If you want to alter any of the regex filters, file quality groups, RTN and PTT parameters/settings, MPV configs etc. to your personal preference, you can bulld `Mediarr.exe` yourself.
 1. Download latest Source Code from [Releases](https://github.com/wjH-3/Mediarr-Automation/releases)
 2. The MPV components are not included in the Source Code (will make size too large otherwise) so building the executable would mean you would need to include them in a folder named `mpv_files` in the same directory as all the other Python component files (whether you intend to change the MPV config files or not -- unless you alter the Python files to not use MPV, which is possible too)
 3. `mpv_files` need to contain the following files and folders: `fonts`, `scripts`, `input.conf`, `mpv.conf`, `libmpv-2.dll`, `mpv.exe`
