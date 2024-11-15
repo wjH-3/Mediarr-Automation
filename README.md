@@ -7,7 +7,7 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
 
 ## Features:
 
-* **Search for Non-Anime** movies/TV shows: 
+* **Search for Non-Anime** movies/TV shows: <br />
     Scrape a particular movie/show (using its `IMDb` ID) from DMM's API, displaying the relevant files in a list for users to choose from
     * query a specific season of a show (also auto-detect show's airing status with `TVMaze` API to either retrieve complete seasons or single episodes)
     * `RTN` (Rank Torrent Name) and `PTT` (Parsett) integration for title matching the files and filtering out garbage torrents
@@ -20,17 +20,17 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
     * use `AniList` API to search for your desired Anime (along with its airing status)
     * use `SeaDex` API to get the magnet links of a Best Release of the specified Anime (if Finished Airing)
     * query `Nyaa` for SubsPlease/Erai-raws releases of Currently Airing Anime
-* **MPV Integration**: 
+* **MPV Integration**: <br />
     `MPV` comes prepackaged with Mediarr to automatically open a stream link. It uses custom configs (`ModernX` OSC script for a modern UI, Eng subtitles (non  SDH, non Forced) prioritization and auto-selection, auto hardware decoding etc.)
-* **Get DL Link instantly**: 
+* **Get DL Link instantly**: <br />
     After selecting the file you want, Mediarr will automatically get the RD links for the torrent and unrestrict them, outputting a DL Link that's copied into your clipboard using `Pyperclip`. Then it automatically opens MPV to stream the file (if single link, i.e Movie files and files of Individual Episodes of a TV Show)
-* **Add your own Magnet Link**: 
+* **Add your own Magnet Link**: <br />
     Input your own magnet link in and it will first check for **Instant Availability**, i.e if the torrent is cached in RD. If it is, it will automatcially proceed to add the torrent and then unrestrict it and output the DL Links. If it is not, it will inform you and asks if you still want to proceed to download the torrent
-* **Unrestrict Link**: 
+* **Unrestrict Link**: <br />
     Similarly, you can paste in any link from RD's supported hosters and it will unrestrict and output the DL Link for you
-* **Access Torrent Library**: 
+* **Access Torrent Library**: <br />
     If you already have an existing torrent added in RD, Mediarr allows you to search for the file by name (e.g the movie/TV show title) and will display the matching torrents for you to select and then output the DL Links. This is particularly useful if you want to continue a TV show/Movie that you haven't finished watching
-* **Binge Watch a Series Conveniently**: 
+* **Binge Watch a Series Conveniently**: <br />
     For torrents that have multiple files in them (e.g TV Show/Anime Episodes), when you unrestrict the torrent (whether it be a newly added torrent or one that is already in your Library), it will first display the files of the torrent in a list for you to choose, i.e like an episode list of the show. Selecting one will then unrestrict the particular file and output its DL Link and open it in MPV, and then the selection prompt will appear again for you to choose another file if you wish
     * This is very useful because once you have finished an episode of a show, you can simply select the next episode's file and it will once again output its corresponding DL link for you and open the stream link in MPV
 
