@@ -63,7 +63,8 @@ def filter_files(available_files: List[Tuple[str, str, float]], imdb_title: str,
     custom_pattern = re.compile(
         r"^(?=.*(?:remux|web|blu(?:ray|-ray|\sray)))"  # Must contain remux, web, or bluray variants
         r"(?=.*(?:2160p|1080p|1080i))"                 # Must contain one of these resolutions
-        r"(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled|[\u0400-\u04FF]))"  # Must not contain these terms
+        r"(?!.*(?:hdr|dv|dovi|upscale|upscaling|upscaled|[\u0400-\u04FF]))"  # No HDR & DV
+        # r"(?!.*(?:upscale|upscaling|upscaled|[\u0400-\u04FF]))" # With HDR & DV
         r".*$",
         re.IGNORECASE  # Make it case insensitive
     )
@@ -415,7 +416,9 @@ def get_file(instant_RD, media_type, is_airing=None):
     
     # Base quality patterns
     base_quality_patterns = {
+        # 'uhd_remux': r'^(?=.*\b(?:2160p|UHD|4K)\b)(?=.*remux).*$',
         'fhd_remux': r'^(?=.*\b(?:1080p|1080i)\b)(?=.*remux).*$',
+        # 'uhd_web': r'^(?=.*\b(?:web[-\s]?dl)\b)(?=.*2160p).*$' if media_type == 'M' else r'^(?=.*2160p)(?=.*web).*$',
         'web': r'^(?=.*\b(?:web[-\s]?dl)\b)(?=.*2160p).*$' if media_type == 'M' else r'^(?=.*\b(?:1080p|2160p)\b)(?=.*web).*$',
         'uhd_fhd_web_&_bluray': r'^(?=.*(?:web|blu(?:ray|-ray|\sray)))(?=.*\b(?:2160p|1080p)\b).*$',
         'others': r'.*'  # Catch-all pattern
