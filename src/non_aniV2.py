@@ -491,7 +491,8 @@ def get_file(instant_RD, media_type, is_airing=None):
     group_names = [name for name, files in quality_groups.items() if files]
 
     if not group_names:
-        print("No files found in any quality group.")
+        print("\nNo files found in any quality group.")
+        input("Press Enter to Exit...")
         return None
 
     current_group_index = 0
