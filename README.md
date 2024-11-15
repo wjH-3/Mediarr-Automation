@@ -41,8 +41,8 @@ All of this can be done right on the terminal, and no other installation is requ
 
 ## Usage:
 
-1. Go to [Releases](https://github.com/wjH-3/Mediarr-Automation/releases) and download the latest version of `Mediarr.exe` into a folder 
-*Note: The executable has a fairly large size because both `Chromium` for `Playwright` and `MPV` are bundled together inside for convenience*
+1. Go to [Releases](https://github.com/wjH-3/Mediarr-Automation/releases) and download the latest version of `Mediarr.exe` into a folder <br />
+**Note: The executable has a fairly large size because both `Chromium` for `Playwright` and `MPV` are bundled together inside for convenience*
 2. When opening the executable for the first time, you might get the message that Windows doesn't recognize it -- *click on 'More info'* > *Run anyway*
 3. On first launch (you only have to do this ONCE), get your Real-Debrid API Token from the [Real-Debrid Website](https://real-debrid.com/apitoken) and input it when prompted (the token is stored in a JSON file locally, namely `token.json`)
 4. When first searching for Non-Anime content (you only have to do this ONCE), you will be prompted to login to DMM on a Chromium browser using `Playwright`. After logging in successfully, the logged in browser session will then be saved in a JSON file locally, namely `session.json` (so that you won't have to login repeatedly each time)
