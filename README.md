@@ -8,19 +8,20 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
 ## Features:
 
 * **Search for Non-Anime** movies/TV shows: Scrape a particular movie/show (using its `IMDb` ID) from DMM's API, displaying the relevant files in a list for users to choose from
-    * query a specific season of a show (also auto-detect show's airing status with `TVMaze` API to retrieve complete seasons or single episodes)
+    * query a specific season of a show (also auto-detect show's airing status with `TVMaze` API to either retrieve complete seasons or single episodes)
     * `RTN` (Rank Torrent Name) and `PTT` (Parsett) integration for title matching the files and filtering out garbage torrents
     * own custom filter for another layer of filtering to improve quality of files (remove duplicates, no upscaled content, only 1080p and 2160p files etc.)
+    * after getting all Instantly Available files, it will cross-check with your Torrent Library to see if there are any matching torrents. If yes, it will be shown and you have the option to get the file directly from your library if you choose to
     * dynamic regex filtering to group files into lists of different quality groups
     * integration of `TRaSH Guides` HQ Release Groups to detect files with the best release groups and prioritization of higher tier release groups over lower tiers
-    * auto-selects file with the best release group for movies and complete TV show seasons (not single episodes files)
+    * prompt users and ask if you want to auto-select the torrent with the best release group (if it exists) for movies and complete TV show seasons; for single episodes files, it will show all files with good release groups in its own section
 * **Search for Anime**: 
-    * use `AniList` and `SeaDex` API to get the magnet links of a Best Release of the specified anime (if Finished Airing)
-    * query Nyaa for SubsPlease/Erai-raws releases of Currently Airing anime
-    * default Nyaa domain is currently set to `Nyaa.si`
+    * use `AniList` API to search for your desired Anime (along with its airing status)
+    * use `SeaDex` API to get the magnet links of a Best Release of the specified Anime (if Finished Airing)
+    * query `Nyaa` for SubsPlease/Erai-raws releases of Currently Airing Anime
 * **MPV Integration**: `MPV` comes prepackaged with Mediarr to automatically open a stream link. It uses custom configs (`ModernX` OSC script for a modern UI, Eng subtitles (non  SDH, non Forced) prioritization and auto-selection, auto hardware decoding etc.)
 * **Get DL Link instantly**: After selecting the file you want, Mediarr will automatically get the RD links for the torrent and unrestrict them, outputting a DL Link that's copied into your clipboard using `Pyperclip`. Then it automatically opens MPV to stream the file (if single link, i.e Movie files and files of Individual Episodes of a TV Show)
-* **Paste your own Magnet Link**: Paste your own magnet link in and it will first check for **Instant Availability**, i.e if the torrent is cached in RD. If it is, it will automatcially proceed to add the torrent and then unrestrict it and output the DL Links. If it is not, it will inform you and asks if you still want to proceed to download the torrent
+* **Add your own Magnet Link**: Input your own magnet link in and it will first check for **Instant Availability**, i.e if the torrent is cached in RD. If it is, it will automatcially proceed to add the torrent and then unrestrict it and output the DL Links. If it is not, it will inform you and asks if you still want to proceed to download the torrent
 * **Unrestrict Link**: Similarly, you can paste in any link from RD's supported hosters and it will unrestrict and output the DL Link for you
 * **Access Torrent Library**: If you already have an existing torrent added in RD, Mediarr allows you to search for the file by name (e.g the movie/TV show title) and will display the matching torrents for you to select and then output the DL Links. This is particularly useful if you want to continue a TV show/Movie that you haven't finished watching
 * **Binge Watch a Series Conveniently**: For torrents that have multiple files in them (e.g TV Show/Anime Episodes), when you unrestrict the torrent (whether it be a newly added torrent or one that is already in your Library), it will first display the files of the torrent in a list for you to choose, i.e like an episode list of the show. Selecting one will then unrestrict the particular file and output its DL Link and open it in MPV, and then the selection prompt will appear again for you to choose another file if you wish
