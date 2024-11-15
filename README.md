@@ -14,7 +14,7 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
     * after getting all Instantly Available files, it will cross-check with your Torrent Library to see if there are any matching torrents. If yes, it will be shown and you have the option to get the file directly from your library if you choose to
     * dynamic regex filtering to group files into lists of different quality groups
     * integration of `TRaSH Guides` HQ Release Groups to detect files with the best release groups and prioritization of higher tier release groups over lower tiers
-    * prompt users and ask if you want to auto-select the torrent with the best release group (if it exists) for movies and complete TV show seasons; for single episodes files, it will show all files with good release groups in its own section
+    * determine the best torrent file (file with the highest tier release group) for movies and complete TV show seasons. if it exists, you will have the option auto-select it; for single episodes files, it will show all files with good release groups in its own section
 * **Search for Anime**: 
     * use `AniList` API to search for your desired Anime (along with its airing status)
     * use `SeaDex` API to get the magnet links of a Best Release of the specified Anime (if Finished Airing)
