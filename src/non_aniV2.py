@@ -564,7 +564,7 @@ def get_file(instant_RD, media_type, is_airing=None):
             if best_match:
                 print(f"\nBest Release found: '{best_match[1]}'")
                 while True:
-                    auto_select = input("Do you want to auto-select the Nest Release? [Y/N]: ").strip().upper()
+                    auto_select = input("Do you want to auto-select the Best Release? [Y/N]: ").strip().upper()
                     if auto_select == 'Y':
                         print("Auto-selecting...")
                         return best_match[0]
