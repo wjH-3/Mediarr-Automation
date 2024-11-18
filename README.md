@@ -57,7 +57,7 @@ If you want to alter any of the regex filters, file quality groups, RTN and PTT 
 1. Download latest Source Code from [Releases](https://github.com/wjH-3/Mediarr-Automation/releases)
 2. The MPV components are not included in the Source Code (will make size too large otherwise) so building the executable would mean you would need to include them in a folder named `mpv_files` in the same directory as all the other Python component files (whether you intend to change the MPV config files or not -- unless you alter the Python files to not use MPV, which is possible too)
 3. `mpv_files` need to contain the following files and folders: `fonts`, `scripts`, `input.conf`, `mpv.conf`, `libmpv-2.dll`, `mpv.exe`
-4. Playwright components are also not in the Source code. First make sure you have the `playwright` Python module installed in your system. Then, navigate to your projects directory in a bash terminal (e.g Git Bash)
+4. Playwright components are also not in the Source code. First make sure you have the `Playwright` Python module installed in your system. Then, navigate to your projects directory in a bash terminal (e.g Git Bash)
 5. `export PLAYWRIGHT_BROWSERS_PATH=0` then `playwright install chromium` and ensure it finishes installing
 6. Main Python files for altering are: `non_aniV2,py`, `ani.py` and `mpv_auto.py`
 7. Nyaa domain (currently set to `nyaa.si`) can be changed to other working proxy domains from [Nyaa Torrents](https://nyaatorrents.info/)
