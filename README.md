@@ -32,7 +32,7 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
     If you already have an existing torrent added in RD, Mediarr allows you to search for the file by name (e.g the movie/TV show title) and will display the matching torrents for you to select and then output the DL Links. This is particularly useful if you want to continue a TV show/Movie that you haven't finished watching
 * **Binge Watch a Series Conveniently**: <br />
     For torrents that have multiple files in them (e.g TV Show/Anime Episodes), when you unrestrict the torrent (whether it be a newly added torrent or one that is already in your Library), it will first display the files of the torrent in a list for you to choose, i.e like an episode list of the show. Selecting one will then unrestrict the particular file and output its DL Link and open it in MPV, and then the selection prompt will appear again for you to choose another file if you wish
-    * This is very useful because once you have finished an episode of a show, you can simply select the next episode's file and it will once again output its corresponding DL link for you and open the stream link in MPV
+    * useful because once you have finished an episode of a show, you can simply select the next episode's file and it will once again output its corresponding DL link for you and open the stream link in MPV
 
 All of this can be done right on the terminal, and no other installation is required except for the executable `Mediarr.exe`.
 
