@@ -8,14 +8,14 @@ A simple CLI Python app that utilises the API of [Real-Debrid](https://real-debr
 ## Features:
 
 * **Search for Non-Anime** movies/TV shows: <br />
-    Scrape a particular movie/show (using its `IMDb` ID) from DMM's API, displaying the relevant files in a list for users to choose from
+    Scrape a particular movie/show (using its `IMDb` ID) from `DMM`'s API, displaying the relevant files in a list for users to choose from
     * query a specific season of a show (also auto-detect show's airing status with `TVMaze` API to either retrieve complete seasons or single episodes)
     * `RTN` (Rank Torrent Name) and `PTT` (Parsett) integration for title matching the files and filtering out garbage torrents
     * own custom filter for another layer of filtering to improve quality of files (remove duplicates, no upscaled content, only 1080p and 2160p files etc.)
-    * after getting all Instantly Available files, it will cross-check with your Torrent Library to see if there are any matching torrents. If yes, it will be shown and you have the option to get the file directly from your library if you choose to
+    * after getting all Instantly Available files, it will cross-check with your Torrent Library to see if there are any matching torrents. If yes, it will be shown and you have the option to get the file directly from your library instead
     * dynamic regex filtering to group files into lists of different quality groups
     * integration of `TRaSH Guides` HQ Release Groups to detect files with the best release groups and prioritization of higher tier release groups over lower tiers
-    * determine the best torrent file (file with the highest tier release group) for movies and complete TV show seasons. if it exists, you will have the option to auto-select it; for single episodes files, it will show all files with good release groups in its own section
+    * determine the best torrent file (file with the highest tier release group) for movies and complete TV show seasons. If it exists, you will have the option to auto-select it; for single episodes files, it will show all files with good release groups in its own section
 * **Search for Anime**: 
     * use `AniList` API to search for your desired Anime (along with its airing status)
     * use `SeaDex` API to get the magnet links of a Best Release of the specified Anime (if Finished Airing)
@@ -57,7 +57,7 @@ If you want to alter any of the regex filters, file quality groups, RTN and PTT 
 1. Download latest Source Code from [Releases](https://github.com/wjH-3/Mediarr-Automation/releases)
 2. The MPV components are not included in the Source Code (will make size too large otherwise) so building the executable would mean you would need to include them in a folder named `mpv_files` in the same directory as all the other Python component files (whether you intend to change the MPV config files or not -- unless you alter the Python files to not use MPV, which is possible too)
 3. `mpv_files` need to contain the following files and folders: `fonts`, `scripts`, `input.conf`, `mpv.conf`, `libmpv-2.dll`, `mpv.exe`
-4. Playwright components are also not in the Source code. First make sure you have the `playwright` python module installed in your system. Then, navigate to your projects directory in a bash terminal (e.g Git Bash)
+4. Playwright components are also not in the Source code. First make sure you have the `playwright` Python module installed in your system. Then, navigate to your projects directory in a bash terminal (e.g Git Bash)
 5. `export PLAYWRIGHT_BROWSERS_PATH=0` then `playwright install chromium` and ensure it finishes installing
 6. Main Python files for altering are: `non_aniV2,py`, `ani.py` and `mpv_auto.py`
 7. Nyaa domain (currently set to `nyaa.si`) can be changed to other working proxy domains from [Nyaa Torrents](https://nyaatorrents.info/)
