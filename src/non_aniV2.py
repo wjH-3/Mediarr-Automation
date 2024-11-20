@@ -171,11 +171,6 @@ def check_instant_RD(api_token, filtered_files):
     files_dict = {magnet_hash: (file_name, file_size) 
                  for magnet_hash, file_name, file_size in filtered_files}
 
-    # Function to normalize file names
-    def normalize_file_name(file_name):
-        # Remove dots, spaces, hyphens, and convert to lowercase
-        return re.sub(r'[.\s-]+', '', file_name).lower()
-
     # Split hashes into batches of 20
     hashes = list(files_dict.keys())
     for i in range(0, len(hashes), batch_size):
@@ -207,14 +202,6 @@ def check_instant_RD(api_token, filtered_files):
 
         # Add a small delay between batches to be safe
         time.sleep(1)
-
-    # Remove duplicates by normalized file name
-    seen_normalized_names = set()
-    instant_RD[:] = [
-        item for item in instant_RD 
-        if normalize_file_name(item[1]) not in seen_normalized_names 
-        and not seen_normalized_names.add(normalize_file_name(item[1]))
-    ]
 
     #print("\nInstantly available files: ")
     print(f"Number of instantly available files: {len(instant_RD)}")
@@ -281,6 +268,19 @@ def matching_torrents(api_token, instant_RD, all_torrents):
                 files_in_library.append(torrent['filename'])
                 del instant_RD[idx] # Remove the matching torrent
                 break  # Move to the next torrent once a match is found
+
+    # Function to normalize file names
+    def normalize_file_name(file_name):
+        # Remove dots, spaces, hyphens, and convert to lowercase
+        return re.sub(r'[.\s-]+', '', file_name).lower()
+    
+    # Remove duplicates from instant_RD by normalized file name (only after deleting matching Library files from list)
+    seen_normalized_names = set()
+    instant_RD[:] = [
+        item for item in instant_RD 
+        if normalize_file_name(item[1]) not in seen_normalized_names 
+        and not seen_normalized_names.add(normalize_file_name(item[1]))
+    ]
 
     # If matches are found, prompt user for action
     if files_in_library:
