@@ -566,7 +566,7 @@ def main():
                 break
             else:
                 print("Invalid input. Please enter a digit.")
-        print(f"\nIMDb Data for '{keywords}' - ID: '{imdb_id}', Title: '{imdb_title}', Status: {airing_status}'")
+        print(f"\nIMDb Data for '{keywords}' - ID: '{imdb_id}', Title: '{imdb_title}', Status: '{airing_status}'")
     
     print("\nScraping files, please wait...\n")
 
