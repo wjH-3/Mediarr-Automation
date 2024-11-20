@@ -164,134 +164,63 @@ def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
 
 instant_RD = []
 
-def check_instant_RD(api_token, filtered_files, verify_threshold=2):
-    """
-    Check Real-Debrid availability with multiple verifications for consistency
-    
-    Args:
-        api_token: Real-Debrid API token
-        filtered_files: List of tuples (magnet_hash, file_name, file_size)
-        verify_threshold: Number of positive checks required to consider a file available
-    
-    Returns:
-        List of available files in instant_RD
-    """
-    # Create session with retry logic
-    session = create_session(max_retries=3, backoff_factor=0.5)
-    
+def check_instant_RD(api_token, filtered_files):
+    batch_size = 20
+
     # Convert filtered_files to a dictionary for easy lookup
     files_dict = {magnet_hash: (file_name, file_size) 
                  for magnet_hash, file_name, file_size in filtered_files}
-    
-    # Track availability counts for each hash
-    availability_counts = {}
-    batch_size = 20
-    
-    # Multiple verification rounds
-    for round in range(verify_threshold):
-        try:
-            available_hashes = check_batch(session, api_token, list(files_dict.keys()), batch_size)
-            
-            # Update counts
-            for hash in available_hashes:
-                availability_counts[hash] = availability_counts.get(hash, 0) + 1
-                
-            # Add small delay between rounds to help avoid cache issues
-            if round < verify_threshold - 1:
-                time.sleep(2)
-                
-        except Exception as e:
-            print(f"Error in verification round {round + 1}: {str(e)}")
-            continue
-    
-    # Clear existing instant_RD list
-    instant_RD.clear()
-    
-    # Add files that meet the threshold
-    for magnet_hash, count in availability_counts.items():
-        if count >= verify_threshold:
-            file_name, file_size = files_dict[magnet_hash]
-            instant_RD.append((magnet_hash, file_name, file_size))
-    
-    # Remove duplicates by normalized file name
-    remove_duplicates()
-    
-    print(f"Number of instantly available files: {len(instant_RD)}")
-    return instant_RD
 
-def create_session(max_retries, backoff_factor):
-    """Create a session with retry logic"""
-    session = requests.Session()
-    
-    # Configure retry strategy
-    retry_strategy = Retry(
-        total=max_retries,
-        backoff_factor=backoff_factor,
-        status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["GET"]
-    )
-    
-    adapter = HTTPAdapter(max_retries=retry_strategy)
-    session.mount("https://", adapter)
-    session.mount("http://", adapter)
-    return session
+    # Function to normalize file names
+    def normalize_file_name(file_name):
+        # Remove dots, spaces, hyphens, and convert to lowercase
+        return re.sub(r'[.\s-]+', '', file_name).lower()
 
-def check_batch(session, api_token, hashes, batch_size):
-    """Check availability for a batch of hashes"""
-    available_hashes = set()
-    
+    # Split hashes into batches of 20
+    hashes = list(files_dict.keys())
     for i in range(0, len(hashes), batch_size):
         batch_hashes = hashes[i:i + batch_size]
+
+        # Construct URL with multiple hashes
         hash_path = '/'.join(batch_hashes)
         url = f"https://api.real-debrid.com/rest/1.0/torrents/instantAvailability/{hash_path}"
-        
-        headers = {
-            "Authorization": f"Bearer {api_token}",
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache"
-        }
-        
-        try:
-            response = session.get(url, headers=headers)
-            response.raise_for_status()
-            availability_data = response.json()
-            
-            for magnet_hash in batch_hashes:
-                if is_hash_available(availability_data, magnet_hash):
-                    available_hashes.add(magnet_hash)
-            
-            time.sleep(1)  # Delay between batches
-            
-        except Exception as e:
-            print(f"Error checking batch: {str(e)}")
-            continue
-            
-    return available_hashes
 
-def is_hash_available(availability_data, magnet_hash):
-    """Check if a specific hash is available in the response data"""
-    return (
-        isinstance(availability_data, dict) and
-        magnet_hash in availability_data and
-        isinstance(availability_data[magnet_hash], dict) and
-        'rd' in availability_data[magnet_hash] and
-        isinstance(availability_data[magnet_hash]['rd'], list) and
-        len(availability_data[magnet_hash]['rd']) > 0
-    )
+        # Make API request
+        headers = {"Authorization": f"Bearer {api_token}"}
+        response = requests.get(url, headers=headers)
+        availability_data = response.json()
 
-def normalize_file_name(file_name):
-    """Normalize file name for comparison"""
-    return re.sub(r'[.\s-]+', '', file_name).lower()
+        # Process each hash in the response
+        for magnet_hash in batch_hashes:
+            is_available = (
+                isinstance(availability_data, dict) and
+                magnet_hash in availability_data and
+                isinstance(availability_data[magnet_hash], dict) and
+                'rd' in availability_data[magnet_hash] and
+                isinstance(availability_data[magnet_hash]['rd'], list) and
+                len(availability_data[magnet_hash]['rd']) > 0
+            )
 
-def remove_duplicates():
-    """Remove duplicates from instant_RD based on normalized file names"""
+            if is_available:
+                file_name, file_size = files_dict[magnet_hash]
+                instant_RD.append((magnet_hash, file_name, file_size))
+
+        # Add a small delay between batches to be safe
+        time.sleep(1)
+
+    # Remove duplicates by normalized file name
     seen_normalized_names = set()
-    global instant_RD
     instant_RD[:] = [
         item for item in instant_RD 
         if normalize_file_name(item[1]) not in seen_normalized_names 
         and not seen_normalized_names.add(normalize_file_name(item[1]))
     ]
+
+    #print("\nInstantly available files: ")
+    print(f"Number of instantly available files: {len(instant_RD)}")
+    #print(f"{instant_RD}")
+
+    return instant_RD
 
 all_torrents = []
 
