@@ -118,7 +118,7 @@ def process_torrent(api_token, magnet_link):
         return
     
     while True:
-        unrestrict = input("Do you want to get the Download/Stream Link(s) now? [Y/N]: ").strip().upper()
+        unrestrict = input("\nDo you want to get the Download/Stream Link(s) now? [Y/N]: ").strip().upper()
         if unrestrict == 'Y':
             break
         if unrestrict == 'N':
