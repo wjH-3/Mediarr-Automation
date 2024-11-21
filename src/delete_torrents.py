@@ -147,6 +147,7 @@ class RealDebridCLI:
                 if confirm == 'Y':
                     # Delete selected torrent using its id
                     self.delete_torrent(selected_torrent['id'])
+                    break
                 if confirm == 'N':
                     input("Press Enter to Exit...")
                     return
