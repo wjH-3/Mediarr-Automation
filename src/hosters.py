@@ -70,7 +70,7 @@ def main():
     # Print formatted list
     print("\nSupported Hosters' Current Status:\n")
     for hoster in filtered_hosters:
-        print(f"- {hoster['name']} ({hoster['url']}) - {hoster['status']}")
+        print(f"- {hoster['name']} ({hoster['url']}): {hoster['status']}")
 
     input("\nPress Enter to Exit...")
     return
