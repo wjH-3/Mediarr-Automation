@@ -142,8 +142,16 @@ class RealDebridCLI:
                 
                 selected_torrent = matching_torrents[choice - 1]
             
-            # Delete selected torrent using its id
-            self.delete_torrent(selected_torrent['id'])
+            while True:
+                confirm = input(f"\nAre you sure you want to delete '{selected_torrent['filename']}'? [Y/N]: ").strip().upper()
+                if confirm == 'Y':
+                    # Delete selected torrent using its id
+                    self.delete_torrent(selected_torrent['id'])
+                if confirm == 'N':
+                    input("Press Enter to Exit...")
+                    return
+                else:
+                    print("Please enter 'Y' for yes or 'N' for no.")
 
         except requests.RequestException as e:
             print(f"API Error: {e}")
@@ -181,4 +189,3 @@ def main(auto_paste: bool = False):
 
 if __name__ == "__main__":
     main()
-    
