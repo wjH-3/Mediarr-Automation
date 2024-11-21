@@ -116,6 +116,16 @@ def process_torrent(api_token, magnet_link):
         print("Warning: No links found in torrent info.")
         input("\nPress Enter to Exit...")
         return
+    
+    while True:
+        unrestrict = input("Do you want to get the Download/Stream Link(s) now? [Y/N]: ").strip().upper()
+        if unrestrict == 'Y':
+            break
+        if unrestrict == 'N':
+            input("\nPress Enter to Exit...")
+            return
+        else:
+            print("Please enter 'Y' for yes or 'N' for no.")
 
     print(f"Unrestricting {len(links)} link(s)...")
     unrestricted_links = []
