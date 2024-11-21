@@ -68,7 +68,7 @@ def main():
     filtered_hosters = filter_hosters(hosters_data)
     
     # Print formatted list
-    print("\nSupported Hosters' URL & Current Status:\n")
+    print("\nSupported Hosters' Current Status:\n")
     for hoster in filtered_hosters:
         print(f"- {hoster['name']} ({hoster['url']}) - {hoster['status']}")
 
