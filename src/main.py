@@ -10,6 +10,8 @@ import torrentLibrary
 from mpv_auto import play_in_mpv
 import dmm_api
 from playwright.sync_api import sync_playwright
+import delete_torrents
+import hosters
 
 
 TOKEN_PATH = 'token.json'
@@ -55,7 +57,7 @@ def main():
             while True:
                 clear_screen()
                 time.sleep(0.5)
-                print("Options:\n1. Search Movies/TV Shows\n2. Get Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link")
+                print("Options:\n1. Search Movies/TV Shows\n2. Get Movies/TV Shows in Library\n3. Add Magnet Link\n4. Unrestrict Link\n5. Delete a Torrent from Library\n6. Check Hosters' Status")
                 choice = input("Enter Option Number: ")
                 
                 if choice == '1':
@@ -80,8 +82,13 @@ def main():
                 if choice == '4':
                     unrestrict.main()
                     continue
+                if choice == '5':
+                    delete_torrents.main()
+                    continue
+                if choice == '6':
+                    hosters.main()
                 else:
-                    print("\nInvalid input. Please enter a Number from 1 to 4.")
+                    print("\nInvalid input. Please enter a Number from 1 to 6.")
                     time.sleep(2)
 
         except Exception as e:
