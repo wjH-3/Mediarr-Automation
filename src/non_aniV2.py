@@ -12,12 +12,9 @@ import torrentLibrary
 import pyperclip
 import re
 from dmm_api import key_manager
-from typing import List, Tuple, Dict, Optional, Any
+from typing import List, Tuple, Dict, Optional
 import json
 import pytvmaze
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-
 
 # IMDb search functions
 # IMDb ID for movies
@@ -108,7 +105,7 @@ def filter_files(available_files: List[Tuple[str, str, float]], imdb_title: str,
 # Scraping DMM API
 def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
     page_num = 0
-    max_pages = 8
+    max_pages = 5
 
     while page_num < max_pages:
         # Get a fresh key-hash pair for this request
@@ -162,46 +159,72 @@ def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
     
     return filtered_files
 
+VIDEO_EXTENSIONS = ('.avi', '.mkv', '.mp4', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpeg', '.mpg')
+
+instant_RD = []
+
+def add_magnet(api_token, magnet_hash):
+        url = "https://api.real-debrid.com/rest/1.0/torrents/addMagnet"
+        headers = {"Authorization": f"Bearer {api_token}"}
+        data = {"magnet": f"magnet:?xt=urn:btih:{magnet_hash}"}
+        response = requests.post(url, headers=headers, data=data)
+        return response.json()
+
+def get_torrent_info(api_token, torrent_id):
+    url = f"https://api.real-debrid.com/rest/1.0/torrents/info/{torrent_id}"
+    headers = {"Authorization": f"Bearer {api_token}"}
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+def select_files(api_token, torrent_id, file_ids):
+    url = f"https://api.real-debrid.com/rest/1.0/torrents/selectFiles/{torrent_id}"
+    headers = {"Authorization": f"Bearer {api_token}"}
+    data = {"files": ",".join(map(str, file_ids))}
+    response = requests.post(url, headers=headers, data=data)
+    if response.status_code == 204:
+        return {"success": True}
+    return response.json()
+
+def is_video(filename):
+    return filename.lower().endswith(VIDEO_EXTENSIONS)
+
+def delete_torrent(api_token, torrent_id):
+    url = f"https://api.real-debrid.com/rest/1.0/torrents/delete/{torrent_id}"
+    headers = {"Authorization": f"Bearer {api_token}"}
+    response = requests.delete(url, headers=headers)
+    if response.status_code == 204:
+        return
+
+def pseudo_instant_check(magnet_hash, api_token):    
+    add_result = add_magnet(api_token, magnet_hash)
+    torrent_id = add_result['id']
+    info = get_torrent_info(api_token, torrent_id)
+    if info['status'] == 'waiting_files_selection':
+        # Select video files
+        video_files = [file for file in info['files'] if is_video(file['path'])]
+        video_file_ids = [file['id'] for file in video_files]
+        if not video_file_ids:
+            delete_torrent(api_token, torrent_id)
+            return False
+    else:
+        delete_torrent(api_token, torrent_id)
+        return False
+    select_files(api_token, torrent_id, video_file_ids)
+    info_2 = get_torrent_info(api_token, torrent_id)
+    if info_2['status'] == 'downloaded':
+        delete_torrent(api_token, torrent_id)
+        return True
+    else:
+        delete_torrent(api_token, torrent_id)
+        return False
+
 instant_RD = []
 
 def check_instant_RD(api_token, filtered_files):
-    batch_size = 20
-
-    # Convert filtered_files to a dictionary for easy lookup
-    files_dict = {magnet_hash: (file_name, file_size) 
-                 for magnet_hash, file_name, file_size in filtered_files}
-
-    # Split hashes into batches of 20
-    hashes = list(files_dict.keys())
-    for i in range(0, len(hashes), batch_size):
-        batch_hashes = hashes[i:i + batch_size]
-
-        # Construct URL with multiple hashes
-        hash_path = '/'.join(batch_hashes)
-        url = f"https://api.real-debrid.com/rest/1.0/torrents/instantAvailability/{hash_path}"
-
-        # Make API request
-        headers = {"Authorization": f"Bearer {api_token}"}
-        response = requests.get(url, headers=headers)
-        availability_data = response.json()
-
-        # Process each hash in the response
-        for magnet_hash in batch_hashes:
-            is_available = (
-                isinstance(availability_data, dict) and
-                magnet_hash in availability_data and
-                isinstance(availability_data[magnet_hash], dict) and
-                'rd' in availability_data[magnet_hash] and
-                isinstance(availability_data[magnet_hash]['rd'], list) and
-                len(availability_data[magnet_hash]['rd']) > 0
-            )
-
-            if is_available:
-                file_name, file_size = files_dict[magnet_hash]
-                instant_RD.append((magnet_hash, file_name, file_size))
-
-        # Add a small delay between batches to be safe
-        time.sleep(1)
+    for (magnet_hash, file_name, file_size) in filtered_files:
+        result = pseudo_instant_check(magnet_hash, api_token)
+        if result is True:
+            instant_RD.append((magnet_hash, file_name, file_size))
 
     #print("\nInstantly available files: ")
     print(f"Number of instantly available files: {len(instant_RD)}")
@@ -572,7 +595,11 @@ def main():
 
     if imdb_id:
         scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query)
+        start_time = time.time()
         check_instant_RD(api_token, filtered_files)
+        end_time = time.time()
+        runtime = end_time - start_time
+        print(f"Runtime: {runtime}s")
         if matching_torrents(api_token, instant_RD, all_torrents):
             return
         magnet_hash = get_file(instant_RD, media_type, is_airing)
