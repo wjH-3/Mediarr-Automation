@@ -3,13 +3,15 @@ import json
 import sys
 import os
 import time
+import RD
+import re
 
 VIDEO_EXTENSIONS = ('.avi', '.mkv', '.mp4', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpeg', '.mpg')
 
-def add_magnet(api_token, magnet_hash):
+def add_magnet(api_token, magnet_link):
         url = "https://api.real-debrid.com/rest/1.0/torrents/addMagnet"
         headers = {"Authorization": f"Bearer {api_token}"}
-        data = {"magnet": f"magnet:?xt=urn:btih:{magnet_hash}"}
+        data = {"magnet": magnet_link}
         response = requests.post(url, headers=headers, data=data)
         return response.json()
 
@@ -38,8 +40,8 @@ def delete_torrent(api_token, torrent_id):
     if response.status_code == 204:
         return
     
-def pseudo_instant_check(magnet_hash, api_token):    
-    add_result = add_magnet(api_token, magnet_hash)
+def pseudo_instant_check(magnet_link, api_token):    
+    add_result = add_magnet(api_token, magnet_link)
     torrent_id = add_result['id']
     info = get_torrent_info(api_token, torrent_id)
     if info['status'] == 'waiting_files_selection':
@@ -82,27 +84,41 @@ def main():
         print("Invalid token data. Please run the main script to set up your token.")
         input("\nPress Enter to Exit...")
         return
-    
-    # TEST HASHES:
-    # Arcane S02E04 1080p WEB-DL FLUX (CACHED): 8cf843d57f7702e6176a419378135f5130706db7
-    # Tenet 1080p BluRay REMUX FraMeSToR (UNCACHED): 571d85882b7733c2d16c0dd534721f5820ba9592
-    # The Outsider S01 1080p BluRay REMUX PmP (CACHED): ef2e20adbf8a6af9b72708b75c1b01e5cc7794b5
-    # Black Mirror S03 1080i BluRau REMUX EPSiLON (UNCACHED): a1217dc6b392cb7a1d47f901e92d3bd7e5c11c22
-    magnet_hash = "ef2e20adbf8a6af9b72708b75c1b01e5cc7794b5"
 
+    while True:
+        magnet_link = input("\nEnter Magnet Link: ")
+
+        hash_match = re.search(r'btih:([a-fA-F0-9]{40})', magnet_link)
+        if not hash_match:
+            print("Invalid magnet link.")
+        else:
+            break
+    
     start_time = time.perf_counter()
-    result = pseudo_instant_check(magnet_hash, api_token)
+    result = pseudo_instant_check(magnet_link, api_token)
     end_time = time.perf_counter()
+    runtime = (end_time - start_time) * 1000
+    print("Runtime:", round(runtime, 2), "ms")
 
     if result is True:
         print("Torrent is instantly available.")
+        RD.main(magnet_link)
     elif result is False:
         print("Torrent is not instantly available.")
+        while True:
+            choice = input("Do you want to proceed? [Y/N]: ").strip().upper()
+            if choice == 'N':
+                print("Exiting...\n")
+                time.sleep(1)
+                return
+            if choice == 'Y':
+                RD.main(magnet_link)
+            else:
+                print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
     else:
         print("Failed to check for instant availability.")
-
-    runtime = (end_time - start_time) * 1000
-    print("Runtime:", round(runtime, 2), "ms")
+        input("Press Enter to Exit...")
+        return
 
 if __name__ == "__main__":
     main()
