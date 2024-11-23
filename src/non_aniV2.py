@@ -159,7 +159,7 @@ def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
     
     return filtered_files
 
-VIDEO_EXTENSIONS = ('.avi', '.mkv', '.mp4', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpeg', '.mpg')
+VIDEO_EXTENSIONS = ('.mkv', '.mp4')
 
 instant_RD = []
 
@@ -204,25 +204,22 @@ def pseudo_instant_check(magnet_hash, api_token):
         video_files = [file for file in info['files'] if is_video(file['path'])]
         video_file_ids = [file['id'] for file in video_files]
         if not video_file_ids:
-            delete_torrent(api_token, torrent_id)
-            return False
+            return False, torrent_id
     else:
-        delete_torrent(api_token, torrent_id)
-        return False
+        return False, torrent_id
     select_files(api_token, torrent_id, video_file_ids)
     info_2 = get_torrent_info(api_token, torrent_id)
     if info_2['status'] == 'downloaded':
-        delete_torrent(api_token, torrent_id)
-        return True
+        return True, torrent_id
     else:
-        delete_torrent(api_token, torrent_id)
-        return False
+        return False, torrent_id
 
 instant_RD = []
 
 def check_instant_RD(api_token, filtered_files):
     for (magnet_hash, file_name, file_size) in filtered_files:
-        result = pseudo_instant_check(magnet_hash, api_token)
+        result, torrent_id = pseudo_instant_check(magnet_hash, api_token)
+        delete_torrent(api_token, torrent_id)
         if result is True:
             instant_RD.append((magnet_hash, file_name, file_size))
 
@@ -599,7 +596,7 @@ def main():
         check_instant_RD(api_token, filtered_files)
         end_time = time.time()
         runtime = end_time - start_time
-        print(f"Runtime: {runtime}s")
+        print(f"Instant_RD Runtime: {runtime}s")
         if matching_torrents(api_token, instant_RD, all_torrents):
             return
         magnet_hash = get_file(instant_RD, media_type, is_airing)
