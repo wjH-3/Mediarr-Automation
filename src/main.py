@@ -12,7 +12,7 @@ import dmm_api
 from playwright.sync_api import sync_playwright
 import delete_torrents
 import hosters
-
+import pseudo_instantRD
 
 TOKEN_PATH = 'token.json'
 
@@ -77,7 +77,7 @@ def main():
                     torrentLibrary.main()
                     continue
                 if choice == '3':
-                    RD.main()
+                    pseudo_instantRD.main()
                     continue
                 if choice == '4':
                     unrestrict.main()
