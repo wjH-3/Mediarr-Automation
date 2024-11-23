@@ -176,7 +176,7 @@ class RateLimiter:
         
         # If we've reached the limit, sleep
         if len(self.calls) >= self.calls_per_second:
-            time.sleep(0.1)
+            time.sleep(0.5)
             return self.wait_if_needed()
         
         # Add current timestamp
@@ -627,7 +627,7 @@ def main():
             magnet_link = f"magnet:?xt=urn:btih:{magnet_hash}"
             pyperclip.copy(magnet_link)
             print(f"Magnet link: '{magnet_link}' generated and copied to clipboard successfully.")
-            RD.main(auto_paste=True)
+            RD.main(magnet_link=None, auto_paste=True)
 
 if __name__ == "__main__":
     main()
