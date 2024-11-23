@@ -94,11 +94,7 @@ def main():
         else:
             break
     
-    start_time = time.perf_counter()
     result = pseudo_instant_check(magnet_link, api_token)
-    end_time = time.perf_counter()
-    runtime = (end_time - start_time) * 1000
-    print("Runtime:", round(runtime, 2), "ms")
 
     if result is True:
         print("Torrent is instantly available.")
