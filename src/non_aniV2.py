@@ -15,6 +15,7 @@ from dmm_api import key_manager
 from typing import List, Tuple, Dict, Optional
 import json
 import pytvmaze
+from collections import deque
 
 # IMDb search functions
 # IMDb ID for movies
@@ -162,21 +163,45 @@ def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
 VIDEO_EXTENSIONS = ('.mkv', '.mp4')
 
 instant_RD = []
+class RateLimiter:
+    def __init__(self, calls_per_second=4):
+        self.calls_per_second = calls_per_second
+        self.calls = deque()
+    
+    def wait_if_needed(self):
+        now = time.time()
+        # Remove old timestamps
+        while self.calls and now - self.calls[0] >= 1:
+            self.calls.popleft()
+        
+        # If we've reached the limit, sleep
+        if len(self.calls) >= self.calls_per_second:
+            time.sleep(0.1)
+            return self.wait_if_needed()
+        
+        # Add current timestamp
+        self.calls.append(now)
+
+# Create global rate limiter instance
+rate_limiter = RateLimiter(4)
 
 def add_magnet(api_token, magnet_hash):
-        url = "https://api.real-debrid.com/rest/1.0/torrents/addMagnet"
-        headers = {"Authorization": f"Bearer {api_token}"}
-        data = {"magnet": f"magnet:?xt=urn:btih:{magnet_hash}"}
-        response = requests.post(url, headers=headers, data=data)
-        return response.json()
+    rate_limiter.wait_if_needed()
+    url = "https://api.real-debrid.com/rest/1.0/torrents/addMagnet"
+    headers = {"Authorization": f"Bearer {api_token}"}
+    data = {"magnet": f"magnet:?xt=urn:btih:{magnet_hash}"}
+    response = requests.post(url, headers=headers, data=data)
+    return response.json()
 
 def get_torrent_info(api_token, torrent_id):
+    rate_limiter.wait_if_needed()
     url = f"https://api.real-debrid.com/rest/1.0/torrents/info/{torrent_id}"
     headers = {"Authorization": f"Bearer {api_token}"}
     response = requests.get(url, headers=headers)
     return response.json()
 
 def select_files(api_token, torrent_id, file_ids):
+    rate_limiter.wait_if_needed()
     url = f"https://api.real-debrid.com/rest/1.0/torrents/selectFiles/{torrent_id}"
     headers = {"Authorization": f"Bearer {api_token}"}
     data = {"files": ",".join(map(str, file_ids))}
@@ -189,6 +214,7 @@ def is_video(filename):
     return filename.lower().endswith(VIDEO_EXTENSIONS)
 
 def delete_torrent(api_token, torrent_id):
+    rate_limiter.wait_if_needed()
     url = f"https://api.real-debrid.com/rest/1.0/torrents/delete/{torrent_id}"
     headers = {"Authorization": f"Bearer {api_token}"}
     response = requests.delete(url, headers=headers)
@@ -223,10 +249,7 @@ def check_instant_RD(api_token, filtered_files):
         if result is True:
             instant_RD.append((magnet_hash, file_name, file_size))
 
-    #print("\nInstantly available files: ")
     print(f"Number of instantly available files: {len(instant_RD)}")
-    #print(f"{instant_RD}")
-
     return instant_RD
 
 all_torrents = []
