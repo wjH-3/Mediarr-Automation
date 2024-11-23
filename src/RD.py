@@ -8,41 +8,6 @@ from mpv_auto import play_in_mpv
 
 VIDEO_EXTENSIONS = ('.avi', '.mkv', '.mp4', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpeg', '.mpg')
 
-def check_instant_availability(api_token, magnet_link):
-    # Extract hash from magnet link
-    import re
-    hash_match = re.search(r'btih:([a-fA-F0-9]{40})', magnet_link)
-    if not hash_match:
-        print("Invalid magnet link")
-        return False
-    
-    torrent_hash = hash_match.group(1).lower()
-    
-    url = f"https://api.real-debrid.com/rest/1.0/torrents/instantAvailability/{torrent_hash}"
-    headers = {"Authorization": f"Bearer {api_token}"}
-    response = requests.get(url, headers=headers)
-    availability_data = response.json()
-    
-    # print("Instant Availability:")
-    # print(json.dumps(availability_data, indent=2))
-    
-    # Check if there are any files available
-    is_available = (
-        isinstance(availability_data, dict) and
-        torrent_hash in availability_data and
-        isinstance(availability_data[torrent_hash], dict) and
-        'rd' in availability_data[torrent_hash] and
-        isinstance(availability_data[torrent_hash]['rd'], list) and
-        len(availability_data[torrent_hash]['rd']) > 0
-    )
-    
-    if is_available:
-        print("\nThis torrent is instantly available.")
-    else:
-        print("\nThis torrent is not instantly available.")
-    
-    return is_available
-
 def add_magnet(api_token, magnet_link):
     url = "https://api.real-debrid.com/rest/1.0/torrents/addMagnet"
     headers = {"Authorization": f"Bearer {api_token}"}
@@ -171,7 +136,7 @@ def process_torrent(api_token, magnet_link):
             except ValueError:
                 print("Invalid input. Please enter a valid number.")
 
-def main(auto_paste=False):
+def main(magnet_link, auto_paste=False):
     # Get the API token from the token.json file
     token_data = None
     if getattr(sys, 'frozen', False):
@@ -196,21 +161,7 @@ def main(auto_paste=False):
     if auto_paste:
         magnet_link = pyperclip.paste()
     else:
-        magnet_link = input("\nEnter the Magnet Link: ")
-
-    is_instant = check_instant_availability(api_token, magnet_link)
-    
-    if not is_instant:
-        choice = input("Do you want to proceed? [Y/N]: ").strip().upper()
-        while True:
-            if choice == 'N':
-                print("Exiting...\n")
-                time.sleep(1)
-                return
-            if choice == 'Y':
-                break
-            else:
-                print("Invalid input. Please enter 'Y' for yes or 'N' for no.")
+        magnet_link = f"{magnet_link}"   
 
     process_torrent(api_token, magnet_link)
 
