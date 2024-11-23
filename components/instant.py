@@ -44,19 +44,15 @@ def pseudo_instant_check(magnet_hash, api_token):
         video_files = [file for file in info['files'] if is_video(file['path'])]
         video_file_ids = [file['id'] for file in video_files]
         if not video_file_ids:
-            delete_torrent(api_token, torrent_id)
-            return False
+            return False, torrent_id
     else:
-        delete_torrent(api_token, torrent_id)
-        return False
+        return False, torrent_id
     select_files(api_token, torrent_id, video_file_ids)
     info_2 = get_torrent_info(api_token, torrent_id)
     if info_2['status'] == 'downloaded':
-        delete_torrent(api_token, torrent_id)
-        return True
+        return True, torrent_id
     else:
-        delete_torrent(api_token, torrent_id)
-        return False
+        return False, torrent_id
     
 def main():
     api_token = input("Enter API token: ")
@@ -69,7 +65,8 @@ def main():
     magnet_hash = input("Enter magnet hash: ")
 
     start_time = time.perf_counter()
-    result = pseudo_instant_check(magnet_hash, api_token)
+    result, torrent_id = pseudo_instant_check(magnet_hash, api_token)
+    delete_torrent(api_token, torrent_id)
     end_time = time.perf_counter()
     if result is True:
         print("Torrent is instantly available.")
