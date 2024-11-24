@@ -8,6 +8,7 @@ def add_magnet(api_token, magnet_hash):
         headers = {"Authorization": f"Bearer {api_token}"}
         data = {"magnet": f"magnet:?xt=urn:btih:{magnet_hash}"}
         response = requests.post(url, headers=headers, data=data)
+        print(response.json())
         return response.json()
 
 def get_torrent_info(api_token, torrent_id):
@@ -62,6 +63,7 @@ def main():
     # Tenet 1080p BluRay REMUX FraMeSToR (UNCACHED): 571d85882b7733c2d16c0dd534721f5820ba9592
     # The Outsider S01 1080p BluRay REMUX PmP (CACHED): ef2e20adbf8a6af9b72708b75c1b01e5cc7794b5
     # Black Mirror S03 1080i BluRau REMUX EPSiLON (UNCACHED): a1217dc6b392cb7a1d47f901e92d3bd7e5c11c22
+    # INFRINGING FILE (Error Code 35): 0c234063653cb6ae7437d70a388751da1821ef58
     magnet_hash = input("Enter magnet hash: ")
 
     start_time = time.perf_counter()
