@@ -197,32 +197,68 @@ def delete_torrent(api_token, torrent_id):
         return
     
 def pseudo_instant_check(magnet_hash, api_token):    
-    add_result = add_magnet(api_token, magnet_hash)
-    torrent_id = add_result['id']
-    info = get_torrent_info(api_token, torrent_id)
-    if info['status'] == 'waiting_files_selection':
-        # Select video files
-        video_files = [file for file in info['files'] if is_video(file['path'])]
-        video_file_ids = [file['id'] for file in video_files]
-        if not video_file_ids:
-            return False, torrent_id
-    else:
+    # Helper function to check API responses for errors
+    def check_api_response(response, operation_name):
+        if 'error' in response:
+            raise Exception(f"API Error during {operation_name}: {response['error']} (Code: {response.get('error_code', 'N/A')})")
+        return response
+
+    try:
+        # Add magnet and check for errors
+        add_result = add_magnet(api_token, magnet_hash)
+        add_result = check_api_response(add_result, "magnet addition")
+        torrent_id = add_result['id']
+        
+        # Get initial torrent info and check for errors
+        info = get_torrent_info(api_token, torrent_id)
+        info = check_api_response(info, "torrent info retrieval")
+        
+        if info['status'] == 'waiting_files_selection':
+            # Select video files
+            video_files = [file for file in info['files'] if is_video(file['path'])]
+            video_file_ids = [file['id'] for file in video_files]
+            if not video_file_ids:
+                return False, torrent_id
+                
+            # Select files and check for errors
+            select_result = select_files(api_token, torrent_id, video_file_ids)
+            select_result = check_api_response(select_result, "file selection")
+            
+            # Get updated torrent info and check for errors
+            info_2 = get_torrent_info(api_token, torrent_id)
+            info_2 = check_api_response(info_2, "final torrent info retrieval")
+            
+            if info_2['status'] == 'downloaded':
+                return True, torrent_id
+        
         return False, torrent_id
-    select_files(api_token, torrent_id, video_file_ids)
-    info_2 = get_torrent_info(api_token, torrent_id)
-    if info_2['status'] == 'downloaded':
-        return True, torrent_id
-    else:
-        return False, torrent_id
+        
+    except Exception as e:
+        # Re-raise the exception with the torrent_id if we have it
+        if 'torrent_id' in locals():
+            raise Exception(f"{str(e)} (Torrent ID: {torrent_id})")
+        raise Exception(str(e))
 
 instant_RD = []
 
 def check_instant_RD(api_token, filtered_files):
     for (magnet_hash, file_name, file_size) in filtered_files:
-        result, torrent_id = pseudo_instant_check(magnet_hash, api_token)
-        delete_torrent(api_token, torrent_id)
-        if result is True:
-            instant_RD.append((magnet_hash, file_name, file_size))
+        torrent_id = None
+        try:
+            result, torrent_id = pseudo_instant_check(magnet_hash, api_token)
+            if result is True:
+                instant_RD.append((magnet_hash, file_name, file_size))
+            
+        except Exception as e:
+            error_message = str(e)       
+            print(f"Error file '{file_name}': {error_message}")
+        finally:
+            if torrent_id is not None:
+                try:
+                    delete_torrent(api_token, torrent_id)
+                except Exception as delete_error:
+                    print(f"Failed to delete torrent {torrent_id}: {str(delete_error)}")
+            continue
 
     print(f"Number of instantly available files: {len(instant_RD)}")
     return instant_RD
