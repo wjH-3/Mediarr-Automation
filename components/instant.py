@@ -8,7 +8,7 @@ def add_magnet(api_token, magnet_hash):
         headers = {"Authorization": f"Bearer {api_token}"}
         data = {"magnet": f"magnet:?xt=urn:btih:{magnet_hash}"}
         response = requests.post(url, headers=headers, data=data)
-        print(response.json())
+        #print(response.json())
         return response.json()
 
 def get_torrent_info(api_token, torrent_id):
@@ -40,6 +40,7 @@ def pseudo_instant_check(magnet_hash, api_token):
     add_result = add_magnet(api_token, magnet_hash)
     torrent_id = add_result['id']
     info = get_torrent_info(api_token, torrent_id)
+    print(f"Torrent File: {info['filename']}")
     if info['status'] == 'waiting_files_selection':
         # Select video files
         video_files = [file for file in info['files'] if is_video(file['path'])]
@@ -64,7 +65,8 @@ def main():
     # The Outsider S01 1080p BluRay REMUX PmP (CACHED): ef2e20adbf8a6af9b72708b75c1b01e5cc7794b5
     # Black Mirror S03 1080i BluRau REMUX EPSiLON (UNCACHED): a1217dc6b392cb7a1d47f901e92d3bd7e5c11c22
     # INFRINGING FILE (Error Code 35): 0c234063653cb6ae7437d70a388751da1821ef58
-    magnet_hash = input("Enter magnet hash: ")
+    # INTERNAL ERROR (Error Code -1): aa0917dfdf60a3fb6f4fb7cad679783ffc194561
+    magnet_hash = input("Enter Magnet Hash: ")
 
     start_time = time.perf_counter()
     result, torrent_id = pseudo_instant_check(magnet_hash, api_token)
