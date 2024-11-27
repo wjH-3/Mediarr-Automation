@@ -219,6 +219,8 @@ def pseudo_instant_check(magnet_hash, api_token):
             video_file_ids = [file['id'] for file in video_files]
             if not video_file_ids:
                 return False, torrent_id
+            if info['filename'] == 'Invalid Magnet':
+                return False, torrent_id
                 
             # Select files and check for errors
             select_result = select_files(api_token, torrent_id, video_file_ids)
@@ -226,7 +228,7 @@ def pseudo_instant_check(magnet_hash, api_token):
             
             # Get updated torrent info and check for errors
             info_2 = get_torrent_info(api_token, torrent_id)
-            info_2 = check_api_response(info_2, "final torrent info retrieval")
+            info_2 = check_api_response(info_2, "torrent download status retrieval")
             
             if info_2['status'] == 'downloaded':
                 return True, torrent_id
@@ -251,13 +253,12 @@ def check_instant_RD(api_token, filtered_files):
             
         except Exception as e:
             error_message = str(e)       
-            print(f"Error file '{file_name}': {error_message}")
+            print(f"Error file '{file_name}' -> {error_message}")
         finally:
-            if torrent_id is not None:
-                try:
-                    delete_torrent(api_token, torrent_id)
-                except Exception as delete_error:
-                    print(f"Failed to delete torrent {torrent_id}: {str(delete_error)}")
+            try:
+                delete_torrent(api_token, torrent_id)
+            except Exception as delete_error:
+                print(f"Failed to delete torrent {torrent_id}: {str(delete_error)}")
             continue
 
     print(f"Number of instantly available files: {len(instant_RD)}")
