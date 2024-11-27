@@ -162,8 +162,6 @@ def scrape_api(imdb_id, media_type, keywords, imdb_title, tv_query=None):
 
 VIDEO_EXTENSIONS = ('.mkv', '.mp4')
 
-instant_RD = []
-
 def add_magnet(api_token, magnet_hash):
         url = "https://api.real-debrid.com/rest/1.0/torrents/addMagnet"
         headers = {"Authorization": f"Bearer {api_token}"}
