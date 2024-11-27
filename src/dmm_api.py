@@ -28,6 +28,7 @@ def login_and_save_session():
         context.storage_state(path=SESSION_FILE)
         browser.close()
         print("Session saved successfully!")
+        input("Press Enter to continue...")
 
 class DMMKeyManager:
     def __init__(self):
@@ -37,7 +38,7 @@ class DMMKeyManager:
 
         # Check if session.json exists, and if not, prompt login
         if not os.path.exists(SESSION_FILE):
-            print("Session file not found. Directing to log in...")
+            print("\nSession file not found. Directing to log in...")
             login_and_save_session()
         
     def get_new_key_hash(self):
