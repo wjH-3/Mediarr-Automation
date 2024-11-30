@@ -24,6 +24,7 @@ def select_files(api_token, torrent_id, file_ids):
     response = requests.post(url, headers=headers, data=data)
     if response.status_code == 204:
         return {"success": True}
+    print(response.json())
     return response.json()
 
 def is_video(filename):
@@ -66,6 +67,7 @@ def main():
     # Black Mirror S03 1080i BluRau REMUX EPSiLON (UNCACHED): a1217dc6b392cb7a1d47f901e92d3bd7e5c11c22
     # INFRINGING FILE (Error Code 35): 0c234063653cb6ae7437d70a388751da1821ef58
     # INTERNAL ERROR (Error Code -1): aa0917dfdf60a3fb6f4fb7cad679783ffc194561
+    # INTERNAL ERROR (Error Code -1) (NOT Invalid Magnet): 13651b8db7074da3aa0d1bfebb479f75fef03ca2
     magnet_hash = input("Enter Magnet Hash: ")
 
     start_time = time.perf_counter()
