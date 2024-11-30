@@ -15,7 +15,6 @@ from dmm_api import key_manager
 from typing import List, Tuple, Dict, Optional
 import json
 import pytvmaze
-from collections import deque
 
 # IMDb search functions
 # IMDb ID for movies
@@ -219,23 +218,27 @@ def pseudo_instant_check(magnet_hash, api_token):
                 return False, torrent_id
             if info['filename'] == 'Invalid Magnet':
                 return False, torrent_id
+        else:
+            return False, torrent_id
                 
-            # Select files and check for errors
-            select_result = select_files(api_token, torrent_id, video_file_ids)
-            select_result = check_api_response(select_result, "file selection")
+        # Select files and check for errors
+        select_result = select_files(api_token, torrent_id, video_file_ids)
+        select_result = check_api_response(select_result, "file selection")
             
-            # Get updated torrent info and check for errors
-            info_2 = get_torrent_info(api_token, torrent_id)
-            info_2 = check_api_response(info_2, "torrent download status retrieval")
-            
-            if info_2['status'] == 'downloaded':
-                return True, torrent_id
+        # Get updated torrent info and check for errors
+        info_2 = get_torrent_info(api_token, torrent_id)
+        info_2 = check_api_response(info_2, "torrent download status retrieval")
         
-        return False, torrent_id
+        if info_2['status'] == 'downloaded':
+            return True, torrent_id
+        else:
+            return False, torrent_id
         
     except Exception as e:
         # Re-raise the exception with the torrent_id if we have it
         if 'torrent_id' in locals():
+            delete_torrent(api_token, torrent_id)
+            print(f"Cannot determine Availability. Deleted: {torrent_id}")
             raise Exception(f"{str(e)} (Torrent ID: {torrent_id})")
         raise Exception(str(e))
 
@@ -246,6 +249,7 @@ def check_instant_RD(api_token, filtered_files):
         torrent_id = None
         try:
             result, torrent_id = pseudo_instant_check(magnet_hash, api_token)
+            #print(f"Check Successful: {torrent_id} -> {result}")
             if result is True:
                 instant_RD.append((magnet_hash, file_name, file_size))
             
@@ -253,10 +257,12 @@ def check_instant_RD(api_token, filtered_files):
             error_message = str(e)       
             print(f"Error file '{file_name}' -> {error_message}")
         finally:
-            try:
-                delete_torrent(api_token, torrent_id)
-            except Exception as delete_error:
-                print(f"Failed to delete torrent {torrent_id}: {str(delete_error)}")
+            if torrent_id is not None:
+                try:
+                    delete_torrent(api_token, torrent_id)
+                    #print(f"Deleted: {torrent_id}")
+                except Exception as delete_error:
+                    print(f"Failed to delete torrent {torrent_id}: {str(delete_error)}")
             continue
 
     print(f"Number of instantly available files: {len(instant_RD)}")
