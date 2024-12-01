@@ -68,7 +68,7 @@ def pseudo_instant_check(magnet_link, api_token):
         delete_torrent(api_token, torrent_id)
         return False
 
-def main(magnet_link, auto_paste=False):
+def main(magnet_link=None, auto_paste=False):
     # Get the API token from the token.json file
     token_data = None
     if getattr(sys, 'frozen', False):
