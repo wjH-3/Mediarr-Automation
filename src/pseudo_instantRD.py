@@ -5,6 +5,7 @@ import os
 import time
 import RD
 import re
+import pyperclip
 
 VIDEO_EXTENSIONS = ('.avi', '.mkv', '.mp4', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.mpeg', '.mpg')
 
@@ -67,7 +68,7 @@ def pseudo_instant_check(magnet_link, api_token):
         delete_torrent(api_token, torrent_id)
         return False
 
-def main():
+def main(magnet_link, auto_paste=False):
     # Get the API token from the token.json file
     token_data = None
     if getattr(sys, 'frozen', False):
@@ -90,7 +91,10 @@ def main():
         return
 
     while True:
-        magnet_link = input("\nEnter Magnet Link: ")
+        if auto_paste:
+            magnet_link = pyperclip.paste()
+        else:
+            magnet_link = input("\nEnter Magnet Link: ")
 
         hash_match = re.search(r'btih:([a-fA-F0-9]{40})', magnet_link)
         if not hash_match:
