@@ -47,6 +47,7 @@ def pseudo_instant_check(magnet_link, api_token):
         return False
     torrent_id = add_result['id']
     info = get_torrent_info(api_token, torrent_id)
+    print(f"Torrent File: {info['filename']}")
     if info['status'] == 'waiting_files_selection':
         # Select video files
         video_files = [file for file in info['files'] if is_video(file['path'])]
