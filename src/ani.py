@@ -5,7 +5,7 @@
 import requests # pip install requests
 from bs4 import BeautifulSoup # pip install beautifulsoup4
 import pyperclip # pip install pyperclip
-import RD
+import pseudo_instantRD
 
 def search_anilist(anime_title):
     # GraphQL query with pagination (Page)
@@ -317,7 +317,7 @@ def main():
                                 while True:
                                     pyperclip.copy(magnet_link)
                                     print("Magnet link successfully copied to clipboard.")
-                                    RD.main(auto_paste=True)
+                                    pseudo_instantRD.main(magnet_link=None, auto_paste=True)
                                     break
                                     
                         else:
