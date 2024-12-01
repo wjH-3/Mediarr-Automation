@@ -39,6 +39,10 @@ def delete_torrent(api_token, torrent_id):
     
 def pseudo_instant_check(magnet_hash, api_token):    
     add_result = add_magnet(api_token, magnet_hash)
+    # Check if 'error' exists in the response and handle it
+    if 'error' in add_result and add_result['error']:
+        print(f"Error: {add_result['error']}")
+        return False, None        
     torrent_id = add_result['id']
     info = get_torrent_info(api_token, torrent_id)
     print(f"Torrent File: {info['filename']}")

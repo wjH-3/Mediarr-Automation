@@ -42,6 +42,9 @@ def delete_torrent(api_token, torrent_id):
     
 def pseudo_instant_check(magnet_link, api_token):    
     add_result = add_magnet(api_token, magnet_link)
+    if 'error' in add_result and add_result['error']:
+        print(f"Error: {add_result['error']}")
+        return False
     torrent_id = add_result['id']
     info = get_torrent_info(api_token, torrent_id)
     if info['status'] == 'waiting_files_selection':
