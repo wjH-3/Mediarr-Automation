@@ -52,6 +52,7 @@ def pseudo_instant_check(magnet_link, api_token):
         video_files = [file for file in info['files'] if is_video(file['path'])]
         video_file_ids = [file['id'] for file in video_files]
         if not video_file_ids:
+            print("No video files found.")
             return False, torrent_id
     else:
         return False, torrent_id
@@ -66,10 +67,10 @@ def main():
     api_token = input("Enter RD API Token: ")
     
     # TEST HASHES:
-    # Arcane S02E04 1080p WEB-DL FLUX (CACHED): magnet:?xt=urn:btih:8cf843d57f7702e6176a419378135f5130706db7
-    # Tenet 1080p BluRay REMUX FraMeSToR (UNCACHED): magnet:?xt=urn:btih:571d85882b7733c2d16c0dd534721f5820ba9592
-    # The Outsider S01 1080p BluRay REMUX PmP (CACHED): magnet:?xt=urn:btih:ef2e20adbf8a6af9b72708b75c1b01e5cc7794b5
-    # Black Mirror S03 1080i BluRau REMUX EPSiLON (UNCACHED): magnet:?xt=urn:btih:a1217dc6b392cb7a1d47f901e92d3bd7e5c11c22
+    # TV EP (CACHED): magnet:?xt=urn:btih:8cf843d57f7702e6176a419378135f5130706db7
+    # MOVIE (UNCACHED): magnet:?xt=urn:btih:571d85882b7733c2d16c0dd534721f5820ba9592
+    # TV COMPLETE SEASON (CACHED): magnet:?xt=urn:btih:ef2e20adbf8a6af9b72708b75c1b01e5cc7794b5
+    # TV COMPLETE SEASON (UNCACHED): magnet:?xt=urn:btih:a1217dc6b392cb7a1d47f901e92d3bd7e5c11c22
     # INFRINGING FILE (Error Code 35): magnet:?xt=urn:btih:0c234063653cb6ae7437d70a388751da1821ef58
     # INTERNAL ERROR (Error Code -1): magnet:?xt=urn:btih:aa0917dfdf60a3fb6f4fb7cad679783ffc194561
     # INTERNAL ERROR (Error Code -1) (NOT Invalid Magnet): magnet:?xt=urn:btih:13651b8db7074da3aa0d1bfebb479f75fef03ca2
